@@ -1,0 +1,39 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+}
+
+.navContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: var(--primary);
+    letter-spacing: -0.5px;
+}
+
+.brandName {
+    font-family: var(--font-outfit);
+}
+
+.actions {
+    display: flex;
+    gap: 16px;
+}

@@ -1,0 +1,37 @@
+.hero {
+    padding: 140px 0 80px;
+    text-align: center;
+    background: radial-gradient(circle at 50% 0%, #EFF6FF 0%, transparent 60%);
+}
+
+.title {
+    font-size: 3.5rem;
+    line-height: 1.1;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(to right, var(--primary) 0%, #4B5563 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: var(--primary);
+    /* Fallback */
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    color: var(--secondary);
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.6;
+}
+
+.ctaGroup {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 2.5rem;
+    }
+}

@@ -1,0 +1,115 @@
+.section {
+    padding: 4rem 0;
+    background-color: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.header h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.header p {
+    color: var(--secondary);
+    font-size: 1.125rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    text-align: center;
+    border: 1px solid var(--border);
+    position: relative;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+}
+
+.rankBadge {
+    width: 40px;
+    height: 40px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    margin: 0 auto 1rem;
+    font-size: 1.25rem;
+}
+
+.rank1 {
+    background: linear-gradient(135deg, #FCD34D 0%, #F59E0B 100%);
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 3px solid var(--muted);
+}
+
+
+.name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.society {
+    color: var(--secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.earnings {
+    background: var(--muted);
+    padding: 12px;
+    border-radius: 12px;
+}
+
+.earningsLabel {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--secondary-light);
+    margin-bottom: 4px;
+}
+
+.earningsValue {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.giftBadge {
+    margin-top: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    color: #10B981;
+    font-weight: 600;
+}
