@@ -2,23 +2,23 @@
   /* Colors from SocietyShare/Tamagui Config */
   --background: #FAFAFA;
   --foreground: #111827;
-  
+
   --primary: #111827;
   --primary-hover: #1f2937;
-  
+
   --secondary: #4B5563;
   --secondary-light: #9CA3AF;
-  
+
   --accent: #2563EB;
   --accent-hover: #1d4ed8;
-  
+
   --surface: #FFFFFF;
   --muted: #F3F4F6;
   --border: #E5E7EB;
-  
+
   --radius: 16px;
   --radius-sm: 8px;
-  
+
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
@@ -63,8 +63,20 @@ button {
   padding: 0 1.5rem;
 }
 
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+}
+
 .section {
   padding: 4rem 0;
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 2rem 0;
+  }
 }
 
 .btn {
@@ -73,16 +85,24 @@ button {
   justify-content: center;
   padding: 0.75rem 1.5rem;
   font-weight: 600;
-  border-radius: 9999px; /* Pill shape usually looks premium or use radius */
   border-radius: var(--radius-sm);
   transition: all 0.2s ease;
   font-size: 1rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .btn {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+  }
 }
 
 .btn-primary {
   background-color: var(--primary);
   color: white;
 }
+
 .btn-primary:hover {
   background-color: var(--primary-hover);
   transform: translateY(-1px);
@@ -92,6 +112,7 @@ button {
   background-color: var(--accent);
   color: white;
 }
+
 .btn-accent:hover {
   background-color: var(--accent-hover);
   transform: translateY(-1px);
@@ -102,6 +123,7 @@ button {
   border: 1px solid var(--border);
   color: var(--primary);
 }
+
 .btn-outline:hover {
   background-color: var(--muted);
 }
@@ -117,6 +139,7 @@ button {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

@@ -15,11 +15,23 @@
     border-color: var(--border);
 }
 
+@media (max-width: 768px) {
+    .card:hover {
+        transform: translateY(-2px);
+    }
+}
+
 .imageContainer {
     height: 200px;
     background-color: var(--muted);
     position: relative;
     overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .imageContainer {
+        height: 160px;
+    }
 }
 
 .image {
@@ -57,8 +69,23 @@
     box-shadow: var(--shadow);
 }
 
+@media (max-width: 768px) {
+    .priceTag {
+        bottom: 8px;
+        right: 8px;
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+}
+
 .content {
     padding: 16px;
+}
+
+@media (max-width: 768px) {
+    .content {
+        padding: 12px;
+    }
 }
 
 .title {
@@ -71,10 +98,23 @@
     text-overflow: ellipsis;
 }
 
+@media (max-width: 768px) {
+    .title {
+        font-size: 1rem;
+        margin-bottom: 6px;
+    }
+}
+
 .meta {
     display: flex;
     align-items: center;
     gap: 6px;
     color: var(--secondary);
     font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+    .meta {
+        font-size: 0.75rem;
+    }
 }

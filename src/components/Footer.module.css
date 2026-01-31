@@ -1,0 +1,118 @@
+.footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 0;
+    background: white;
+}
+
+@media (max-width: 768px) {
+    .footer {
+        padding: 2rem 0;
+    }
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+        gap: 2rem;
+    }
+}
+
+.brand {
+    max-width: 300px;
+}
+
+.logo {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-outfit);
+}
+
+@media (max-width: 768px) {
+    .logo {
+        font-size: 1.25rem;
+    }
+}
+
+.description {
+    color: var(--secondary);
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .description {
+        font-size: 0.875rem;
+    }
+}
+
+.links {
+    display: flex;
+    gap: 3rem;
+}
+
+@media (max-width: 768px) {
+    .links {
+        flex-direction: column;
+        gap: 2rem;
+    }
+}
+
+.linkGroup h4 {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .linkGroup h4 {
+        font-size: 0.9rem;
+    }
+}
+
+.linkList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: var(--secondary);
+}
+
+.linkList a {
+    transition: color 0.2s;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .linkList a {
+        font-size: 0.85rem;
+    }
+}
+
+.linkList a:hover {
+    color: var(--primary);
+}
+
+.copyright {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--muted);
+    color: var(--secondary-light);
+    font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+    .copyright {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        font-size: 0.75rem;
+    }
+}

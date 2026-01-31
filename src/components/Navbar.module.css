@@ -13,6 +13,12 @@
     align-items: center;
 }
 
+@media (max-width: 768px) {
+    .navbar {
+        height: 60px;
+    }
+}
+
 .navContent {
     display: flex;
     justify-content: space-between;
@@ -29,6 +35,13 @@
     letter-spacing: -0.5px;
 }
 
+@media (max-width: 768px) {
+    .logo {
+        font-size: 1.5rem;
+        gap: 12px;
+    }
+}
+
 .brandName {
     font-family: var(--font-outfit);
 }
@@ -36,4 +49,10 @@
 .actions {
     display: flex;
     gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .actions {
+        gap: 8px;
+    }
 }

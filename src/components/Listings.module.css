@@ -1,0 +1,45 @@
+.header {
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .header {
+        margin-bottom: 1.5rem;
+    }
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 1.5rem;
+    }
+}
+
+.subtitle {
+    color: var(--secondary);
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .subtitle {
+        font-size: 0.875rem;
+    }
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 24px;
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 16px;
+    }
+}
