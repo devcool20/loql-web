@@ -30,7 +30,7 @@
 
 @media (max-width: 768px) {
     .imageContainer {
-        height: 160px;
+        height: 140px;
     }
 }
 
@@ -84,7 +84,7 @@
 
 @media (max-width: 768px) {
     .content {
-        padding: 12px;
+        padding: 10px;
     }
 }
 

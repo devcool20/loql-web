@@ -65,7 +65,7 @@ button {
 
 @media (max-width: 768px) {
   .container {
-    padding: 0 1rem;
+    padding: 0 1.5rem;
   }
 }
 
@@ -75,7 +75,7 @@ button {
 
 @media (max-width: 768px) {
   .section {
-    padding: 2rem 0;
+    padding: 1.5rem 0;
   }
 }
 
