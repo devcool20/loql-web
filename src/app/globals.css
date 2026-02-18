@@ -145,3 +145,21 @@ button {
     transform: translateY(0);
   }
 }
+
+/* Premium UI Utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.shadow-premium {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.shadow-premium:hover {
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+}
