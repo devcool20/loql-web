@@ -55,4 +55,8 @@
     .actions {
         gap: 8px;
     }
+
+    .downloadText {
+        display: none;
+    }
 }

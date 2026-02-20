@@ -9,8 +9,31 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://loql.in"),
   title: "loql - Rent things from your neighbors",
   description: "The easiest way to rent items from your community. Download the app today.",
+  openGraph: {
+    title: "loql - Rent things from your neighbors",
+    description: "The easiest way to rent items from your community. Download the app today.",
+    url: "https://loql.in",
+    siteName: "loql",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "loql - Community Sharing",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "loql - Rent things from your neighbors",
+    description: "The easiest way to rent items from your community. Download the app today.",
+    images: ["/opengraph-image.png"],
+  },
 };
 
 export default function RootLayout({

@@ -1,0 +1,128 @@
+.formContainer {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 3rem 2.5rem;
+    width: 100%;
+    max-width: 540px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.85);
+    /* Semi-transparent for aurora mesh layer */
+    z-index: 10;
+}
+
+@media (max-width: 768px) {
+    .formContainer {
+        padding: 2rem 1.5rem;
+        border-radius: 20px;
+        margin: 1rem;
+        width: calc(100% - 2rem);
+    }
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: var(--secondary);
+    line-height: 1.5;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: left;
+}
+
+.inputGroup label {
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 0.95rem;
+}
+
+.required {
+    color: #e11d48;
+}
+
+.input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: white;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.input::placeholder {
+    color: var(--secondary-light);
+}
+
+.submitBtn {
+    margin-top: 1rem;
+    width: 100%;
+    font-size: 1.125rem;
+    padding: 1rem;
+}
+
+.successMessage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: var(--primary);
+    gap: 1rem;
+    padding: 2rem 0;
+}
+
+.successIcon {
+    color: #10B981;
+    margin-bottom: 0.5rem;
+    animation: successPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.returnBtn {
+    margin-top: 1.5rem;
+}
+
+.errorBanner {
+    background: #FEF2F2;
+    color: #B91C1C;
+    border: 1px solid #F87171;
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}

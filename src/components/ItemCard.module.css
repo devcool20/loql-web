@@ -80,19 +80,27 @@
 
 .content {
     padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
 }
 
 @media (max-width: 768px) {
     .content {
-        padding: 10px;
+        padding: 12px;
     }
+}
+
+.details {
+    flex-grow: 1;
 }
 
 .title {
     font-size: 1.125rem;
     font-weight: 600;
     color: var(--primary);
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -101,7 +109,7 @@
 @media (max-width: 768px) {
     .title {
         font-size: 1rem;
-        margin-bottom: 6px;
+        margin-bottom: 4px;
     }
 }
 
@@ -117,4 +125,26 @@
     .meta {
         font-size: 0.75rem;
     }
+}
+
+.rentButton {
+    width: 100%;
+    margin-top: auto;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loadingIcon {
+    margin-right: 8px;
+    animation: spin 1s linear infinite;
 }

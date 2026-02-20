@@ -78,12 +78,14 @@
     height: 80px;
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
 }
 
 @media (max-width: 768px) {
@@ -96,6 +98,12 @@
 .playCenter:hover .playCircle {
     transform: scale(1.1);
     background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.playCenter:active .playCircle {
+    transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.25);
 }
 
 .content {
@@ -150,14 +158,17 @@
     height: 44px;
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
     cursor: pointer;
+    /* Disable generic tap highlight on mobile for custom feedback */
+    -webkit-tap-highlight-color: transparent;
 }
 
 @media (max-width: 768px) {
@@ -172,7 +183,14 @@
 .muteButton:hover,
 .fullscreenButton:hover {
     background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.05);
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.muteButton:active,
+.fullscreenButton:active {
+    transform: scale(0.9);
+    background: rgba(255, 255, 255, 0.25);
 }
 
 @media (max-width: 768px) {

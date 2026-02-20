@@ -19,9 +19,12 @@ export default function Navbar() {
           <span className={styles.brandName}>loql</span>
         </Link>
         <div className={styles.actions}>
-          <a href="/loql.apk" download className="btn btn-primary">
+          <Link href="/register" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center' }}>
+             Register Society
+          </Link>
+          <a href="/loql.apk" download className="btn btn-primary" style={{ display: 'flex', alignItems: 'center' }}>
             <Download size={18} style={{marginRight: 8}} />
-            Get App
+            <span className={styles.downloadText}>Get App</span>
           </a>
         </div>
       </div>
