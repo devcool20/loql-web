@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     siteName: "loql",
     images: [
       {
-        url: "/opengraph-image.png",
+        url: "/logo.png",
         alt: "loql - Community Sharing",
       },
     ],
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "loql - Rent things from your neighbors",
     description: "The easiest way to rent items from your community. Download the app today.",
-    images: ["/opengraph-image.png"],
+    images: ["/logo.png"],
   },
 };
 
