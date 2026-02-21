@@ -27,8 +27,8 @@ export default function Footer() {
              <h4>Support</h4>
              <div className={styles.linkList}>
                <Link href="#">Help Center</Link>
-               <Link href="#">Terms of Service</Link>
-               <Link href="#">Privacy Policy</Link>
+               <Link href="/terms">Terms of Service</Link>
+               <Link href="/privacy">Privacy Policy</Link>
              </div>
            </div>
         </div>
