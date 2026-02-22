@@ -37,6 +37,20 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  outline: none;
+  border: none;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus,
+button:focus-visible {
+  outline: none;
 }
 
 html,
@@ -153,10 +167,10 @@ textarea {
   background: var(--surface);
   border-radius: 32px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
-  padding: 0 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 0 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   z-index: 100;
 }
 
@@ -173,12 +187,15 @@ textarea {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 8px 12px;
-  border-radius: 20px;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 22px;
   gap: 8px;
   transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
+  outline: none;
+  min-height: 44px;
 }
 
 .tab-button:active {
@@ -193,6 +210,7 @@ textarea {
   font-size: 14px;
   font-weight: 600;
   color: var(--primary);
+  line-height: 1;
 }
 
 /* ─── Scale Pressable (for buttons / cards) ─── */
@@ -772,6 +790,16 @@ textarea {
   font-weight: 600;
   color: var(--secondary);
   transition: all 0.2s ease;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.category-chip:focus,
+.category-chip:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 .category-chip:active {
@@ -825,17 +853,21 @@ textarea {
 .item-card-image-container {
   width: 100%;
   aspect-ratio: 1;
-  background: var(--surface-alt);
+  background: #F5F5F5;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .item-card-image {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  background: white;
-  padding: 16px;
+  background: transparent;
+  padding: 12px;
+  mix-blend-mode: multiply;
 }
 
 .item-card-no-image {

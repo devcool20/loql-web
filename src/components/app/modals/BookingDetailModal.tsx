@@ -97,7 +97,7 @@ const BookingDetailModal = ({ visible, booking, onClose, onUpdate }: BookingDeta
                 <span style={{ fontSize: 14, fontWeight: 600, color: '#6B7280', marginBottom: 12, display: 'block', textTransform: 'uppercase', letterSpacing: 0.5 }}>Item</span>
                 <div style={{ display: 'flex', background: '#F9FAFB', padding: 12, borderRadius: 16, alignItems: 'center', gap: 16 }}>
                   {item?.images?.[0] ? (
-                    <img src={item.images[0]} alt="" style={{ width: 64, height: 64, borderRadius: 12, background: 'white', padding: 4, objectFit: 'contain' }} />
+                    <img src={item.images[0]} alt="" style={{ width: 64, height: 64, borderRadius: 12, padding: 4, objectFit: 'contain', mixBlendMode: 'multiply' }} />
                   ) : (
                     <div style={{ width: 64, height: 64, borderRadius: 12, background: '#E5E7EB' }} />
                   )}

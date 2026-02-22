@@ -117,20 +117,20 @@ const ItemDetailScreen = () => {
       </div>
 
       {/* Image Carousel */}
-      <div style={{ width: '100%', height: 400, position: 'relative', overflow: 'hidden' }}>
+      <div style={{ width: '100%', height: 400, position: 'relative', overflow: 'hidden', background: '#F5F5F5' }}>
         {images.length > 0 ? (
-          <div style={{ display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', width: '100%', height: '100%', background: '#F9FAFB' }}
+          <div style={{ display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', width: '100%', height: '100%' }}
             onScroll={(e) => {
               const el = e.target as HTMLDivElement;
               setActiveIndex(Math.round(el.scrollLeft / el.offsetWidth));
             }}>
             {images.map((imgUri: string, idx: number) => (
               <img key={idx} src={imgUri} alt="" onClick={() => setFullScreenImage(imgUri)}
-                style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 24, flexShrink: 0, scrollSnapAlign: 'start', cursor: 'pointer' }} />
+                style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 8, flexShrink: 0, scrollSnapAlign: 'start', cursor: 'pointer', mixBlendMode: 'multiply' }} />
             ))}
           </div>
         ) : (
-          <div style={{ width: '100%', height: '100%', background: '#F9FAFB', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF' }}>No Image</div>
+          <div style={{ width: '100%', height: '100%', background: '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF' }}>No Image</div>
         )}
         {images.length > 1 && (
           <div style={{ position: 'absolute', bottom: 60, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8 }}>

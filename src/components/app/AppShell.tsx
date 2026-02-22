@@ -62,10 +62,30 @@ const AppShell = () => {
     if (!loadingStartTime.current) loadingStartTime.current = Date.now();
 
     try {
-      // Handle hash-based tokens (Implicit flow)
-      if (typeof window !== 'undefined' && window.location.hash && window.location.hash.includes('access_token')) {
-        // Let Supabase handle it via detectSessionInUrl
-        await new Promise(resolve => setTimeout(resolve, 500));
+      // Handle hash-based tokens (Implicit OAuth flow - Google sign-in)
+      if (typeof window !== 'undefined') {
+        const hash = window.location.hash;
+        if (hash && (hash.includes('access_token') || hash.includes('error'))) {
+          // Give Supabase time to parse the hash and establish the session
+          // This is critical on Vercel where the redirect may be slower
+          let attempts = 0;
+          while (attempts < 10) {
+            const { data: { session: hashSession } } = await supabase.auth.getSession();
+            if (hashSession) {
+              setUser(hashSession.user);
+              setShowWelcome(false);
+              await checkProfile(hashSession.user);
+              // Clean the URL hash
+              window.history.replaceState({}, '', window.location.pathname);
+              finishLoading();
+              return;
+            }
+            await new Promise(resolve => setTimeout(resolve, 300));
+            attempts++;
+          }
+          // Clean hash even if failed
+          window.history.replaceState({}, '', window.location.pathname);
+        }
       }
 
       const { data: { session }, error } = await supabase.auth.getSession();
