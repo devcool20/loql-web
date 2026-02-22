@@ -1,0 +1,25 @@
+{
+  "name": "loql — Neighborhood Rentals",
+  "short_name": "loql",
+  "description": "Rent anything from your neighbors in your society.",
+  "start_url": "/app",
+  "display": "standalone",
+  "background_color": "#FAFAFA",
+  "theme_color": "#FAFAFA",
+  "orientation": "portrait",
+  "scope": "/app",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
