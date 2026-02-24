@@ -145,7 +145,7 @@ export default function Register() {
                 </>
               ) : (
                 <>
-                  Register Society <ArrowRight size={18} style={{ marginLeft: 8 }} />
+                  Join Waitlist <ArrowRight size={18} style={{ marginLeft: 8 }} />
                 </>
               )}
             </button>

@@ -20,7 +20,7 @@ export default function Navbar() {
         </Link>
         <div className={styles.actions}>
           <Link href="/register" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center' }}>
-             Register Society
+            Join Waitlist
           </Link>
           <a href="/loql.apk" download className="btn btn-primary" style={{ display: 'flex', alignItems: 'center' }}>
             <Download size={18} style={{marginRight: 8}} />
