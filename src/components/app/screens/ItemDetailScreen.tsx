@@ -5,6 +5,7 @@ import { ChevronLeft, Share2, MapPin, MessageCircle, Clock, X } from 'lucide-rea
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { createNotification } from '@/lib/notificationManager';
+import UserProfileModal from '../modals/UserProfileModal';
 
 const ItemDetailScreen = () => {
   const { user, selectedItem: item, closeStack, showAlert, openChat } = useStore();
@@ -16,6 +17,7 @@ const ItemDetailScreen = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [fullScreenImage, setFullScreenImage] = useState<string | null>(null);
   const [showOfferModal, setShowOfferModal] = useState(false);
+  const [showOwnerProfile, setShowOwnerProfile] = useState(false);
   const [offerPrice, setOfferPrice] = useState('');
   const [offerHours, setOfferHours] = useState('24');
 
@@ -126,7 +128,7 @@ const ItemDetailScreen = () => {
             }}>
             {images.map((imgUri: string, idx: number) => (
               <img key={idx} src={imgUri} alt="" onClick={() => setFullScreenImage(imgUri)}
-                style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 8, flexShrink: 0, scrollSnapAlign: 'start', cursor: 'pointer', mixBlendMode: 'multiply' }} />
+                style={{ width: '100%', height: '100%', objectFit: 'cover', flexShrink: 0, scrollSnapAlign: 'start', cursor: 'pointer' }} />
             ))}
           </div>
         ) : (
@@ -230,9 +232,9 @@ const ItemDetailScreen = () => {
         ) : (
           <>
             {/* Owner Card */}
-            <div style={{
+            <div className="scale-pressable" onClick={() => !loadingOwner && owner && setShowOwnerProfile(true)} style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: 16, background: '#F9FAFB', borderRadius: 16, border: '1px solid #F3F4F6',
+              padding: 16, background: '#F9FAFB', borderRadius: 16, border: '1px solid #F3F4F6', cursor: 'pointer',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 {owner?.avatar_url ? (
@@ -247,7 +249,7 @@ const ItemDetailScreen = () => {
                   <span style={{ fontSize: 12, color: '#6B7280' }}>★ 4.8</span>
                 </div>
               </div>
-              <button className="scale-pressable" onClick={() => owner && openChat(owner)}
+              <button className="scale-pressable" onClick={(e) => { e.stopPropagation(); owner && openChat(owner); }}
                 style={{ padding: '8px 16px', background: '#F3F4F6', borderRadius: 20, fontWeight: 600, color: '#111827', fontSize: 14 }}>Chat</button>
             </div>
 
@@ -302,6 +304,16 @@ const ItemDetailScreen = () => {
           </button>
           <img src={fullScreenImage} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
         </div>
+      )}
+
+      {/* User Profile Modal */}
+      {showOwnerProfile && owner && (
+        <UserProfileModal
+          visible={showOwnerProfile}
+          userId={owner.id}
+          user={owner}
+          onClose={() => setShowOwnerProfile(false)}
+        />
       )}
     </div>
   );

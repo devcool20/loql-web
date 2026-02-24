@@ -107,7 +107,7 @@ const HistoryDetailScreen = () => {
                 }}>
                 <div style={{ width: 72, height: 72, borderRadius: 16, background: '#F5F5F5', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 14, flexShrink: 0 }}>
                   {imgUrl ? (
-                    <img src={imgUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 16, padding: 4, mixBlendMode: 'multiply' }} />
+                    <img src={imgUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
                     <span style={{ fontSize: 11, color: '#9CA3AF' }}>No Img</span>
                   )}

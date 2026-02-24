@@ -385,10 +385,9 @@ const RentalsScreen = () => {
                   </button>
                 </div>
 
-                {/* Item Info */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14, background: '#F9FAFB', padding: 14, borderRadius: 20, border: '1px solid #F3F4F6', marginBottom: 20 }}>
                   {selectedOfferForPayment.items?.images?.[0] ? (
-                    <img src={selectedOfferForPayment.items.images[0]} alt="" style={{ width: 64, height: 64, borderRadius: 16, objectFit: 'contain', padding: 4, mixBlendMode: 'multiply' }} />
+                    <img src={selectedOfferForPayment.items.images[0]} alt="" style={{ width: 64, height: 64, borderRadius: 16, objectFit: 'cover' }} />
                   ) : (
                     <div style={{ width: 64, height: 64, borderRadius: 16, background: '#E5E7EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <Camera size={24} color="#9CA3AF" />
@@ -472,10 +471,10 @@ const cardStyle: React.CSSProperties = {
   alignItems: 'center', cursor: 'pointer',
 };
 const imageContainerStyle: React.CSSProperties = {
-  width: 80, height: 80, borderRadius: 16, background: '#F5F5F5', overflow: 'hidden',
+  width: 80, height: 80, borderRadius: 16, background: '#F5F5F5', overflow: 'hidden', border: '1px solid #F3F4F6',
   display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
 };
-const imageStyle: React.CSSProperties = { width: '100%', height: '100%', objectFit: 'contain', borderRadius: 16, padding: 6, mixBlendMode: 'multiply' as any };
+const imageStyle: React.CSSProperties = { width: '100%', height: '100%', objectFit: 'cover', borderRadius: 16 };
 const contentStyle: React.CSSProperties = { flex: 1, marginLeft: 14, display: 'flex', flexDirection: 'column', justifyContent: 'center' };
 const badgeStyle: React.CSSProperties = {
   padding: '3px 10px', borderRadius: 8, fontSize: 10, color: '#FFFFFF',
