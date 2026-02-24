@@ -138,10 +138,10 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
             color: 'white', fontSize: 16, fontWeight: 700,
           }}>{targetUser.full_name.charAt(0)}</div>
         )}
-        <span style={{ flex: 1, fontSize: 17, fontWeight: 700, color: '#111827' }}>{targetUser.full_name}</span>
+        <span style={{ flex: 1, fontSize: 17, fontWeight: 600, color: '#111827' }}>{targetUser.full_name}</span>
         <button className="scale-pressable" onClick={handleDeleteChat}
-          style={{ padding: 8, borderRadius: 20, background: '#FEE2E2' }}>
-          <Trash2 size={18} color="#EF4444" />
+          style={{ padding: 8, borderRadius: 20, background: '#F3F4F6' }}>
+          <Trash2 size={18} color="#111827" />
         </button>
       </div>
 

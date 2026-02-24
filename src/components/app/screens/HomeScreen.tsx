@@ -17,9 +17,11 @@ const HomeScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [userSocietyId, setUserSocietyId] = useState<string | null>(null);
+  const [showSocietyTooltip, setShowSocietyTooltip] = useState(false);
+  const [societyItemCount, setSocietyItemCount] = useState<number | null>(null);
 
   const user = useStore((state) => state.user);
-  const { navigateToDetail, setCurrentStack } = useStore();
+  const { navigateToDetail, setCurrentStack, showAlert } = useStore();
   const refreshTrigger = useStore(state => state.refreshTrigger);
 
   const categories = ['All', 'DIY Tools', 'Party', 'Gaming', 'Fitness', 'Electronics', 'Kitchen'];
@@ -135,6 +137,37 @@ const HomeScreen = () => {
     }
   };
 
+  const handleLocationClick = async () => {
+    if (!userSocietyId || locationName === 'No Society') return;
+
+    if (showSocietyTooltip) {
+      setShowSocietyTooltip(false);
+      return;
+    }
+
+    if (societyItemCount !== null) {
+      setShowSocietyTooltip(true);
+      setTimeout(() => setShowSocietyTooltip(false), 3000);
+      return;
+    }
+
+    try {
+      const { count, error } = await supabase
+        .from('items')
+        .select('*', { count: 'exact', head: true })
+        .eq('society_id', userSocietyId)
+        .eq('status', 'available');
+
+      if (!error) {
+        setSocietyItemCount(count || 0);
+        setShowSocietyTooltip(true);
+        setTimeout(() => setShowSocietyTooltip(false), 3000);
+      }
+    } catch (e) {
+      console.error('Error fetching society stats:', e);
+    }
+  };
+
   const userName = user?.user_metadata?.full_name || 'Neighbor';
 
   const filteredItems = items.filter((item) => {
@@ -156,9 +189,27 @@ const HomeScreen = () => {
             <TypewriterText text={userName} typingSpeed={150} pauseDuration={3000} />
           </div>
           {locationName && (
-            <div className="home-location-row">
+            <div className="home-location-row scale-pressable" onClick={handleLocationClick} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, position: 'relative' }}>
               <MapPin size={12} color="#6B7280" />
               <span className="home-location">{locationName}</span>
+              
+              {/* Popover Bubble */}
+              {showSocietyTooltip && societyItemCount !== null && (
+                <div style={{
+                  position: 'absolute', top: '100%', left: -4, marginTop: 12, background: '#111827',
+                  padding: '12px 16px', borderRadius: 16, boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+                  zIndex: 50, width: 220, animation: 'fadeIn 0.2s ease', cursor: 'default'
+                }} onClick={(e) => e.stopPropagation()}>
+                  {/* Arrow */}
+                  <div style={{
+                    position: 'absolute', top: -6, left: 24, width: 0, height: 0,
+                    borderLeft: '7px solid transparent', borderRight: '7px solid transparent', borderBottom: '7px solid #111827',
+                  }} />
+                  <span style={{ color: 'white', fontSize: 13, fontWeight: 500, lineHeight: 1.4, display: 'block' }}>
+                    <span style={{ fontWeight: 700, color: '#10B981', fontSize: 14 }}>{societyItemCount} items</span> available to rent in your society right now!
+                  </span>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -197,7 +248,7 @@ const HomeScreen = () => {
       </div>
 
       {/* Feed */}
-      {loading ? (
+      {loading && items.length === 0 ? (
         <HomeSkeletonGrid count={6} />
       ) : (
         <div className="item-feed">

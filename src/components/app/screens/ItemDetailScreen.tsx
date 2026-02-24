@@ -150,13 +150,13 @@ const ItemDetailScreen = () => {
         boxShadow: '0 -3px 8px rgba(0,0,0,0.1)', paddingBottom: 100,
       }}>
         <div style={{ width: 40, height: 4, background: '#E5E7EB', borderRadius: 2, margin: '0 auto 20px' }} />
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: '#111827', marginBottom: 4 }}>{item.title}</h1>
-        <p style={{ fontSize: 18, fontWeight: 700, color: '#111827', marginBottom: 24 }}>₹{item.daily_rate}/day</p>
+        <h1 style={{ fontSize: 24, fontWeight: 600, color: '#111827', marginBottom: 4 }}>{item.title}</h1>
+        <p style={{ fontSize: 18, fontWeight: 600, color: '#111827', marginBottom: 24 }}>₹{item.daily_rate}/day</p>
 
         <div style={{ height: 1, background: '#F3F4F6', margin: '0 0 24px' }} />
 
         {/* Availability */}
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111827', marginBottom: 12 }}>AVAILABILITY</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 600, color: '#111827', marginBottom: 12 }}>AVAILABILITY</h3>
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: 16, background: '#FAFAFA', borderRadius: 16, border: '1px solid #F3F4F6', marginBottom: 24,
@@ -189,7 +189,7 @@ const ItemDetailScreen = () => {
         </div>
 
         {/* Description */}
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111827', marginBottom: 12 }}>Description</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 600, color: '#111827', marginBottom: 12 }}>Description</h3>
         <p style={{ fontSize: 15, color: '#4B5563', lineHeight: 1.6, marginBottom: 24 }}>
           {item.description?.trim() || `Professional grade ${item.category?.toLowerCase() || 'item'} suitable for your daily needs. Well maintained and ready for use.`}
         </p>
@@ -197,7 +197,7 @@ const ItemDetailScreen = () => {
         {/* Owner/Renter Split View */}
         {isOwner ? (
           <div style={{ marginTop: 16 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111827', marginBottom: 12 }}>
+            <h3 style={{ fontSize: 18, fontWeight: 600, color: '#111827', marginBottom: 12 }}>
               {activeRental ? 'Current Rental' : `Interested People (${requests.length})`}
             </h3>
             {requests.length === 0 && !activeRental && (
@@ -216,7 +216,7 @@ const ItemDetailScreen = () => {
                   )}
                   <div>
                     <span style={{ fontWeight: 600, color: '#111827', display: 'block' }}>{req.renter?.full_name || 'Neighbor'}</span>
-                    <span style={{ fontSize: 12, color: '#4B5563', fontWeight: 700 }}>
+                    <span style={{ fontSize: 12, color: '#4B5563', fontWeight: 600 }}>
                       Offer: ₹{req.offered_price} ({req.duration_hours}h) • {req.status.toUpperCase()}
                     </span>
                   </div>
@@ -243,7 +243,7 @@ const ItemDetailScreen = () => {
                   <div style={{ width: 48, height: 48, borderRadius: 24, background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 18, fontWeight: 700 }}>{owner?.full_name?.[0] || 'N'}</div>
                 )}
                 <div>
-                  <span style={{ fontWeight: 700, color: '#111827', display: 'block' }}>
+                  <span style={{ fontWeight: 600, color: '#111827', display: 'block' }}>
                     {loadingOwner ? 'Loading...' : `Owned by ${owner?.full_name || 'Neighbor'}`}
                   </span>
                   <span style={{ fontSize: 12, color: '#6B7280' }}>★ 4.8</span>

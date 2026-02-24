@@ -114,8 +114,8 @@ const NotificationScreen = () => {
         <button className="scale-pressable" onClick={() => {
           if (selectionMode && selectedIds.size > 0) handleDeleteSelected();
           else setSelectionMode(!selectionMode);
-        }} style={{ padding: 8, borderRadius: 20, background: selectionMode ? '#FEE2E2' : 'white', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-          <Trash2 size={18} color={selectionMode ? '#EF4444' : '#111827'} />
+        }} style={{ padding: 8, borderRadius: 20, background: selectionMode ? '#E5E7EB' : 'white', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+          <Trash2 size={18} color="#111827" />
         </button>
       </div>
 

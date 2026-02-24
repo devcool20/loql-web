@@ -9,7 +9,7 @@ import { useStore } from '@/store/useStore';
 import { supabase } from '@/lib/supabase';
 
 const ProfileScreen = () => {
-  const { user, setUser, showAlert, setCurrentStack, setHistoryType } = useStore();
+  const { user, setUser, showAlert, setCurrentStack, setHistoryType, refreshTrigger, currentStack } = useStore();
   const [walletBalance, setWalletBalance] = useState(0);
   const [rentedCount, setRentedCount] = useState(0);
   const [listedCount, setListedCount] = useState(0);
@@ -23,7 +23,7 @@ const ProfileScreen = () => {
       fetchCounts();
       fetchWalletBalance();
     }
-  }, [user]);
+  }, [user, currentStack, refreshTrigger]);
 
   const fetchCounts = async () => {
     try {

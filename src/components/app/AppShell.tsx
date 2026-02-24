@@ -22,12 +22,13 @@ const AppShell = () => {
   const [showWelcome, setShowWelcome] = useState(true);
   const [showSplash, setShowSplash] = useState(true);
   const loadingStartTime = useRef<number | null>(null);
+  const isBacking = useRef(false);
 
   const {
     user, setUser,
     isLoading, setLoading,
     isProfileComplete, setProfileComplete,
-    currentStack, chatUser,
+    currentStack, chatUser, closeStack,
   } = useStore();
 
   useEffect(() => {
@@ -56,6 +57,34 @@ const AppShell = () => {
       return () => clearTimeout(timer);
     }
   }, [isLoading]);
+
+  // Handle hardware / swipe back gesture integration
+  useEffect(() => {
+    const handlePopState = () => {
+      if (currentStack) {
+        isBacking.current = true;
+        closeStack();
+        // Give UI time to absorb state before resuming standard push operations
+        setTimeout(() => (isBacking.current = false), 150);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [currentStack, closeStack]);
+
+  useEffect(() => {
+    if (currentStack) {
+      // Whenever a screen is placed over the container, push a dummy URL state to intercept native back button
+      window.history.pushState({ stack: currentStack }, '');
+    } else {
+      // If stack was closed via App UI "X" button and NOT swipe back popstate
+      if (!isBacking.current && window.history.state?.stack) {
+        isBacking.current = true;
+        window.history.back();
+        setTimeout(() => (isBacking.current = false), 150);
+      }
+    }
+  }, [currentStack]);
 
   const checkSession = async () => {
     setLoading(true);

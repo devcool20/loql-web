@@ -94,7 +94,7 @@ const ChatListScreen = () => {
 
   return (
     <div style={{ background: '#FAFAFA', minHeight: '100%', paddingTop: 20, paddingBottom: 100 }}>
-      <h1 style={{ fontSize: 32, fontWeight: 700, color: '#111827', padding: '0 24px', marginBottom: 20, letterSpacing: -0.5 }}>
+      <h1 style={{ fontSize: 32, fontWeight: 600, color: '#111827', padding: '0 24px', marginBottom: 20, letterSpacing: -0.5 }}>
         Messages
       </h1>
 
@@ -131,18 +131,18 @@ const ChatListScreen = () => {
                 <div style={{
                   width: 56, height: 56, borderRadius: 28, background: '#111827',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: 'white', fontSize: 20, fontWeight: 700, flexShrink: 0,
+                  color: 'white', fontSize: 20, fontWeight: 600, flexShrink: 0,
                 }}>{item.name.charAt(0)}</div>
               )}
               {/* Content */}
               <div style={{ flex: 1, marginLeft: 16 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <span style={{ fontSize: 16, fontWeight: 700, color: '#111827', letterSpacing: -0.2 }}>{item.name}</span>
+                  <span style={{ fontSize: 16, fontWeight: 600, color: '#111827', letterSpacing: -0.2 }}>{item.name}</span>
                   <span style={{ fontSize: 12, color: '#9CA3AF', fontWeight: 500 }}>{formatRelativeTime(item.time)}</span>
                 </div>
                 <p style={{
                   fontSize: 14, color: item.unreadCount > 0 ? '#111827' : '#6B7280',
-                  fontWeight: item.unreadCount > 0 ? 600 : 400,
+                  fontWeight: item.unreadCount > 0 ? 500 : 400,
                   overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                 }}>{item.lastMessage}</p>
               </div>
@@ -152,7 +152,7 @@ const ChatListScreen = () => {
                   background: '#111827', minWidth: 22, height: 22, borderRadius: 11,
                   display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: 12, padding: '0 6px',
                 }}>
-                  <span style={{ color: 'white', fontSize: 11, fontWeight: 700 }}>{item.unreadCount}</span>
+                  <span style={{ color: 'white', fontSize: 11, fontWeight: 600 }}>{item.unreadCount}</span>
                 </div>
               )}
             </div>

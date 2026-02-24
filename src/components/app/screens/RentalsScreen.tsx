@@ -229,10 +229,10 @@ const RentalsScreen = () => {
       </div>
       <div style={contentStyle}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <span style={{ fontSize: 15, fontWeight: 600, color: '#111827', flex: 1 }}>{item.title}</span>
-          <button className="scale-pressable" style={{ padding: 6, borderRadius: 8, background: '#FEE2E2' }}
+          <span style={{ fontSize: 15, fontWeight: 500, color: '#111827', flex: 1 }}>{item.title}</span>
+          <button className="scale-pressable" style={{ padding: 6, borderRadius: 8, background: '#F3F4F6' }}
             onClick={(e) => { e.stopPropagation(); handleDelete(item); }}>
-            <Trash2 size={14} color="#EF4444" />
+            <Trash2 size={14} color="#111827" />
           </button>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
@@ -254,7 +254,7 @@ const RentalsScreen = () => {
         )}
       </div>
       <div style={contentStyle}>
-        <span style={{ fontSize: 15, fontWeight: 600, color: '#111827' }}>{item.items?.title || 'Unknown'}</span>
+        <span style={{ fontSize: 15, fontWeight: 500, color: '#111827' }}>{item.items?.title || 'Unknown'}</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
           <span style={{ ...badgeStyle, background: getStatusColor(item.status) }}>{item.status?.toUpperCase()}</span>
           <span style={{ fontSize: 12, color: '#9CA3AF' }}>{new Date(item.start_date || item.created_at).toLocaleDateString()}</span>
@@ -277,7 +277,7 @@ const RentalsScreen = () => {
           )}
         </div>
         <div style={contentStyle}>
-          <span style={{ fontSize: 15, fontWeight: 600, color: '#111827' }}>{item.items?.title || 'Item'}</span>
+          <span style={{ fontSize: 15, fontWeight: 500, color: '#111827' }}>{item.items?.title || 'Item'}</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
             <span style={{ ...badgeStyle, background: getStatusColor(item.status) }}>{item.status?.toUpperCase()}</span>
             <span style={{ fontSize: 13, color: '#6B7280', fontWeight: 500 }}>₹{item.offered_price}/day • {(item.duration_hours / 24).toFixed(0)}d</span>
@@ -317,7 +317,7 @@ const RentalsScreen = () => {
     <div style={{ background: '#FAFAFA', minHeight: '100%', paddingBottom: 100 }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 24px 24px' }}>
-        <h1 style={{ fontSize: 32, fontWeight: 700, color: '#111827', letterSpacing: -0.5 }}>My Rentals</h1>
+        <h1 style={{ fontSize: 32, fontWeight: 600, color: '#111827', letterSpacing: -0.5 }}>My Rentals</h1>
         {activeTab === 'listings' && (
           <button className="scale-pressable" onClick={() => setCurrentStack('AddItem')}
             style={{ width: 44, height: 44, borderRadius: 22, background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 8px rgba(0,0,0,0.2)' }}>
@@ -334,7 +334,7 @@ const RentalsScreen = () => {
             style={{
               padding: '10px 22px', borderRadius: 50, border: `1.5px solid ${activeTab === tab ? '#111827' : '#E5E7EB'}`,
               background: activeTab === tab ? '#111827' : '#FFFFFF', color: activeTab === tab ? '#FFFFFF' : '#6B7280',
-              fontSize: 14, fontWeight: 600,
+              fontSize: 14, fontWeight: 500,
             }}>
             {tab === 'listings' ? 'Listings' : tab === 'offers' ? 'My Offers' : 'Rentals'}
           </button>
