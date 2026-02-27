@@ -190,22 +190,22 @@ const HomeScreen = () => {
           </div>
           {locationName && (
             <div className="home-location-row scale-pressable" onClick={handleLocationClick} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, position: 'relative' }}>
-              <MapPin size={12} color="#6B7280" />
+              <MapPin size={12} color="var(--text-secondary)" />
               <span className="home-location">{locationName}</span>
               
               {/* Popover Bubble */}
               {showSocietyTooltip && societyItemCount !== null && (
                 <div style={{
-                  position: 'absolute', top: '100%', left: -4, marginTop: 12, background: '#111827',
+                  position: 'absolute', top: '100%', left: -4, marginTop: 12, background: 'var(--accent-solid)',
                   padding: '12px 16px', borderRadius: 16, boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
                   zIndex: 50, width: 220, animation: 'fadeIn 0.2s ease', cursor: 'default'
                 }} onClick={(e) => e.stopPropagation()}>
                   {/* Arrow */}
                   <div style={{
                     position: 'absolute', top: -6, left: 24, width: 0, height: 0,
-                    borderLeft: '7px solid transparent', borderRight: '7px solid transparent', borderBottom: '7px solid #111827',
+                    borderLeft: '7px solid transparent', borderRight: '7px solid transparent', borderBottom: '7px solid var(--accent-solid)',
                   }} />
-                  <span style={{ color: 'white', fontSize: 13, fontWeight: 500, lineHeight: 1.4, display: 'block' }}>
+                  <span style={{ color: 'var(--accent-solid-text)', fontSize: 13, fontWeight: 500, lineHeight: 1.4, display: 'block' }}>
                     <span style={{ fontWeight: 700, color: '#10B981', fontSize: 14 }}>{societyItemCount} items</span> available to rent in your society right now!
                   </span>
                 </div>
@@ -219,13 +219,13 @@ const HomeScreen = () => {
           onClick={() => setCurrentStack('Notification')}
           id="notification-bell"
         >
-          <Bell size={22} color="#111827" />
+          <Bell size={22} color="var(--text-primary)" />
         </button>
       </div>
 
       {/* Search Bar */}
       <div className="search-bar">
-        <Search size={18} color="#9CA3AF" />
+        <Search size={18} color="var(--text-light)" />
         <input
           className="search-input"
           placeholder="Search for tools, gear..."

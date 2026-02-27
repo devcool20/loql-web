@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "remotion:studio": "npx remotion studio --config=remotion/remotion.config.ts",
+    "remotion:render": "npx remotion render --config=remotion/remotion.config.ts LoqlPromo public/product-working.mp4"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.97.0",
@@ -19,11 +21,15 @@
     "zustand": "^5.0.11"
   },
   "devDependencies": {
+    "@remotion/cli": "^4.0.429",
+    "@remotion/google-fonts": "^4.0.429",
+    "@remotion/transitions": "^4.0.429",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "remotion": "^4.0.429",
     "typescript": "^5"
   }
 }

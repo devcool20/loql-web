@@ -1,56 +1,101 @@
 'use client';
+import { useState, useRef } from 'react';
+import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
 import styles from './ProductWorkingDemo.module.css';
-import VideoPlayer from './VideoPlaceholder';
+import { StickyScroll } from './ui/sticky-scroll-reveal';
+
+function PortraitVideoPlayer() {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const togglePlay = () => {
+    if (!videoRef.current) return;
+    if (videoRef.current.paused) {
+      videoRef.current.play().catch(() => {});
+      setIsPlaying(true);
+    } else {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!videoRef.current) return;
+    const next = !isMuted;
+    videoRef.current.muted = next;
+    setIsMuted(next);
+  };
+
+  return (
+    <div className={styles.portraitFrame} onClick={togglePlay}>
+      <video
+        ref={videoRef}
+        src="/product-working.mp4"
+        className={styles.portraitVideo}
+        loop
+        playsInline
+        muted={isMuted}
+      />
+
+      {/* Play overlay */}
+      {!isPlaying && (
+        <div className={styles.playOverlay}>
+          <div className={styles.playCircle}>
+            <Play fill="white" size={28} />
+          </div>
+        </div>
+      )}
+
+      {/* Controls */}
+      <div className={styles.videoControls} onClick={e => e.stopPropagation()}>
+        <button className={styles.controlBtn} onClick={togglePlay} aria-label={isPlaying ? 'Pause' : 'Play'}>
+          {isPlaying ? <Pause size={16} /> : <Play size={16} fill="white" />}
+        </button>
+        <button className={styles.controlBtn} onClick={toggleMute} aria-label={isMuted ? 'Unmute' : 'Mute'}>
+          {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+        </button>
+      </div>
+
+      {/* Home indicator */}
+      <div className={styles.homeIndicator} />
+    </div>
+  );
+}
+
+const content = [
+  {
+    title: "The Renter Flow",
+    description: "Browse local listings, check item availability, and send a request with one tap. Finding what you need in your community has never been easier.",
+  },
+  {
+    title: "The Rentee (Owner) Flow",
+    description: "Receive requests, review the renter's profile, and approve with a secure digital handshake. Monetize your idle items with confidence.",
+  },
+  {
+    title: "Secure Handover",
+    description: "Verify item condition through the app during physical handover for peace of mind. Our process ensures transparency and trust for every transaction.",
+  },
+];
 
 export default function ProductWorkingDemo() {
   return (
-    <section className={styles.section}>
+    <section className={styles.section} id="how-it-works">
       <div className="container">
         <div className={styles.header}>
           <span className={styles.tagline}>See it in action</span>
           <h2>Renter & Rentee Workflow</h2>
           <p>
-            Watch how easy it is to list, find, and rent items using loql. 
+            Watch how easy it is to list, find, and rent items using loql.{' '}
             Our seamless handover process ensures security for both parties.
           </p>
         </div>
 
-        <div className={styles.videoGrid}>
-          <div className={styles.videoWrapper}>
-            <div className={styles.label}>Full App Walkthrough</div>
-            <VideoPlayer 
-              videoUrl="/product-working.mp4" 
-              title="Full App Walkthrough"
-              description="From listing an item as a rentee to requesting and receiving as a renter."
-            />
-          </div>
-          
-          <div className={styles.info}>
-            <div className={styles.step}>
-              <div className={styles.stepNumber}>01</div>
-              <div className={styles.stepContent}>
-                <h3>The Renter Flow</h3>
-                <p>Browse local listings, check item availability, and send a request with one tap.</p>
-              </div>
-            </div>
-            
-            <div className={styles.step}>
-              <div className={styles.stepNumber}>02</div>
-              <div className={styles.stepContent}>
-                <h3>The Rentee (Owner) Flow</h3>
-                <p>Receive requests, review the renter's profile, and approve with a secure digital handshake.</p>
-              </div>
-            </div>
-            
-            <div className={styles.step}>
-              <div className={styles.stepNumber}>03</div>
-              <div className={styles.stepContent}>
-                <h3>Secure Handover</h3>
-                <p>Verify item condition through the app during physical handover for peace of mind.</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <StickyScroll 
+          content={content}
+          persistentContent={<PortraitVideoPlayer />}
+        />
       </div>
     </section>
   );

@@ -22,9 +22,8 @@ export default function Navbar() {
           <Link href="/register" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center' }}>
             Join Waitlist
           </Link>
-          <a href="/loql.apk" download className="btn btn-primary" style={{ display: 'flex', alignItems: 'center' }}>
-            <Download size={18} style={{marginRight: 8}} />
-            <span className={styles.downloadText}>Get App</span>
+          <a href="/app" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center' }}>
+            Sign In
           </a>
         </div>
       </div>

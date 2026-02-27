@@ -12,17 +12,7 @@ export function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    const userAgent = request.headers.get('user-agent') || '';
-    const isMobile = MOBILE_REGEX.test(userAgent);
-
-    if (isMobile) {
-        // Mobile users → redirect to the app experience
-        const url = request.nextUrl.clone();
-        url.pathname = '/app';
-        return NextResponse.redirect(url);
-    }
-
-    // Desktop users → show the landing page (default behavior)
+    // Desktop and mobile users → show the landing page (default behavior)
     return NextResponse.next();
 }
 

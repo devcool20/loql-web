@@ -134,13 +134,13 @@ const EditProfileScreen = () => {
   };
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: '#FAFAFA', zIndex: 200, overflowY: 'auto' }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--background)', zIndex: 200, overflowY: 'auto' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px' }}>
         <button className="scale-pressable" onClick={closeStack} style={{ padding: 8 }}>
-          <ChevronLeft size={24} color="#111827" />
+          <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
-        <span style={{ fontSize: 18, fontWeight: 700, color: '#111827' }}>Edit Profile</span>
+        <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>Edit Profile</span>
         <div style={{ width: 40 }} />
       </div>
 
@@ -152,22 +152,22 @@ const EditProfileScreen = () => {
             {avatarUri ? (
               <img src={avatarUri} alt="" style={{ width: 100, height: 100, borderRadius: 50, objectFit: 'cover' }} />
             ) : (
-              <div style={{ width: 100, height: 100, borderRadius: 50, background: '#F3F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <User size={40} color="#9CA3AF" />
+              <div style={{ width: 100, height: 100, borderRadius: 50, background: 'var(--muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <User size={40} color="var(--text-light)" />
               </div>
             )}
-            <div style={{ position: 'absolute', bottom: 0, right: 0, background: '#111827', padding: 8, borderRadius: 20, border: '2px solid white' }}>
+            <div style={{ position: 'absolute', bottom: 0, right: 0, background: 'var(--accent-solid)', padding: 8, borderRadius: 20, border: '2px solid var(--surface)' }}>
               <Camera size={16} color="white" />
             </div>
           </div>
           {avatarUri && (
             <button className="scale-pressable" onClick={handleDeleteAvatar}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 8, background: '#F3F4F6', border: '1px solid #E5E7EB' }}>
-              <Trash2 size={14} color="#4B5563" />
-              <span style={{ fontSize: 13, fontWeight: 500, color: '#4B5563' }}>Remove Photo</span>
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 8, background: 'var(--muted)', border: '1px solid var(--border)' }}>
+              <Trash2 size={14} color="var(--text-subtle)" />
+              <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-subtle)' }}>Remove Photo</span>
             </button>
           )}
-          <span style={{ color: '#6B7280', fontSize: 14, fontWeight: 500, marginTop: 8 }}>
+          <span style={{ color: 'var(--text-secondary)', fontSize: 14, fontWeight: 500, marginTop: 8 }}>
             {avatarUri ? 'Tap to change photo' : 'Add a profile photo'}
           </span>
         </div>
@@ -176,43 +176,43 @@ const EditProfileScreen = () => {
 
         {/* Full Name */}
         <div style={{ marginBottom: 20 }}>
-          <label style={{ fontSize: 14, fontWeight: 600, color: '#374151', marginBottom: 8, display: 'block', marginLeft: 4 }}>Full Name</label>
-          <input style={{ width: '100%', background: 'white', border: '1px solid #E5E7EB', borderRadius: 12, padding: '14px 16px', fontSize: 16, color: '#111827', fontFamily: 'inherit', outline: 'none' }}
+          <label style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-label)', marginBottom: 8, display: 'block', marginLeft: 4 }}>Full Name</label>
+          <input style={{ width: '100%', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', fontSize: 16, color: 'var(--text-primary)', fontFamily: 'inherit', outline: 'none' }}
             value={fullName} onChange={(e) => setFullName(e.target.value)} />
         </div>
 
         {/* Email (Read Only) */}
         <div style={{ marginBottom: 20 }}>
-          <label style={{ fontSize: 14, fontWeight: 600, color: '#374151', marginBottom: 8, display: 'block', marginLeft: 4 }}>Email Address</label>
-          <input style={{ width: '100%', background: '#F3F4F6', border: '1px solid #E5E7EB', borderRadius: 12, padding: '14px 16px', fontSize: 16, color: '#9CA3AF', fontFamily: 'inherit', outline: 'none' }}
+          <label style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-label)', marginBottom: 8, display: 'block', marginLeft: 4 }}>Email Address</label>
+          <input style={{ width: '100%', background: 'var(--muted)', border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', fontSize: 16, color: 'var(--text-light)', fontFamily: 'inherit', outline: 'none' }}
             value={user?.email || ''} readOnly placeholder="No email linked" />
         </div>
 
         {/* Phone */}
         <div style={{ marginBottom: 20 }}>
-          <label style={{ fontSize: 14, fontWeight: 600, color: '#374151', marginBottom: 8, display: 'block', marginLeft: 4 }}>Phone Number</label>
-          <input style={{ width: '100%', background: 'white', border: '1px solid #E5E7EB', borderRadius: 12, padding: '14px 16px', fontSize: 16, color: '#111827', fontFamily: 'inherit', outline: 'none' }}
+          <label style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-label)', marginBottom: 8, display: 'block', marginLeft: 4 }}>Phone Number</label>
+          <input style={{ width: '100%', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', fontSize: 16, color: 'var(--text-primary)', fontFamily: 'inherit', outline: 'none' }}
             type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} placeholder="Enter phone number" />
         </div>
 
         {/* Society Selection */}
         <div style={{ marginBottom: 32, position: 'relative' }}>
-          <label style={{ fontSize: 14, fontWeight: 600, color: '#374151', marginBottom: 8, display: 'block', marginLeft: 4 }}>Society</label>
+          <label style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-label)', marginBottom: 8, display: 'block', marginLeft: 4 }}>Society</label>
           <div onClick={() => setShowSocietyDropdown(!showSocietyDropdown)}
-            style={{ width: '100%', background: 'white', border: '1px solid #E5E7EB', borderRadius: 12, padding: '14px 16px', cursor: 'pointer' }}>
-            <span style={{ color: selectedSociety ? '#111827' : '#9CA3AF' }}>
+            style={{ width: '100%', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', cursor: 'pointer' }}>
+            <span style={{ color: selectedSociety ? 'var(--text-primary)' : 'var(--text-light)' }}>
               {selectedSociety ? societies.find(s => s.id === selectedSociety)?.name : 'Select your society'}
             </span>
           </div>
           {showSocietyDropdown && (
             <div style={{
-              position: 'absolute', top: 80, left: 0, right: 0, background: 'white',
-              border: '1px solid #E5E7EB', borderRadius: 12, zIndex: 1000,
+              position: 'absolute', top: 80, left: 0, right: 0, background: 'var(--surface)',
+              border: '1px solid var(--border)', borderRadius: 12, zIndex: 1000,
               boxShadow: '0 4px 12px rgba(0,0,0,0.1)', maxHeight: 200, overflowY: 'auto',
             }}>
               {societies.map((s) => (
                 <div key={s.id} onClick={() => { setSelectedSociety(s.id); setShowSocietyDropdown(false); }}
-                  style={{ padding: 16, borderBottom: '1px solid #F3F4F6', cursor: 'pointer', fontSize: 16, color: '#111827' }}
+                  style={{ padding: 16, borderBottom: '1px solid var(--border-light)', cursor: 'pointer', fontSize: 16, color: 'var(--text-primary)' }}
                   className="scale-pressable">
                   {s.name}
                 </div>
@@ -230,10 +230,10 @@ const EditProfileScreen = () => {
         <button className="scale-pressable" onClick={handleDeleteAccount} disabled={loading}
           style={{
             width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            padding: 16, borderRadius: 16, border: '1px solid #E5E7EB', background: '#F3F4F6',
+            padding: 16, borderRadius: 16, border: '1px solid var(--border)', background: 'var(--muted)',
           }}>
-          <Trash2 size={20} color="#4B5563" />
-          <span style={{ fontSize: 16, fontWeight: 600, color: '#4B5563' }}>Delete Account</span>
+          <Trash2 size={20} color="var(--text-subtle)" />
+          <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-subtle)' }}>Delete Account</span>
         </button>
       </div>
     </div>

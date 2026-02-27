@@ -37,13 +37,13 @@ const WalletScreen = () => {
   };
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: '#FAFAFA', zIndex: 200, overflowY: 'auto' }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--background)', zIndex: 200, overflowY: 'auto' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px' }}>
         <button className="scale-pressable" onClick={closeStack} style={{ padding: 8 }}>
-          <ChevronLeft size={24} color="#111827" />
+          <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
-        <span style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>Wallet</span>
+        <span style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)' }}>Wallet</span>
         <div style={{ width: 40 }} />
       </div>
 
@@ -51,69 +51,69 @@ const WalletScreen = () => {
         {/* Balance Card */}
         <div style={{ textAlign: 'center', marginBottom: 40, marginTop: 20 }}>
           <div style={{
-            width: 80, height: 80, borderRadius: 40, background: 'white', border: '1px solid #E5E7EB',
+            width: 80, height: 80, borderRadius: 40, background: 'var(--surface)', border: '1px solid var(--border)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px',
             boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
           }}>
-            <WalletIcon size={32} color="#111827" />
+            <WalletIcon size={32} color="var(--text-primary)" />
           </div>
-          <span style={{ fontSize: 14, color: '#6B7280', fontWeight: 500, display: 'block', marginBottom: 8 }}>Total Money Available</span>
-          <span style={{ fontSize: 40, fontWeight: 700, color: '#111827', display: 'block' }}>₹{balance.toFixed(2)}</span>
-          <span style={{ fontSize: 12, color: '#9CA3AF', marginTop: 4, display: 'block' }}>(Money earned - Money spent)</span>
+          <span style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500, display: 'block', marginBottom: 8 }}>Total Money Available</span>
+          <span style={{ fontSize: 40, fontWeight: 700, color: 'var(--text-primary)', display: 'block' }}>₹{balance.toFixed(2)}</span>
+          <span style={{ fontSize: 12, color: 'var(--text-light)', marginTop: 4, display: 'block' }}>(Money earned - Money spent)</span>
         </div>
 
         {/* Payment Methods */}
-        <h3 style={{ fontSize: 16, fontWeight: 700, color: '#111827', marginBottom: 4 }}>Payment Methods</h3>
-        <p style={{ fontSize: 13, color: '#6B7280', marginBottom: 16 }}>Methods for both cash in and cash out</p>
+        <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>Payment Methods</h3>
+        <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 16 }}>Methods for both cash in and cash out</p>
 
-        <div style={{ background: 'white', borderRadius: 16, border: '1px solid #E5E7EB', padding: 8, marginBottom: 16 }}>
+        <div style={{ background: 'var(--surface)', borderRadius: 16, border: '1px solid var(--border)', padding: 8, marginBottom: 16 }}>
           <div className="scale-pressable" style={{ display: 'flex', alignItems: 'center', padding: 12, cursor: 'pointer' }}>
-            <div style={{ width: 40, height: 40, borderRadius: 20, background: '#F3F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
-              <CreditCard size={20} color="#374151" />
+            <div style={{ width: 40, height: 40, borderRadius: 20, background: 'var(--muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
+              <CreditCard size={20} color="var(--text-label)" />
             </div>
             <div style={{ flex: 1 }}>
-              <span style={{ fontSize: 14, fontWeight: 600, color: '#111827', display: 'block' }}>HDFC Bank **** 4582</span>
-              <span style={{ fontSize: 12, color: '#6B7280' }}>Primary</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', display: 'block' }}>HDFC Bank **** 4582</span>
+              <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Primary</span>
             </div>
-            <ChevronRight size={20} color="#9CA3AF" />
+            <ChevronRight size={20} color="var(--text-light)" />
           </div>
-          <div style={{ height: 1, background: '#F3F4F6', margin: '0 12px' }} />
+          <div style={{ height: 1, background: 'var(--border-light)', margin: '0 12px' }} />
           <div className="scale-pressable" style={{ display: 'flex', alignItems: 'center', padding: 12, cursor: 'pointer' }}>
-            <div style={{ width: 40, height: 40, borderRadius: 20, background: '#F3F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
+            <div style={{ width: 40, height: 40, borderRadius: 20, background: 'var(--muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
               <span style={{ fontSize: 16, fontWeight: 700 }}>G</span>
             </div>
             <div style={{ flex: 1 }}>
-              <span style={{ fontSize: 14, fontWeight: 600, color: '#111827', display: 'block' }}>Google Pay</span>
-              <span style={{ fontSize: 12, color: '#6B7280' }}>Linked</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', display: 'block' }}>Google Pay</span>
+              <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Linked</span>
             </div>
-            <ChevronRight size={20} color="#9CA3AF" />
+            <ChevronRight size={20} color="var(--text-light)" />
           </div>
         </div>
 
         <button className="scale-pressable" style={{
           width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-          padding: 16, borderRadius: 16, border: '1px dashed #E5E7EB', marginBottom: 40, background: 'transparent',
+          padding: 16, borderRadius: 16, border: '1px dashed var(--border)', marginBottom: 40, background: 'transparent',
         }}>
-          <Plus size={20} color="#111827" />
-          <span style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>Add New Method</span>
+          <Plus size={20} color="var(--text-primary)" />
+          <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>Add New Method</span>
         </button>
 
         {/* Recent Transactions */}
-        <h3 style={{ fontSize: 16, fontWeight: 700, color: '#111827', marginBottom: 12 }}>Recent Transactions</h3>
+        <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 12 }}>Recent Transactions</h3>
         {loading ? (
           <div style={{ padding: 24, textAlign: 'center' }}>
-            <div className="spinner" style={{ borderTopColor: '#111827', borderColor: '#E5E7EB' }} />
+            <div className="spinner" style={{ borderTopColor: 'var(--text-primary)', borderColor: 'var(--border)' }} />
           </div>
         ) : transactions.length === 0 ? (
-          <div style={{ padding: 24, textAlign: 'center', background: '#F9FAFB', borderRadius: 12 }}>
-            <span style={{ color: '#9CA3AF', fontSize: 14, fontWeight: 500 }}>No recent transactions</span>
+          <div style={{ padding: 24, textAlign: 'center', background: 'var(--surface-alt)', borderRadius: 12 }}>
+            <span style={{ color: 'var(--text-light)', fontSize: 14, fontWeight: 500 }}>No recent transactions</span>
           </div>
         ) : (
           transactions.map((tx) => {
             const isEarning = tx.owner_id === user.id;
             return (
               <div key={tx.id} style={{
-                display: 'flex', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #F3F4F6',
+                display: 'flex', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid var(--border-light)',
               }}>
                 <div style={{
                   width: 36, height: 36, borderRadius: 18, background: isEarning ? '#D1FAE5' : '#FEE2E2',
@@ -122,8 +122,8 @@ const WalletScreen = () => {
                   {isEarning ? '↓' : '↑'}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <span style={{ fontSize: 14, fontWeight: 600, color: '#111827', display: 'block' }}>{tx.items?.title || 'Rental'}</span>
-                  <span style={{ fontSize: 12, color: '#9CA3AF' }}>{new Date(tx.created_at).toLocaleDateString()}</span>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', display: 'block' }}>{tx.items?.title || 'Rental'}</span>
+                  <span style={{ fontSize: 12, color: 'var(--text-light)' }}>{new Date(tx.created_at).toLocaleDateString()}</span>
                 </div>
                 <span style={{ fontSize: 14, fontWeight: 700, color: isEarning ? '#10B981' : '#EF4444' }}>
                   {isEarning ? '+' : '-'}₹{tx.final_price || tx.total_price || 0}

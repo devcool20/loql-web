@@ -115,15 +115,15 @@ const AddItemScreen = () => {
   return (
     <div style={{
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      background: '#FFFFFF', zIndex: 200, overflowY: 'auto',
+      background: 'var(--surface)', zIndex: 200, overflowY: 'auto',
     }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', borderBottom: '1px solid #F3F4F6', gap: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', borderBottom: '1px solid var(--border-light)', gap: 12 }}>
         <button className="scale-pressable" onClick={closeStack}
-          style={{ padding: 8, borderRadius: 20, background: 'white', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-          <ChevronLeft size={24} color="#111827" />
+          style={{ padding: 8, borderRadius: 20, background: 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+          <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
-        <span style={{ flex: 1, fontSize: 17, fontWeight: 700, color: '#111827' }}>Add Item</span>
+        <span style={{ flex: 1, fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>Add Item</span>
       </div>
 
       <div style={{ padding: 24, paddingBottom: 100 }}>
@@ -131,11 +131,11 @@ const AddItemScreen = () => {
         <div style={{ display: 'flex', gap: 12, overflowX: 'auto', marginBottom: 24, paddingBottom: 4 }}>
           <button className="scale-pressable" onClick={handleSelectImages}
             style={{
-              width: 100, height: 100, borderRadius: 16, border: '2px dashed #E5E7EB', background: '#F9FAFB',
+              width: 100, height: 100, borderRadius: 16, border: '2px dashed var(--border)', background: 'var(--surface-alt)',
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, flexShrink: 0,
             }}>
-            <Camera size={24} color="#9CA3AF" />
-            <span style={{ fontSize: 11, color: '#9CA3AF', fontWeight: 500 }}>Add Photo</span>
+            <Camera size={24} color="var(--text-light)" />
+            <span style={{ fontSize: 11, color: 'var(--text-light)', fontWeight: 500 }}>Add Photo</span>
           </button>
           {images.map((img, idx) => (
             <div key={idx} style={{ position: 'relative', flexShrink: 0 }}>
@@ -153,14 +153,14 @@ const AddItemScreen = () => {
         <div className="input-group" style={{ marginBottom: 20 }}>
           <label className="input-label">Title *</label>
           <input className="text-input" placeholder="What are you listing?" value={title}
-            onChange={(e) => setTitle(e.target.value)} style={{ border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', width: '100%', background: '#F9FAFB' }} />
+            onChange={(e) => setTitle(e.target.value)} style={{ border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', width: '100%', background: 'var(--surface-alt)' }} />
         </div>
 
         {/* Description */}
         <div className="input-group" style={{ marginBottom: 20 }}>
           <label className="input-label">Description</label>
           <textarea placeholder="Add a description..." value={description} onChange={(e) => setDescription(e.target.value)}
-            style={{ width: '100%', border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', background: '#F9FAFB', fontSize: 16, fontFamily: 'inherit', minHeight: 100, resize: 'vertical', outline: 'none' }} />
+            style={{ width: '100%', border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', background: 'var(--surface-alt)', fontSize: 16, fontFamily: 'inherit', minHeight: 100, resize: 'vertical', outline: 'none', color: 'var(--text-primary)' }} />
         </div>
 
         {/* Market Price → Auto Daily Rate */}
@@ -168,14 +168,14 @@ const AddItemScreen = () => {
           <label className="input-label">Market Price (₹)</label>
           <input className="text-input" type="number" placeholder="Enter original price" value={marketPrice}
             onChange={(e) => handleMarketPriceChange(e.target.value)}
-            style={{ border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', width: '100%', background: '#F9FAFB' }} />
+            style={{ border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', width: '100%', background: 'var(--surface-alt)' }} />
         </div>
 
         <div className="input-group" style={{ marginBottom: 20 }}>
           <label className="input-label">Daily Rate (₹) *</label>
           <input className="text-input" type="number" placeholder="Auto-calculated" value={dailyRate}
             onChange={(e) => setDailyRate(e.target.value)}
-            style={{ border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', width: '100%', background: '#F9FAFB' }} />
+            style={{ border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', width: '100%', background: 'var(--surface-alt)' }} />
         </div>
 
         {/* Category */}
@@ -185,8 +185,8 @@ const AddItemScreen = () => {
             {CATEGORIES.map((cat) => (
               <button key={cat} className="scale-pressable" onClick={() => setCategory(cat)}
                 style={{
-                  padding: '8px 16px', borderRadius: 20, border: `1.5px solid ${category === cat ? '#111827' : '#E5E7EB'}`,
-                  background: category === cat ? '#111827' : '#FFFFFF', color: category === cat ? 'white' : '#6B7280',
+                  padding: '8px 16px', borderRadius: 20, border: `1.5px solid ${category === cat ? 'var(--accent-solid)' : 'var(--border)'}`,
+                  background: category === cat ? 'var(--accent-solid)' : 'var(--surface)', color: category === cat ? 'var(--accent-solid-text)' : 'var(--text-secondary)',
                   fontSize: 13, fontWeight: 500,
                 }}>{cat}</button>
             ))}

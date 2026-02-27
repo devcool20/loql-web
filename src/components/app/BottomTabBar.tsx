@@ -33,7 +33,7 @@ const BottomTabBar = () => {
           >
             <Icon
               size={24}
-              color={isActive ? '#111827' : '#9CA3AF'}
+              color={isActive ? 'var(--text-primary)' : 'var(--text-light)'}
               strokeWidth={isActive ? 2.5 : 2}
             />
             {isActive && <span className="tab-label">{tab.label}</span>}

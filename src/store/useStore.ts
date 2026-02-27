@@ -17,10 +17,14 @@ interface AlertState {
     actions?: AlertAction[];
 }
 
+type ThemeType = 'light' | 'dark';
 type TabType = 'Home' | 'Rentals' | 'Chat' | 'Profile';
 type StackType = 'AddItem' | 'ItemDetail' | 'EditProfile' | 'Wallet' | 'Notification' | 'ChatDetail' | 'HistoryDetail' | null;
 
 interface AppState {
+    theme: ThemeType;
+    toggleTheme: () => void;
+
     user: any | null;
     setUser: (user: any) => void;
     isLoading: boolean;
@@ -58,7 +62,21 @@ interface AppState {
     closeStack: () => void;
 }
 
+const getInitialTheme = (): ThemeType => {
+    if (typeof window !== 'undefined') {
+        return (localStorage.getItem('loql-theme') as ThemeType) || 'light';
+    }
+    return 'light';
+};
+
 export const useStore = create<AppState>((set) => ({
+    theme: getInitialTheme(),
+    toggleTheme: () => set((state) => {
+        const next = state.theme === 'light' ? 'dark' : 'light';
+        if (typeof window !== 'undefined') localStorage.setItem('loql-theme', next);
+        return { theme: next };
+    }),
+
     user: null,
     setUser: (user) => set({ user }),
     isLoading: true,

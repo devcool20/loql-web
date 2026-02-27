@@ -3,13 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import {
   Wallet, ChevronRight, ShoppingBag, Package, UserCog,
-  CircleHelp, ShieldCheck, LogOut,
+  CircleHelp, ShieldCheck, LogOut, Moon, Sun,
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { supabase } from '@/lib/supabase';
 
 const ProfileScreen = () => {
-  const { user, setUser, showAlert, setCurrentStack, setHistoryType, refreshTrigger, currentStack } = useStore();
+  const { user, setUser, showAlert, setCurrentStack, setHistoryType, refreshTrigger, currentStack, theme, toggleTheme } = useStore();
   const [walletBalance, setWalletBalance] = useState(0);
   const [rentedCount, setRentedCount] = useState(0);
   const [listedCount, setListedCount] = useState(0);
@@ -61,17 +61,22 @@ const ProfileScreen = () => {
   };
 
   const menuItems = [
-    { icon: <UserCog size={20} color="#111827" />, label: 'Account Settings', onPress: () => setCurrentStack('EditProfile') },
-    { icon: <CircleHelp size={20} color="#111827" />, label: 'Get Help', onPress: () => showAlert('Help', 'Contact us at loqlrent@gmail.com', 'info') },
-    { icon: <ShieldCheck size={20} color="#111827" />, label: 'Privacy', onPress: () => showAlert('Privacy', 'Your data is safe with us. We never share your personal information.', 'info') },
+    { icon: <UserCog size={20} color="var(--text-primary)" />, label: 'Account Settings', onPress: () => setCurrentStack('EditProfile') },
+    {
+      icon: theme === 'dark' ? <Sun size={20} color="var(--text-primary)" /> : <Moon size={20} color="var(--text-primary)" />,
+      label: theme === 'dark' ? 'Light Mode' : 'Dark Mode',
+      onPress: toggleTheme,
+    },
+    { icon: <CircleHelp size={20} color="var(--text-primary)" />, label: 'Get Help', onPress: () => showAlert('Help', 'Contact us at loqlrent@gmail.com', 'info') },
+    { icon: <ShieldCheck size={20} color="var(--text-primary)" />, label: 'Privacy', onPress: () => showAlert('Privacy', 'Your data is safe with us. We never share your personal information.', 'info') },
     { icon: <LogOut size={20} color="#EF4444" />, label: 'Log Out', onPress: handleLogout, destructive: true },
   ];
 
   return (
-    <div style={{ background: '#FAFAFA', minHeight: '100%', paddingBottom: 120 }}>
+    <div style={{ background: 'var(--background)', minHeight: '100%', paddingBottom: 120 }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '14px 20px' }}>
-        <span style={{ fontSize: 17, fontWeight: 700, color: '#111827' }}>Profile</span>
+        <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>Profile</span>
       </div>
 
       <div style={{ padding: '0 24px' }}>
@@ -82,15 +87,15 @@ const ProfileScreen = () => {
               <img src={avatarUrl} alt="" style={{ width: 76, height: 76, borderRadius: 38, objectFit: 'cover' }} />
             ) : (
               <div style={{
-                width: 76, height: 76, borderRadius: 38, background: '#111827',
+                width: 76, height: 76, borderRadius: 38, background: 'var(--accent-solid)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: 'white', fontSize: 26, fontWeight: 700,
+                color: 'var(--accent-solid-text)', fontSize: 26, fontWeight: 700,
               }}>{displayName[0]}</div>
             )}
           </div>
           <div>
-            <h2 style={{ fontSize: 24, fontWeight: 700, color: '#111827', marginBottom: 4, letterSpacing: -0.4 }}>{displayName}</h2>
-            <span style={{ fontSize: 14, color: '#9CA3AF' }}>{phoneNumber}</span>
+            <h2 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4, letterSpacing: -0.4 }}>{displayName}</h2>
+            <span style={{ fontSize: 14, color: 'var(--text-light)' }}>{phoneNumber}</span>
           </div>
         </div>
 
@@ -98,48 +103,48 @@ const ProfileScreen = () => {
         <div className="scale-pressable"
           onClick={() => setCurrentStack('Wallet')}
           style={{
-            display: 'flex', alignItems: 'center', background: '#111827', padding: 20, borderRadius: 24, marginBottom: 30,
+            display: 'flex', alignItems: 'center', background: 'var(--accent-solid)', padding: 20, borderRadius: 24, marginBottom: 30,
             boxShadow: '0 10px 20px rgba(17,24,39,0.25)', cursor: 'pointer',
           }}>
           <div style={{
-            width: 48, height: 48, borderRadius: 24, background: 'rgba(255,255,255,0.12)',
+            width: 48, height: 48, borderRadius: 24, background: 'var(--accent-solid-muted)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 16,
           }}>
-            <Wallet size={24} color="#FFFFFF" />
+            <Wallet size={24} color="var(--accent-solid-text)" />
           </div>
           <div style={{ flex: 1 }}>
-            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', display: 'block', marginBottom: 3 }}>Wallet Balance</span>
-            <span style={{ fontSize: 22, fontWeight: 700, color: '#FFFFFF', letterSpacing: -0.3 }}>₹{walletBalance.toFixed(2)}</span>
+            <span style={{ fontSize: 12, color: 'var(--accent-solid-text-muted)', display: 'block', marginBottom: 3 }}>Wallet Balance</span>
+            <span style={{ fontSize: 22, fontWeight: 700, color: 'var(--accent-solid-text)', letterSpacing: -0.3 }}>₹{walletBalance.toFixed(2)}</span>
           </div>
-          <ChevronRight size={20} color="rgba(255,255,255,0.5)" />
+          <ChevronRight size={20} color="var(--accent-solid-text-muted)" />
         </div>
 
         {/* History */}
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111827', marginBottom: 14, letterSpacing: -0.3 }}>History</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 14, letterSpacing: -0.3 }}>History</h3>
         <div style={{ display: 'flex', gap: 12, marginBottom: 8 }}>
           {[
-            { icon: <ShoppingBag size={20} color="#FFFFFF" />, label: 'Rented', count: rentedCount, type: 'rented' as const },
-            { icon: <Package size={20} color="#FFFFFF" />, label: 'For Rent', count: listedCount, type: 'for_rent' as const },
+            { icon: <ShoppingBag size={20} color="var(--accent-solid-text)" />, label: 'Rented', count: rentedCount, type: 'rented' as const },
+            { icon: <Package size={20} color="var(--accent-solid-text)" />, label: 'For Rent', count: listedCount, type: 'for_rent' as const },
           ].map((card) => (
             <div key={card.label} className="scale-pressable"
               onClick={() => { setHistoryType(card.type); setCurrentStack('HistoryDetail'); }}
               style={{
-              flex: 1, background: '#FFFFFF', borderRadius: 20, padding: '18px 16px',
-              textAlign: 'center', border: '1.5px solid #F3F4F6', boxShadow: '0 2px 6px rgba(0,0,0,0.04)', cursor: 'pointer', position: 'relative',
+              flex: 1, background: 'var(--surface)', borderRadius: 20, padding: '18px 16px',
+              textAlign: 'center', border: '1.5px solid var(--border-light)', boxShadow: '0 2px 6px rgba(0,0,0,0.04)', cursor: 'pointer', position: 'relative',
             }}>
               <div style={{
-                width: 44, height: 44, borderRadius: 22, background: '#111827',
+                width: 44, height: 44, borderRadius: 22, background: 'var(--accent-solid)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px',
               }}>{card.icon}</div>
-              <span style={{ fontSize: 13, fontWeight: 500, color: '#6B7280', display: 'block', marginBottom: 2 }}>{card.label}</span>
-              <span style={{ fontSize: 18, fontWeight: 700, color: '#111827' }}>{card.count}</span>
-              <ChevronRight size={16} color="#D1D5DB" style={{ position: 'absolute', top: 18, right: 14 }} />
+              <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)', display: 'block', marginBottom: 2 }}>{card.label}</span>
+              <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>{card.count}</span>
+              <ChevronRight size={16} color="var(--text-muted-icon)" style={{ position: 'absolute', top: 18, right: 14 }} />
             </div>
           ))}
         </div>
 
         {/* Divider */}
-        <div style={{ height: 1, background: '#F3F4F6', margin: '20px 0' }} />
+        <div style={{ height: 1, background: 'var(--border-light)', margin: '20px 0' }} />
 
         {/* Menu */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -148,14 +153,14 @@ const ProfileScreen = () => {
               onClick={item.onPress}
               style={{ display: 'flex', alignItems: 'center', padding: '14px 4px', cursor: 'pointer' }}>
               <div style={{
-                width: 40, height: 40, borderRadius: 12, background: '#F3F4F6',
+                width: 40, height: 40, borderRadius: 12, background: 'var(--muted)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 14,
               }}>{item.icon}</div>
               <span style={{
                 flex: 1, fontSize: 15, fontWeight: 500,
-                color: item.destructive ? '#EF4444' : '#111827',
+                color: item.destructive ? '#EF4444' : 'var(--text-primary)',
               }}>{item.label}</span>
-              {!item.destructive && <ChevronRight size={18} color="#D1D5DB" />}
+              {!item.destructive && <ChevronRight size={18} color="var(--text-muted-icon)" />}
             </div>
           ))}
         </div>

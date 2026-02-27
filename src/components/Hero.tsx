@@ -1,7 +1,6 @@
 'use client';
 import Link from 'next/link';
 import styles from './Hero.module.css';
-import VideoPlaceholder from './VideoPlaceholder';
 import { Download, PlayCircle } from 'lucide-react';
 
 export default function Hero() {
@@ -23,16 +22,11 @@ export default function Hero() {
           </a>
           <button 
             className="btn btn-outline"
-            onClick={() => document.getElementById('demo-video')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
           >
             <PlayCircle size={20} style={{marginRight: 8}} />
             How it works
           </button>
-        </div>
-
-        <div id="demo-video" className="fade-in" style={{animationDelay: '0.3s'}}>
-          {/* Embedded native video player */}
-          <VideoPlaceholder videoUrl="/demo.mp4" />
         </div>
       </div>
     </section>

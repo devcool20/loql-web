@@ -118,30 +118,30 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
   return (
     <div style={{
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      background: '#FAFAFA', zIndex: 200, display: 'flex', flexDirection: 'column',
+      background: 'var(--background)', zIndex: 200, display: 'flex', flexDirection: 'column',
     }}>
       {/* Header */}
       <div style={{
         display: 'flex', alignItems: 'center', padding: '14px 16px',
-        background: 'white', borderBottom: '1px solid #F3F4F6', gap: 12,
+        background: 'var(--surface)', borderBottom: '1px solid var(--border-light)', gap: 12,
       }}>
         <button className="scale-pressable" onClick={closeStack}
-          style={{ padding: 8, borderRadius: 20, background: 'white', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-          <ChevronLeft size={24} color="#111827" />
+          style={{ padding: 8, borderRadius: 20, background: 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+          <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
         {targetUser.avatar_url ? (
           <img src={targetUser.avatar_url} alt="" style={{ width: 40, height: 40, borderRadius: 20, objectFit: 'cover' }} />
         ) : (
           <div style={{
-            width: 40, height: 40, borderRadius: 20, background: '#111827',
+            width: 40, height: 40, borderRadius: 20, background: 'var(--accent-solid)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'white', fontSize: 16, fontWeight: 700,
+            color: 'var(--accent-solid-text)', fontSize: 16, fontWeight: 700,
           }}>{targetUser.full_name.charAt(0)}</div>
         )}
-        <span style={{ flex: 1, fontSize: 17, fontWeight: 600, color: '#111827' }}>{targetUser.full_name}</span>
+        <span style={{ flex: 1, fontSize: 17, fontWeight: 600, color: 'var(--text-primary)' }}>{targetUser.full_name}</span>
         <button className="scale-pressable" onClick={handleDeleteChat}
-          style={{ padding: 8, borderRadius: 20, background: '#F3F4F6' }}>
-          <Trash2 size={18} color="#111827" />
+          style={{ padding: 8, borderRadius: 20, background: 'var(--muted)' }}>
+          <Trash2 size={18} color="var(--text-primary)" />
         </button>
       </div>
 
@@ -149,10 +149,10 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
       <div style={{ flex: 1, overflowY: 'auto', padding: '16px 16px 8px', display: 'flex', flexDirection: 'column' }}>
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: 50 }}>
-            <div className="spinner" style={{ borderTopColor: '#111827', borderColor: '#E5E7EB' }} />
+            <div className="spinner" style={{ borderTopColor: 'var(--text-primary)', borderColor: 'var(--border)' }} />
           </div>
         ) : messages.length === 0 ? (
-          <p style={{ textAlign: 'center', color: '#9CA3AF', marginTop: 60, fontSize: 14 }}>No messages yet. Say hi!</p>
+          <p style={{ textAlign: 'center', color: 'var(--text-light)', marginTop: 60, fontSize: 14 }}>No messages yet. Say hi!</p>
         ) : (
           messages.map((msg) => {
             const isMine = msg.sender_id === user?.id;
@@ -162,8 +162,8 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
               }}>
                 <div style={{
                   maxWidth: '75%', padding: '10px 16px', borderRadius: 20,
-                  background: isMine ? '#111827' : '#FFFFFF',
-                  color: isMine ? 'white' : '#111827',
+                  background: isMine ? 'var(--accent-solid)' : 'var(--surface)',
+                  color: isMine ? 'var(--accent-solid-text)' : 'var(--text-primary)',
                   fontSize: 15, lineHeight: 1.5, fontWeight: 400,
                   ...(isMine ? { borderBottomRightRadius: 6 } : { borderBottomLeftRadius: 6 }),
                   boxShadow: isMine ? 'none' : '0 1px 3px rgba(0,0,0,0.06)',
@@ -171,7 +171,7 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
                   {msg.content}
                   <div style={{
                     fontSize: 10, marginTop: 4,
-                    color: isMine ? 'rgba(255,255,255,0.5)' : '#9CA3AF',
+                    color: isMine ? 'var(--accent-solid-text-muted)' : 'var(--text-light)',
                     textAlign: 'right',
                   }}>
                     {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -187,13 +187,13 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
       {/* Input */}
       <div style={{
         display: 'flex', alignItems: 'center', padding: '12px 16px', gap: 12,
-        background: 'white', borderTop: '1px solid #F3F4F6',
+        background: 'var(--surface)', borderTop: '1px solid var(--border-light)',
         paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))',
       }}>
         <input
           style={{
-            flex: 1, padding: '12px 16px', borderRadius: 24, border: '1px solid #E5E7EB',
-            background: '#F9FAFB', fontSize: 15, color: '#111827', fontFamily: 'inherit', outline: 'none',
+            flex: 1, padding: '12px 16px', borderRadius: 24, border: '1px solid var(--border)',
+            background: 'var(--surface-alt)', fontSize: 15, color: 'var(--text-primary)', fontFamily: 'inherit', outline: 'none',
           }}
           placeholder="Type a message..."
           value={newMessage}
@@ -204,11 +204,11 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
           onClick={sendMessage}
           disabled={!newMessage.trim() || sending}
           style={{
-            width: 44, height: 44, borderRadius: 22, background: '#111827',
+            width: 44, height: 44, borderRadius: 22, background: 'var(--accent-solid)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             opacity: !newMessage.trim() ? 0.4 : 1,
           }}>
-          <Send size={20} color="white" />
+          <Send size={20} color="var(--accent-solid-text)" />
         </button>
       </div>
     </div>

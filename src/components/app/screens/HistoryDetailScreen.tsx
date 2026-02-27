@@ -71,16 +71,16 @@ const HistoryDetailScreen = () => {
   };
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: '#FAFAFA', zIndex: 200, overflowY: 'auto' }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--background)', zIndex: 200, overflowY: 'auto' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px' }}>
         <button className="scale-pressable" onClick={closeStack}
-          style={{ padding: 8, borderRadius: 20, background: 'white', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-          <ChevronLeft size={24} color="#111827" />
+          style={{ padding: 8, borderRadius: 20, background: 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+          <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Icon size={18} color="#111827" />
-          <span style={{ fontSize: 17, fontWeight: 700, color: '#111827' }}>{title}</span>
+          <Icon size={18} color="var(--text-primary)" />
+          <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>{title}</span>
         </div>
         <div style={{ width: 40 }} />
       </div>
@@ -89,7 +89,7 @@ const HistoryDetailScreen = () => {
         {loading ? (
           <ListSkeleton count={6} />
         ) : items.length === 0 ? (
-          <p style={{ textAlign: 'center', color: '#9CA3AF', paddingTop: 60, fontSize: 14 }}>
+          <p style={{ textAlign: 'center', color: 'var(--text-light)', paddingTop: 60, fontSize: 14 }}>
             {isRented ? 'No rental history yet.' : "You haven't listed any items yet."}
           </p>
         ) : (
@@ -101,29 +101,29 @@ const HistoryDetailScreen = () => {
               <div key={item.id} className="scale-pressable"
                 onClick={() => handleCardClick(item)}
                 style={{
-                  display: 'flex', alignItems: 'center', background: 'white', borderRadius: 20,
-                  padding: 14, marginBottom: 14, border: '1px solid #F3F4F6',
+                  display: 'flex', alignItems: 'center', background: 'var(--surface)', borderRadius: 20,
+                  padding: 14, marginBottom: 14, border: '1px solid var(--border-light)',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.04)', cursor: 'pointer',
                 }}>
-                <div style={{ width: 72, height: 72, borderRadius: 16, background: '#F5F5F5', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 14, flexShrink: 0 }}>
+                <div style={{ width: 72, height: 72, borderRadius: 16, background: 'var(--img-placeholder)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 14, flexShrink: 0 }}>
                   {imgUrl ? (
                     <img src={imgUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
-                    <span style={{ fontSize: 11, color: '#9CA3AF' }}>No Img</span>
+                    <span style={{ fontSize: 11, color: 'var(--text-light)' }}>No Img</span>
                   )}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <span style={{ fontSize: 15, fontWeight: 600, color: '#111827', display: 'block', marginBottom: 6 }}>{displayItem.title}</span>
+                  <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', display: 'block', marginBottom: 6 }}>{displayItem.title}</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span style={{
                       padding: '3px 10px', borderRadius: 8, fontSize: 10, color: '#FFFFFF',
                       letterSpacing: 0.5, fontWeight: 700, textTransform: 'uppercase',
                       background: getStatusColor(isRented ? item.status : displayItem.status),
                     }}>{getStatusText(item)}</span>
-                    <span style={{ fontSize: 13, color: '#6B7280', fontWeight: 500 }}>{getPrice(item)}</span>
+                    <span style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500 }}>{getPrice(item)}</span>
                   </div>
                 </div>
-                <ChevronLeft size={18} color="#D1D5DB" style={{ transform: 'rotate(180deg)' }} />
+                <ChevronLeft size={18} color="var(--text-muted-icon)" style={{ transform: 'rotate(180deg)' }} />
               </div>
             );
           })

@@ -29,6 +29,7 @@ const AppShell = () => {
     isLoading, setLoading,
     isProfileComplete, setProfileComplete,
     currentStack, chatUser, closeStack,
+    theme,
   } = useStore();
 
   useEffect(() => {
@@ -37,7 +38,8 @@ const AppShell = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
-        checkProfile(session.user);
+        // Defer to avoid LockManager contention with checkSession
+        setTimeout(() => checkProfile(session.user), 0);
       }
     });
 
@@ -86,7 +88,11 @@ const AppShell = () => {
     }
   }, [currentStack]);
 
+  const checkSessionInProgress = useRef(false);
+
   const checkSession = async () => {
+    if (checkSessionInProgress.current) return;
+    checkSessionInProgress.current = true;
     setLoading(true);
     if (!loadingStartTime.current) loadingStartTime.current = Date.now();
 
@@ -95,24 +101,18 @@ const AppShell = () => {
       if (typeof window !== 'undefined') {
         const hash = window.location.hash;
         if (hash && (hash.includes('access_token') || hash.includes('error'))) {
-          // Give Supabase time to parse the hash and establish the session
-          // This is critical on Vercel where the redirect may be slower
-          let attempts = 0;
-          while (attempts < 10) {
-            const { data: { session: hashSession } } = await supabase.auth.getSession();
-            if (hashSession) {
-              setUser(hashSession.user);
-              setShowWelcome(false);
-              await checkProfile(hashSession.user);
-              // Clean the URL hash
-              window.history.replaceState({}, '', window.location.pathname);
-              finishLoading();
-              return;
-            }
-            await new Promise(resolve => setTimeout(resolve, 300));
-            attempts++;
+          // Give Supabase time to parse the hash (detectSessionInUrl) before a single getSession call.
+          // Avoid polling to prevent LockManager contention and timeouts.
+          await new Promise(resolve => setTimeout(resolve, 500));
+          const { data: { session: hashSession } } = await supabase.auth.getSession();
+          if (hashSession) {
+            setUser(hashSession.user);
+            setShowWelcome(false);
+            await checkProfile(hashSession.user);
+            window.history.replaceState({}, '', window.location.pathname);
+            finishLoading();
+            return;
           }
-          // Clean hash even if failed
           window.history.replaceState({}, '', window.location.pathname);
         }
       }
@@ -146,6 +146,7 @@ const AppShell = () => {
       console.error('Check session fatal error:', e);
       setUser(null);
     } finally {
+      checkSessionInProgress.current = false;
       finishLoading();
     }
   };
@@ -248,7 +249,7 @@ const AppShell = () => {
   };
 
   return (
-    <div className="app-shell">
+    <div className="app-shell" data-theme={theme}>
       {renderContent()}
       <CustomAlert />
 

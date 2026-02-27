@@ -1,0 +1,91 @@
+.container {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  padding: 4rem 1rem;
+  box-sizing: border-box;
+}
+
+.contentContainer {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  gap: 4rem;
+  position: relative;
+}
+
+.scrollableContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8vh;
+  padding-top: 10vh;
+  padding-bottom: 20vh;
+}
+
+.stepCard {
+  opacity: 0.3;
+  transition: opacity 0.5s ease;
+  padding: 2rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stepCard.active {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(0, 255, 136, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.stepTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.stepDescription {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: #a1a1aa;
+}
+
+.stickyContainer {
+  flex: 1;
+  position: sticky;
+  top: 100px;
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .contentContainer {
+    flex-direction: column-reverse;
+    gap: 2rem;
+  }
+
+  .stickyContainer {
+    position: relative;
+    top: 0;
+    height: auto;
+    width: 100%;
+  }
+
+  .scrollableContent {
+    gap: 2rem;
+    padding-top: 0;
+    padding-bottom: 2rem;
+  }
+
+  .stepCard {
+    opacity: 1;
+    /* Always visible on mobile */
+  }
+}

@@ -99,33 +99,33 @@ const NotificationScreen = () => {
   return (
     <div style={{
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      background: '#FAFAFA', zIndex: 200, overflowY: 'auto',
+      background: 'var(--background)', zIndex: 200, overflowY: 'auto',
     }}>
       {/* Header */}
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '14px 20px', background: '#FAFAFA',
+        padding: '14px 20px', background: 'var(--background)',
       }}>
         <button className="scale-pressable" onClick={closeStack}
-          style={{ padding: 8, borderRadius: 20, background: 'white', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-          <ChevronLeft size={24} color="#111827" />
+          style={{ padding: 8, borderRadius: 20, background: 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+          <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
-        <span style={{ fontSize: 17, fontWeight: 700, color: '#111827' }}>Notifications</span>
+        <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>Notifications</span>
         <button className="scale-pressable" onClick={() => {
           if (selectionMode && selectedIds.size > 0) handleDeleteSelected();
           else setSelectionMode(!selectionMode);
-        }} style={{ padding: 8, borderRadius: 20, background: selectionMode ? '#E5E7EB' : 'white', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-          <Trash2 size={18} color="#111827" />
+        }} style={{ padding: 8, borderRadius: 20, background: selectionMode ? 'var(--border)' : 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+          <Trash2 size={18} color="var(--text-primary)" />
         </button>
       </div>
 
       <div style={{ padding: '0 20px', paddingBottom: 100 }}>
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: 50 }}>
-            <div className="spinner" style={{ borderTopColor: '#111827', borderColor: '#E5E7EB' }} />
+            <div className="spinner" style={{ borderTopColor: 'var(--text-primary)', borderColor: 'var(--border)' }} />
           </div>
         ) : notifications.length === 0 ? (
-          <p style={{ textAlign: 'center', color: '#9CA3AF', marginTop: 60, fontSize: 15, fontWeight: 500 }}>No notifications yet.</p>
+          <p style={{ textAlign: 'center', color: 'var(--text-light)', marginTop: 60, fontSize: 15, fontWeight: 500 }}>No notifications yet.</p>
         ) : (
           notifications.map((notif) => (
             <div key={notif.id} className="scale-pressable"
@@ -138,8 +138,8 @@ const NotificationScreen = () => {
                 }
               }}
               style={{
-                display: 'flex', background: 'white', padding: 16, borderRadius: 20,
-                marginBottom: 12, border: `1.5px solid ${selectedIds.has(notif.id) ? '#111827' : notif.is_read ? '#F3F4F6' : '#E5E7EB'}`,
+                display: 'flex', background: 'var(--surface)', padding: 16, borderRadius: 20,
+                marginBottom: 12, border: `1.5px solid ${selectedIds.has(notif.id) ? 'var(--accent-solid)' : notif.is_read ? 'var(--border-light)' : 'var(--border)'}`,
                 boxShadow: '0 2px 8px rgba(0,0,0,0.04)', cursor: 'pointer', gap: 14,
               }}>
               {/* Left dot */}
@@ -147,10 +147,10 @@ const NotificationScreen = () => {
               {/* Content */}
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>{notif.title}</span>
-                  <span style={{ fontSize: 11, color: '#9CA3AF', fontWeight: 500 }}>{formatRelativeTime(notif.created_at)}</span>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{notif.title}</span>
+                  <span style={{ fontSize: 11, color: 'var(--text-light)', fontWeight: 500 }}>{formatRelativeTime(notif.created_at)}</span>
                 </div>
-                <p style={{ fontSize: 13, color: '#4B5563', lineHeight: 1.5 }}>
+                <p style={{ fontSize: 13, color: 'var(--text-subtle)', lineHeight: 1.5 }}>
                   {notif.message?.startsWith('undefined ') ? notif.message.replace('undefined ', 'Someone ') : notif.message}
                 </p>
                 {notif.relatedUser && (
@@ -158,13 +158,13 @@ const NotificationScreen = () => {
                     e.stopPropagation();
                     openChat({ id: notif.relatedUser.id, full_name: notif.relatedUser.full_name || 'Someone', avatar_url: notif.relatedUser.avatar_url });
                   }}
-                    style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 12, background: '#F3F4F6' }}>
+                    style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 12, background: 'var(--muted)' }}>
                     {notif.relatedUser.avatar_url ? (
-                      <img src={notif.relatedUser.avatar_url} alt="" style={{ width: 20, height: 20, borderRadius: 10, background: '#E5E7EB', objectFit: 'cover' }} />
+                      <img src={notif.relatedUser.avatar_url} alt="" style={{ width: 20, height: 20, borderRadius: 10, background: 'var(--border)', objectFit: 'cover' }} />
                     ) : (
-                      <div style={{ width: 20, height: 20, borderRadius: 10, background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 8, fontWeight: 700 }}>{(notif.relatedUser.full_name || '?')[0]}</div>
+                      <div style={{ width: 20, height: 20, borderRadius: 10, background: 'var(--accent-solid)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-solid-text)', fontSize: 8, fontWeight: 700 }}>{(notif.relatedUser.full_name || '?')[0]}</div>
                     )}
-                    <span style={{ fontSize: 12, fontWeight: 600, color: '#111827' }}>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)' }}>
                       {(!notif.relatedUser.full_name || notif.relatedUser.full_name === 'undefined') ? 'Someone' : notif.relatedUser.full_name}
                     </span>
                   </button>

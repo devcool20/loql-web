@@ -42,31 +42,31 @@ const UserProfileModal = ({ visible, userId, user: passedUser, onClose }: UserPr
   return (
     <div className="alert-overlay" onClick={onClose}>
       <div onClick={(e) => e.stopPropagation()} style={{
-        background: 'white', borderRadius: '24px 24px 0 0', width: '100%', maxWidth: 430,
+        background: 'var(--surface)', borderRadius: '24px 24px 0 0', width: '100%', maxWidth: 430,
         maxHeight: '90vh', overflow: 'auto', position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
       }}>
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottom: '1px solid #F3F4F6' }}>
-          <span style={{ fontSize: 18, fontWeight: 700, color: '#111827' }}>User Profile</span>
-          <button className="scale-pressable" onClick={onClose} style={{ padding: 8 }}><X size={24} color="#111827" /></button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottom: '1px solid var(--border-light)' }}>
+          <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>User Profile</span>
+          <button className="scale-pressable" onClick={onClose} style={{ padding: 8 }}><X size={24} color="var(--text-primary)" /></button>
         </div>
 
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
-            <div className="spinner" style={{ borderTopColor: '#111827', borderColor: '#E5E7EB' }} />
+            <div className="spinner" style={{ borderTopColor: 'var(--text-primary)', borderColor: 'var(--border)' }} />
           </div>
         ) : (
           <div style={{ padding: 24, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             {/* Avatar */}
-            <div style={{ width: 100, height: 100, borderRadius: 50, background: '#F3F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16, overflow: 'hidden' }}>
+            <div style={{ width: 100, height: 100, borderRadius: 50, background: 'var(--muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16, overflow: 'hidden' }}>
               {avatarUrl ? (
                 <img src={avatarUrl} alt="" style={{ width: 100, height: 100, borderRadius: 50, objectFit: 'cover' }} />
               ) : (
-                <span style={{ fontSize: 32, fontWeight: 700, color: '#111827' }}>{displayName[0]}</span>
+                <span style={{ fontSize: 32, fontWeight: 700, color: 'var(--text-primary)' }}>{displayName[0]}</span>
               )}
             </div>
-            <h2 style={{ fontSize: 24, fontWeight: 700, color: '#111827', marginBottom: 4 }}>{displayName}</h2>
-            <span style={{ fontSize: 14, color: '#6B7280', fontWeight: 500, marginBottom: 8 }}>Trust Score</span>
+            <h2 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>{displayName}</h2>
+            <span style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500, marginBottom: 8 }}>Trust Score</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#FEF3C7', padding: '8px 16px', borderRadius: 20, marginBottom: 32 }}>
               <Award size={20} color="#F59E0B" />
               <span style={{ fontSize: 20, fontWeight: 700, color: '#D97706' }}>{stats.trustScore}/100</span>
@@ -78,18 +78,18 @@ const UserProfileModal = ({ visible, userId, user: passedUser, onClose }: UserPr
                 { icon: <ShoppingBag size={24} color="#2563EB" />, bg: '#DBEAFE', value: stats.rented, label: 'Items Rented' },
                 { icon: <Package size={24} color="#059669" />, bg: '#D1FAE5', value: stats.listed, label: 'Items Listed' },
               ].map((card) => (
-                <div key={card.label} style={{ flex: 1, background: '#F9FAFB', borderRadius: 16, padding: 16, textAlign: 'center', border: '1px solid #E5E7EB' }}>
+                <div key={card.label} style={{ flex: 1, background: 'var(--surface-alt)', borderRadius: 16, padding: 16, textAlign: 'center', border: '1px solid var(--border)' }}>
                   <div style={{ width: 48, height: 48, borderRadius: 24, background: card.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>{card.icon}</div>
-                  <span style={{ fontSize: 24, fontWeight: 700, color: '#111827', display: 'block', marginBottom: 4 }}>{card.value}</span>
-                  <span style={{ fontSize: 13, color: '#6B7280', fontWeight: 500 }}>{card.label}</span>
+                  <span style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', display: 'block', marginBottom: 4 }}>{card.value}</span>
+                  <span style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500 }}>{card.label}</span>
                 </div>
               ))}
             </div>
 
             {/* Info */}
-            <div style={{ width: '100%', background: '#F3F4F6', padding: 16, borderRadius: 16, marginBottom: 24 }}>
-              <h4 style={{ fontSize: 16, fontWeight: 700, color: '#111827', marginBottom: 8 }}>About Trust Score</h4>
-              <p style={{ fontSize: 14, color: '#4B5563', lineHeight: 1.5 }}>
+            <div style={{ width: '100%', background: 'var(--muted)', padding: 16, borderRadius: 16, marginBottom: 24 }}>
+              <h4 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>About Trust Score</h4>
+              <p style={{ fontSize: 14, color: 'var(--text-subtle)', lineHeight: 1.5 }}>
                 The trust score is calculated based on rental history, return punctuality, and community feedback. A high score indicates a reliable member.
               </p>
             </div>

@@ -224,20 +224,20 @@ const RentalsScreen = () => {
         {item.images?.[0] ? (
           <img src={item.images[0]} alt={item.title} style={imageStyle} />
         ) : (
-          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF', fontSize: 12 }}>No Img</div>
+          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)', fontSize: 12 }}>No Img</div>
         )}
       </div>
       <div style={contentStyle}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <span style={{ fontSize: 15, fontWeight: 500, color: '#111827', flex: 1 }}>{item.title}</span>
-          <button className="scale-pressable" style={{ padding: 6, borderRadius: 8, background: '#F3F4F6' }}
+          <span style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)', flex: 1 }}>{item.title}</span>
+          <button className="scale-pressable" style={{ padding: 6, borderRadius: 8, background: 'var(--muted)' }}
             onClick={(e) => { e.stopPropagation(); handleDelete(item); }}>
-            <Trash2 size={14} color="#111827" />
+            <Trash2 size={14} color="var(--text-primary)" />
           </button>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
           <span style={{ ...badgeStyle, background: getStatusColor(item.status) }}>{item.status?.toUpperCase()}</span>
-          <span style={{ fontSize: 13, color: '#6B7280', fontWeight: 500 }}>₹{item.daily_rate}/day</span>
+          <span style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500 }}>₹{item.daily_rate}/day</span>
         </div>
       </div>
     </div>
@@ -250,16 +250,16 @@ const RentalsScreen = () => {
         {item.items?.images?.[0] ? (
           <img src={item.items.images[0]} alt="" style={imageStyle} />
         ) : (
-          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF', fontSize: 11 }}>No Img</div>
+          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)', fontSize: 11 }}>No Img</div>
         )}
       </div>
       <div style={contentStyle}>
-        <span style={{ fontSize: 15, fontWeight: 500, color: '#111827' }}>{item.items?.title || 'Unknown'}</span>
+        <span style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)' }}>{item.items?.title || 'Unknown'}</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
           <span style={{ ...badgeStyle, background: getStatusColor(item.status) }}>{item.status?.toUpperCase()}</span>
-          <span style={{ fontSize: 12, color: '#9CA3AF' }}>{new Date(item.start_date || item.created_at).toLocaleDateString()}</span>
+          <span style={{ fontSize: 12, color: 'var(--text-light)' }}>{new Date(item.start_date || item.created_at).toLocaleDateString()}</span>
         </div>
-        {item.status === 'pending' && <span style={{ fontSize: 12, color: '#9CA3AF', marginTop: 4 }}>Waiting for confirmation</span>}
+        {item.status === 'pending' && <span style={{ fontSize: 12, color: 'var(--text-light)', marginTop: 4 }}>Waiting for confirmation</span>}
       </div>
     </div>
   );
@@ -273,20 +273,20 @@ const RentalsScreen = () => {
           {item.items?.images?.[0] ? (
             <img src={item.items.images[0]} alt="" style={imageStyle} />
           ) : (
-            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF', fontSize: 11 }}>No Img</div>
-          )}
-        </div>
-        <div style={contentStyle}>
-          <span style={{ fontSize: 15, fontWeight: 500, color: '#111827' }}>{item.items?.title || 'Item'}</span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
-            <span style={{ ...badgeStyle, background: getStatusColor(item.status) }}>{item.status?.toUpperCase()}</span>
-            <span style={{ fontSize: 13, color: '#6B7280', fontWeight: 500 }}>₹{item.offered_price}/day • {(item.duration_hours / 24).toFixed(0)}d</span>
+          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)', fontSize: 11 }}>No Img</div>
+        )}
+      </div>
+      <div style={contentStyle}>
+        <span style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)' }}>{item.items?.title || 'Item'}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
+          <span style={{ ...badgeStyle, background: getStatusColor(item.status) }}>{item.status?.toUpperCase()}</span>
+          <span style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500 }}>₹{item.offered_price}/day • {(item.duration_hours / 24).toFixed(0)}d</span>
           </div>
           {item.status === 'countered' && (
             <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-              <button className="scale-pressable" style={{ padding: '8px 18px', borderRadius: 12, background: '#111827', color: 'white', fontSize: 13, fontWeight: 600 }}
+              <button className="scale-pressable" style={{ padding: '8px 18px', borderRadius: 12, background: 'var(--accent-solid)', color: 'var(--accent-solid-text)', fontSize: 13, fontWeight: 600 }}
                 onClick={(e) => { e.stopPropagation(); handleAcceptCounter(item); }}>Accept</button>
-              <button className="scale-pressable" style={{ padding: '8px 18px', borderRadius: 12, background: 'white', border: '1px solid #E5E7EB', color: '#4B5563', fontSize: 13, fontWeight: 600 }}
+              <button className="scale-pressable" style={{ padding: '8px 18px', borderRadius: 12, background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-subtle)', fontSize: 13, fontWeight: 600 }}
                 onClick={(e) => { e.stopPropagation(); handleDeclineCounter(item); }}>Decline</button>
             </div>
           )}
@@ -294,7 +294,7 @@ const RentalsScreen = () => {
             <button className="scale-pressable"
               onClick={(e) => { e.stopPropagation(); openPaymentModal(item); }}
               style={{
-                padding: '10px 20px', borderRadius: 14, background: '#111827', color: 'white',
+                padding: '10px 20px', borderRadius: 14, background: 'var(--accent-solid)', color: 'var(--accent-solid-text)',
                 fontSize: 14, fontWeight: 700, marginTop: 10, display: 'flex', alignItems: 'center', gap: 8,
                 boxShadow: '0 2px 8px rgba(17,24,39,0.3)',
               }}>
@@ -303,7 +303,7 @@ const RentalsScreen = () => {
             </button>
           )}
           {!['countered', 'accepted'].includes(item.status) && (
-            <span style={{ fontSize: 12, color: '#9CA3AF', marginTop: 6 }}>{(item.duration_hours / 24).toFixed(0)} Days Request</span>
+            <span style={{ fontSize: 12, color: 'var(--text-light)', marginTop: 6 }}>{(item.duration_hours / 24).toFixed(0)} Days Request</span>
           )}
         </div>
       </div>
@@ -314,14 +314,14 @@ const RentalsScreen = () => {
   const renderCard = activeTab === 'listings' ? renderListingCard : activeTab === 'offers' ? renderOfferCard : renderBookingCard;
 
   return (
-    <div style={{ background: '#FAFAFA', minHeight: '100%', paddingBottom: 100 }}>
+    <div style={{ background: 'var(--background)', minHeight: '100%', paddingBottom: 100 }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 24px 24px' }}>
-        <h1 style={{ fontSize: 32, fontWeight: 600, color: '#111827', letterSpacing: -0.5 }}>My Rentals</h1>
+        <h1 style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', letterSpacing: -0.5 }}>My Rentals</h1>
         {activeTab === 'listings' && (
           <button className="scale-pressable" onClick={() => setCurrentStack('AddItem')}
-            style={{ width: 44, height: 44, borderRadius: 22, background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 8px rgba(0,0,0,0.2)' }}>
-            <Plus size={24} color="white" />
+            style={{ width: 44, height: 44, borderRadius: 22, background: 'var(--accent-solid)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 8px rgba(0,0,0,0.2)' }}>
+            <Plus size={24} color="var(--accent-solid-text)" />
           </button>
         )}
       </div>
@@ -332,8 +332,8 @@ const RentalsScreen = () => {
           <button key={tab} className="scale-pressable"
             onClick={() => setActiveTab(tab)}
             style={{
-              padding: '10px 22px', borderRadius: 50, border: `1.5px solid ${activeTab === tab ? '#111827' : '#E5E7EB'}`,
-              background: activeTab === tab ? '#111827' : '#FFFFFF', color: activeTab === tab ? '#FFFFFF' : '#6B7280',
+              padding: '10px 22px', borderRadius: 50, border: `1.5px solid ${activeTab === tab ? 'var(--accent-solid)' : 'var(--border)'}`,
+              background: activeTab === tab ? 'var(--accent-solid)' : 'var(--surface)', color: activeTab === tab ? 'var(--accent-solid-text)' : 'var(--text-secondary)',
               fontSize: 14, fontWeight: 500,
             }}>
             {tab === 'listings' ? 'Listings' : tab === 'offers' ? 'My Offers' : 'Rentals'}
@@ -345,7 +345,7 @@ const RentalsScreen = () => {
       {loading ? (
         <div style={{ padding: '8px 20px' }}><ListSkeleton count={5} /></div>
       ) : activeData.length === 0 ? (
-        <p style={{ textAlign: 'center', marginTop: 60, color: '#9CA3AF', fontSize: 15, fontWeight: 500 }}>Nothing here yet.</p>
+        <p style={{ textAlign: 'center', marginTop: 60, color: 'var(--text-light)', fontSize: 15, fontWeight: 500 }}>Nothing here yet.</p>
       ) : (
         <div style={{ padding: '8px 20px 0' }}>
           {activeData.map(renderCard)}
@@ -356,7 +356,7 @@ const RentalsScreen = () => {
       {showPaymentModal && selectedOfferForPayment && (
         <div className="alert-overlay" onClick={() => { if (!paying) setShowPaymentModal(false); }}>
           <div onClick={(e) => e.stopPropagation()} style={{
-            background: 'white', borderRadius: '32px 32px 0 0', width: '100%', maxWidth: 430,
+            background: 'var(--surface)', borderRadius: '32px 32px 0 0', width: '100%', maxWidth: 430,
             position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', 
             padding: '24px 24px 110px', // Extra bottom padding for nav bar
             animation: 'slideUp 0.3s ease-out',
@@ -370,55 +370,55 @@ const RentalsScreen = () => {
                 }}>
                   <ShieldCheck size={40} color="#10B981" />
                 </div>
-                <h3 style={{ fontSize: 22, fontWeight: 700, color: '#111827', marginBottom: 8 }}>Payment Successful!</h3>
-                <p style={{ fontSize: 15, color: '#6B7280', textAlign: 'center' }}>
+                <h3 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>Payment Successful!</h3>
+                <p style={{ fontSize: 15, color: 'var(--text-secondary)', textAlign: 'center' }}>
                   Rental started. Enjoy your item!
                 </p>
               </div>
             ) : (
               <>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-                  <h3 style={{ fontSize: 22, fontWeight: 800, color: '#111827', letterSpacing: '-0.02em' }}>Complete Payment</h3>
+                  <h3 style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Complete Payment</h3>
                   <button className="scale-pressable" onClick={() => setShowPaymentModal(false)} 
-                    style={{ padding: 8, borderRadius: 20, background: '#F3F4F6' }}>
-                    <X size={20} color="#111827" />
+                    style={{ padding: 8, borderRadius: 20, background: 'var(--muted)' }}>
+                    <X size={20} color="var(--text-primary)" />
                   </button>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: 14, background: '#F9FAFB', padding: 14, borderRadius: 20, border: '1px solid #F3F4F6', marginBottom: 20 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14, background: 'var(--surface-alt)', padding: 14, borderRadius: 20, border: '1px solid var(--border-light)', marginBottom: 20 }}>
                   {selectedOfferForPayment.items?.images?.[0] ? (
                     <img src={selectedOfferForPayment.items.images[0]} alt="" style={{ width: 64, height: 64, borderRadius: 16, objectFit: 'cover' }} />
                   ) : (
-                    <div style={{ width: 64, height: 64, borderRadius: 16, background: '#E5E7EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <Camera size={24} color="#9CA3AF" />
+                    <div style={{ width: 64, height: 64, borderRadius: 16, background: 'var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Camera size={24} color="var(--text-light)" />
                     </div>
                   )}
                   <div style={{ flex: 1 }}>
-                    <span style={{ fontSize: 17, fontWeight: 700, color: '#111827', display: 'block', marginBottom: 2 }}>{selectedOfferForPayment.items?.title}</span>
-                    <span style={{ fontSize: 14, color: '#6B7280', fontWeight: 500 }}>
+                    <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)', display: 'block', marginBottom: 2 }}>{selectedOfferForPayment.items?.title}</span>
+                    <span style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500 }}>
                       ₹{selectedOfferForPayment.offered_price}/day × {(selectedOfferForPayment.duration_hours / 24).toFixed(0)} days
                     </span>
                   </div>
                 </div>
 
                 {/* Cost */}
-                <div style={{ background: '#F9FAFB', padding: 18, borderRadius: 20, border: '1px solid #F3F4F6', marginBottom: 24 }}>
+                <div style={{ background: 'var(--surface-alt)', padding: 18, borderRadius: 20, border: '1px solid var(--border-light)', marginBottom: 24 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                    <span style={{ color: '#6B7280', fontSize: 14, fontWeight: 500 }}>Rental Subscription</span>
-                    <span style={{ color: '#111827', fontSize: 15, fontWeight: 600 }}>
+                    <span style={{ color: 'var(--text-secondary)', fontSize: 14, fontWeight: 500 }}>Rental Subscription</span>
+                    <span style={{ color: 'var(--text-primary)', fontSize: 15, fontWeight: 600 }}>
                       ₹{Math.ceil(selectedOfferForPayment.offered_price * selectedOfferForPayment.duration_hours / 24)}
                     </span>
                   </div>
                   {selectedOfferForPayment.items?.market_price > 3000 && (
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                      <span style={{ color: '#6B7280', fontSize: 14, fontWeight: 500 }}>Security Insurance</span>
-                      <span style={{ color: '#111827', fontSize: 15, fontWeight: 600 }}>₹9</span>
+                      <span style={{ color: 'var(--text-secondary)', fontSize: 14, fontWeight: 500 }}>Security Insurance</span>
+                      <span style={{ color: 'var(--text-primary)', fontSize: 15, fontWeight: 600 }}>₹9</span>
                     </div>
                   )}
-                  <div style={{ height: 1, background: '#E5E7EB', margin: '12px 0' }} />
+                  <div style={{ height: 1, background: 'var(--border)', margin: '12px 0' }} />
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: 16, fontWeight: 600, color: '#111827' }}>Total Amount</span>
-                    <span style={{ fontSize: 22, fontWeight: 800, color: '#111827' }}>
+                    <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)' }}>Total Amount</span>
+                    <span style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)' }}>
                       ₹{Math.ceil(selectedOfferForPayment.offered_price * selectedOfferForPayment.duration_hours / 24) + (selectedOfferForPayment.items?.market_price > 3000 ? 9 : 0)}
                     </span>
                   </div>
@@ -427,8 +427,8 @@ const RentalsScreen = () => {
                 {/* Handover Code */}
                 <div style={{ marginBottom: 28 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10, marginLeft: 4 }}>
-                    <ShieldCheck size={16} color="#111827" />
-                    <label style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>
+                    <ShieldCheck size={16} color="var(--text-primary)" />
+                    <label style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>
                       Handover Verification
                     </label>
                   </div>
@@ -439,14 +439,14 @@ const RentalsScreen = () => {
                       placeholder="••••••"
                       style={{
                         width: '100%', textAlign: 'center', fontSize: 32, fontWeight: 800, letterSpacing: 12,
-                        padding: '20px 0', borderRadius: 20, border: '2px solid #E5E7EB', color: '#111827',
-                        fontFamily: 'monospace', outline: 'none', background: '#FFFFFF',
+                        padding: '20px 0', borderRadius: 20, border: '2px solid var(--border)', color: 'var(--text-primary)',
+                        fontFamily: 'monospace', outline: 'none', background: 'var(--surface)',
                         boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)', transition: 'all 0.2s ease',
                       }}
                       className="handover-input"
                     />
                   </div>
-                  <p style={{ fontSize: 13, color: '#9CA3AF', textAlign: 'center', marginTop: 12, fontWeight: 500 }}>
+                  <p style={{ fontSize: 13, color: 'var(--text-light)', textAlign: 'center', marginTop: 12, fontWeight: 500 }}>
                     Enter the 6-character code from the item owner
                   </p>
                 </div>
@@ -466,12 +466,12 @@ const RentalsScreen = () => {
 };
 
 const cardStyle: React.CSSProperties = {
-  display: 'flex', flexDirection: 'row', background: '#FFFFFF', borderRadius: 20, padding: 14,
-  marginBottom: 14, border: '1px solid #F3F4F6', boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+  display: 'flex', flexDirection: 'row', background: 'var(--surface)', borderRadius: 20, padding: 14,
+  marginBottom: 14, border: '1px solid var(--border-light)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
   alignItems: 'center', cursor: 'pointer',
 };
 const imageContainerStyle: React.CSSProperties = {
-  width: 80, height: 80, borderRadius: 16, background: '#F5F5F5', overflow: 'hidden', border: '1px solid #F3F4F6',
+  width: 80, height: 80, borderRadius: 16, background: 'var(--img-placeholder)', overflow: 'hidden', border: '1px solid var(--border-light)',
   display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
 };
 const imageStyle: React.CSSProperties = { width: '100%', height: '100%', objectFit: 'cover', borderRadius: 16 };

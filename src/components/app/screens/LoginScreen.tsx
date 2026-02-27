@@ -164,14 +164,14 @@ const LoginScreen = () => {
             className={`login-tab scale-pressable ${method === 'phone' ? 'active' : ''}`}
             onClick={() => setMethod('phone')}
           >
-            <Phone size={20} color={method === 'phone' ? '#111827' : '#6B7280'} />
+            <Phone size={20} color={method === 'phone' ? 'var(--text-primary)' : 'var(--text-secondary)'} />
             <span className="login-tab-text">Phone</span>
           </button>
           <button
             className={`login-tab scale-pressable ${method === 'email' ? 'active' : ''}`}
             onClick={() => setMethod('email')}
           >
-            <Mail size={20} color={method === 'email' ? '#111827' : '#6B7280'} />
+            <Mail size={20} color={method === 'email' ? 'var(--text-primary)' : 'var(--text-secondary)'} />
             <span className="login-tab-text">Email</span>
           </button>
         </div>
@@ -226,7 +226,7 @@ const LoginScreen = () => {
               <div className="input-group">
                 <label className="input-label">Email Address</label>
                 <div className="icon-input">
-                  <Mail size={20} color="#9CA3AF" />
+                  <Mail size={20} color="var(--text-light)" />
                   <input
                     className="text-input"
                     placeholder="john@example.com"
@@ -241,7 +241,7 @@ const LoginScreen = () => {
               <div className="input-group">
                 <label className="input-label">Password</label>
                 <div className="icon-input">
-                  <Lock size={20} color="#9CA3AF" />
+                  <Lock size={20} color="var(--text-light)" />
                   <input
                     className="text-input"
                     placeholder="••••••••"

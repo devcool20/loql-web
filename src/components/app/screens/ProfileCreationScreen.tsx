@@ -152,10 +152,10 @@ const ProfileCreationScreen = ({ onComplete }: ProfileCreationScreenProps) => {
               position: 'absolute',
               bottom: 0,
               right: 0,
-              background: '#111827',
+              background: 'var(--accent-solid)',
               padding: 8,
               borderRadius: 20,
-              border: '2px solid white',
+              border: '2px solid var(--surface)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -171,7 +171,7 @@ const ProfileCreationScreen = ({ onComplete }: ProfileCreationScreenProps) => {
             onChange={handleFileChange}
           />
         </div>
-        <p style={{ textAlign: 'center', color: '#6B7280', fontSize: 14, fontWeight: 500, marginBottom: 32 }}>
+        <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14, fontWeight: 500, marginBottom: 32 }}>
           Add Profile Photo (Optional)
         </p>
 
@@ -199,7 +199,7 @@ const ProfileCreationScreen = ({ onComplete }: ProfileCreationScreenProps) => {
               onChange={(e) => !user?.phone && setPhoneNumber(e.target.value)}
               disabled={!!user?.phone}
               type="tel"
-              style={user?.phone ? { color: '#9CA3AF', background: '#F3F4F6' } : {}}
+              style={user?.phone ? { color: 'var(--text-light)', background: 'var(--muted)' } : {}}
             />
           </div>
         </div>
@@ -215,7 +215,7 @@ const ProfileCreationScreen = ({ onComplete }: ProfileCreationScreenProps) => {
               padding: '14px 16px',
               textAlign: 'left',
               cursor: 'pointer',
-              color: selectedSociety ? '#111827' : '#9CA3AF',
+              color: selectedSociety ? 'var(--text-primary)' : 'var(--text-light)',
               fontSize: 16,
             }}
           >
@@ -230,7 +230,7 @@ const ProfileCreationScreen = ({ onComplete }: ProfileCreationScreenProps) => {
               top: 78,
               left: 0,
               right: 0,
-              background: 'white',
+              background: 'var(--surface)',
               border: '1px solid var(--border)',
               borderRadius: 12,
               zIndex: 1000,
@@ -246,7 +246,7 @@ const ProfileCreationScreen = ({ onComplete }: ProfileCreationScreenProps) => {
                     borderBottom: '1px solid var(--muted)',
                     cursor: 'pointer',
                     fontSize: 16,
-                    color: '#111827',
+                    color: 'var(--text-primary)',
                   }}
                   onClick={() => {
                     setSelectedSociety(society.id);

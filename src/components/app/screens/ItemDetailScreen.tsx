@@ -101,7 +101,7 @@ const ItemDetailScreen = () => {
   return (
     <div style={{
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      background: '#FFFFFF', zIndex: 200, overflowY: 'auto',
+      background: 'var(--surface)', zIndex: 200, overflowY: 'auto',
     }}>
       {/* Floating Header */}
       <div style={{
@@ -109,17 +109,17 @@ const ItemDetailScreen = () => {
         display: 'flex', justifyContent: 'space-between',
       }}>
         <button className="scale-pressable" onClick={closeStack}
-          style={{ width: 40, height: 40, borderRadius: 20, background: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-          <ChevronLeft size={24} color="#111827" />
+          style={{ width: 40, height: 40, borderRadius: 20, background: 'var(--overlay-btn-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+          <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
         <button className="scale-pressable"
-          style={{ width: 40, height: 40, borderRadius: 20, background: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-          <Share2 size={24} color="#111827" />
+          style={{ width: 40, height: 40, borderRadius: 20, background: 'var(--overlay-btn-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+          <Share2 size={24} color="var(--text-primary)" />
         </button>
       </div>
 
       {/* Image Carousel */}
-      <div style={{ width: '100%', height: 400, position: 'relative', overflow: 'hidden', background: '#F5F5F5' }}>
+      <div style={{ width: '100%', height: 400, position: 'relative', overflow: 'hidden', background: 'var(--img-placeholder)' }}>
         {images.length > 0 ? (
           <div style={{ display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', width: '100%', height: '100%' }}
             onScroll={(e) => {
@@ -132,7 +132,7 @@ const ItemDetailScreen = () => {
             ))}
           </div>
         ) : (
-          <div style={{ width: '100%', height: '100%', background: '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF' }}>No Image</div>
+          <div style={{ width: '100%', height: '100%', background: 'var(--img-placeholder)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)' }}>No Image</div>
         )}
         {images.length > 1 && (
           <div style={{ position: 'absolute', bottom: 60, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8 }}>
@@ -145,28 +145,28 @@ const ItemDetailScreen = () => {
 
       {/* Content Card */}
       <div style={{
-        background: 'white', borderRadius: '32px 32px 0 0', padding: 24,
+        background: 'var(--surface)', borderRadius: '32px 32px 0 0', padding: 24,
         marginTop: -40, position: 'relative', minHeight: 400,
         boxShadow: '0 -3px 8px rgba(0,0,0,0.1)', paddingBottom: 100,
       }}>
-        <div style={{ width: 40, height: 4, background: '#E5E7EB', borderRadius: 2, margin: '0 auto 20px' }} />
-        <h1 style={{ fontSize: 24, fontWeight: 600, color: '#111827', marginBottom: 4 }}>{item.title}</h1>
-        <p style={{ fontSize: 18, fontWeight: 600, color: '#111827', marginBottom: 24 }}>₹{item.daily_rate}/day</p>
+        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 20px' }} />
+        <h1 style={{ fontSize: 24, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 4 }}>{item.title}</h1>
+        <p style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 24 }}>₹{item.daily_rate}/day</p>
 
-        <div style={{ height: 1, background: '#F3F4F6', margin: '0 0 24px' }} />
+        <div style={{ height: 1, background: 'var(--border-light)', margin: '0 0 24px' }} />
 
         {/* Availability */}
-        <h3 style={{ fontSize: 18, fontWeight: 600, color: '#111827', marginBottom: 12 }}>AVAILABILITY</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 12 }}>AVAILABILITY</h3>
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: 16, background: '#FAFAFA', borderRadius: 16, border: '1px solid #F3F4F6', marginBottom: 24,
+          padding: 16, background: 'var(--surface-alt)', borderRadius: 16, border: '1px solid var(--border-light)', marginBottom: 24,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             {isRented ? (
               activeRental.renter?.avatar_url ? (
-                <img src={activeRental.renter.avatar_url} alt="" style={{ width: 48, height: 48, borderRadius: 24, background: '#E5E7EB', objectFit: 'cover' }} />
+                <img src={activeRental.renter.avatar_url} alt="" style={{ width: 48, height: 48, borderRadius: 24, background: 'var(--border)', objectFit: 'cover' }} />
               ) : (
-                <div style={{ width: 48, height: 48, borderRadius: 24, background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 18, fontWeight: 700 }}>{activeRental.renter?.full_name?.[0] || 'N'}</div>
+                <div style={{ width: 48, height: 48, borderRadius: 24, background: 'var(--accent-solid)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-solid-text)', fontSize: 18, fontWeight: 700 }}>{activeRental.renter?.full_name?.[0] || 'N'}</div>
               )
             ) : (
               <div style={{ width: 48, height: 48, borderRadius: 24, background: '#D1FAE5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -174,57 +174,57 @@ const ItemDetailScreen = () => {
               </div>
             )}
             <div>
-              <span style={{ fontSize: 15, fontWeight: 600, color: '#111827', display: 'block', marginBottom: 2 }}>
+              <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', display: 'block', marginBottom: 2 }}>
                 {isRented ? `Currently with ${activeRental.renter?.full_name?.split(' ')[0] || 'Neighbor'}` : 'Currently Available'}
               </span>
-              <span style={{ fontSize: 13, fontWeight: 500, color: '#6B7280' }}>
+              <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)' }}>
                 {isRented ? `Available from ${new Date(activeRental.end_date).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}` : 'Ready to rent instantly'}
               </span>
             </div>
           </div>
           <span style={{
-            padding: '6px 12px', borderRadius: 20, border: '1px solid #E5E7EB', background: 'white',
-            fontSize: 12, fontWeight: 600, color: isRented ? '#6B7280' : '#111827',
+            padding: '6px 12px', borderRadius: 20, border: '1px solid var(--border)', background: 'var(--surface)',
+            fontSize: 12, fontWeight: 600, color: isRented ? 'var(--text-secondary)' : 'var(--text-primary)',
           }}>{isRented ? 'Busy' : 'Available'}</span>
         </div>
 
         {/* Description */}
-        <h3 style={{ fontSize: 18, fontWeight: 600, color: '#111827', marginBottom: 12 }}>Description</h3>
-        <p style={{ fontSize: 15, color: '#4B5563', lineHeight: 1.6, marginBottom: 24 }}>
+        <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 12 }}>Description</h3>
+        <p style={{ fontSize: 15, color: 'var(--text-subtle)', lineHeight: 1.6, marginBottom: 24 }}>
           {item.description?.trim() || `Professional grade ${item.category?.toLowerCase() || 'item'} suitable for your daily needs. Well maintained and ready for use.`}
         </p>
 
         {/* Owner/Renter Split View */}
         {isOwner ? (
           <div style={{ marginTop: 16 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 600, color: '#111827', marginBottom: 12 }}>
+            <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 12 }}>
               {activeRental ? 'Current Rental' : `Interested People (${requests.length})`}
             </h3>
             {requests.length === 0 && !activeRental && (
-              <p style={{ textAlign: 'center', color: '#6B7280', marginTop: 20 }}>No requests yet.</p>
+              <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginTop: 20 }}>No requests yet.</p>
             )}
             {requests.map((req) => (
               <div key={req.id} style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: 12, background: '#FAFAFA', borderRadius: 12, marginBottom: 12, border: '1px solid #F3F4F6',
+                padding: 12, background: 'var(--surface-alt)', borderRadius: 12, marginBottom: 12, border: '1px solid var(--border-light)',
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   {req.renter?.avatar_url ? (
-                    <img src={req.renter.avatar_url} alt="" style={{ width: 40, height: 40, borderRadius: 20, background: '#E5E7EB', objectFit: 'cover' }} />
+                    <img src={req.renter.avatar_url} alt="" style={{ width: 40, height: 40, borderRadius: 20, background: 'var(--border)', objectFit: 'cover' }} />
                   ) : (
-                    <div style={{ width: 40, height: 40, borderRadius: 20, background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 14, fontWeight: 700 }}>{req.renter?.full_name?.[0] || 'N'}</div>
+                    <div style={{ width: 40, height: 40, borderRadius: 20, background: 'var(--accent-solid)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-solid-text)', fontSize: 14, fontWeight: 700 }}>{req.renter?.full_name?.[0] || 'N'}</div>
                   )}
                   <div>
-                    <span style={{ fontWeight: 600, color: '#111827', display: 'block' }}>{req.renter?.full_name || 'Neighbor'}</span>
-                    <span style={{ fontSize: 12, color: '#4B5563', fontWeight: 600 }}>
+                    <span style={{ fontWeight: 600, color: 'var(--text-primary)', display: 'block' }}>{req.renter?.full_name || 'Neighbor'}</span>
+                    <span style={{ fontSize: 12, color: 'var(--text-subtle)', fontWeight: 600 }}>
                       Offer: ₹{req.offered_price} ({req.duration_hours}h) • {req.status.toUpperCase()}
                     </span>
                   </div>
                 </div>
                 <button className="scale-pressable" onClick={() => openChat({ ...req.renter, id: req.sender_id })}
-                  style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#F3F4F6', padding: '6px 12px', borderRadius: 20 }}>
-                  <MessageCircle size={16} color="#111827" />
-                  <span style={{ fontSize: 12, fontWeight: 600, color: '#111827' }}>Chat</span>
+                  style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'var(--muted)', padding: '6px 12px', borderRadius: 20 }}>
+                  <MessageCircle size={16} color="var(--text-primary)" />
+                  <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)' }}>Chat</span>
                 </button>
               </div>
             ))}
@@ -234,36 +234,36 @@ const ItemDetailScreen = () => {
             {/* Owner Card */}
             <div className="scale-pressable" onClick={() => !loadingOwner && owner && setShowOwnerProfile(true)} style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: 16, background: '#F9FAFB', borderRadius: 16, border: '1px solid #F3F4F6', cursor: 'pointer',
+              padding: 16, background: 'var(--surface-alt)', borderRadius: 16, border: '1px solid var(--border-light)', cursor: 'pointer',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 {owner?.avatar_url ? (
-                  <img src={owner.avatar_url} alt="" style={{ width: 48, height: 48, borderRadius: 24, background: '#E5E7EB', objectFit: 'cover' }} />
+                  <img src={owner.avatar_url} alt="" style={{ width: 48, height: 48, borderRadius: 24, background: 'var(--border)', objectFit: 'cover' }} />
                 ) : (
-                  <div style={{ width: 48, height: 48, borderRadius: 24, background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 18, fontWeight: 700 }}>{owner?.full_name?.[0] || 'N'}</div>
+                  <div style={{ width: 48, height: 48, borderRadius: 24, background: 'var(--accent-solid)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-solid-text)', fontSize: 18, fontWeight: 700 }}>{owner?.full_name?.[0] || 'N'}</div>
                 )}
                 <div>
-                  <span style={{ fontWeight: 600, color: '#111827', display: 'block' }}>
+                  <span style={{ fontWeight: 600, color: 'var(--text-primary)', display: 'block' }}>
                     {loadingOwner ? 'Loading...' : `Owned by ${owner?.full_name || 'Neighbor'}`}
                   </span>
-                  <span style={{ fontSize: 12, color: '#6B7280' }}>★ 4.8</span>
+                  <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>★ 4.8</span>
                 </div>
               </div>
               <button className="scale-pressable" onClick={(e) => { e.stopPropagation(); owner && openChat(owner); }}
-                style={{ padding: '8px 16px', background: '#F3F4F6', borderRadius: 20, fontWeight: 600, color: '#111827', fontSize: 14 }}>Chat</button>
+                style={{ padding: '8px 16px', background: 'var(--muted)', borderRadius: 20, fontWeight: 600, color: 'var(--text-primary)', fontSize: 14 }}>Chat</button>
             </div>
 
             {/* Footer */}
             <div style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              marginTop: 24, paddingTop: 24, borderTop: '1px solid #F3F4F6',
+              marginTop: 24, paddingTop: 24, borderTop: '1px solid var(--border-light)',
             }}>
               <div>
-                <span style={{ fontSize: 12, color: '#6B7280', display: 'block' }}>Total for 1 day</span>
-                <span style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>₹{item.daily_rate}</span>
+                <span style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'block' }}>Total for 1 day</span>
+                <span style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)' }}>₹{item.daily_rate}</span>
               </div>
               <button className="scale-pressable" onClick={() => setShowOfferModal(true)} disabled={requesting}
-                style={{ background: '#111827', padding: '16px 32px', borderRadius: 16, color: 'white', fontWeight: 700, fontSize: 16 }}>
+                style={{ background: 'var(--accent-solid)', padding: '16px 32px', borderRadius: 16, color: 'var(--accent-solid-text)', fontWeight: 700, fontSize: 16 }}>
                 Make Offer
               </button>
             </div>
