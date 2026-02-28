@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { X, Award, Package, ShoppingBag, User } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { calculateTrustScore } from '@/lib/trustScore';
+import { getSafeImageUrl } from '@/lib/imageUtils';
 
 interface UserProfileModalProps {
   visible: boolean;
@@ -60,7 +61,7 @@ const UserProfileModal = ({ visible, userId, user: passedUser, onClose }: UserPr
             {/* Avatar */}
             <div style={{ width: 100, height: 100, borderRadius: 50, background: 'var(--muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16, overflow: 'hidden' }}>
               {avatarUrl ? (
-                <img src={avatarUrl} alt="" style={{ width: 100, height: 100, borderRadius: 50, objectFit: 'cover' }} />
+                <img src={getSafeImageUrl(avatarUrl)} alt="" style={{ width: 100, height: 100, borderRadius: 50, objectFit: 'cover' }} />
               ) : (
                 <span style={{ fontSize: 32, fontWeight: 700, color: 'var(--text-primary)' }}>{displayName[0]}</span>
               )}

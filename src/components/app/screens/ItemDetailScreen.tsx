@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { createNotification } from '@/lib/notificationManager';
 import UserProfileModal from '../modals/UserProfileModal';
+import { getSafeImageUrl } from '@/lib/imageUtils';
 
 const ItemDetailScreen = () => {
   const { user, selectedItem: item, closeStack, showAlert, openChat } = useStore();
@@ -127,7 +128,7 @@ const ItemDetailScreen = () => {
               setActiveIndex(Math.round(el.scrollLeft / el.offsetWidth));
             }}>
             {images.map((imgUri: string, idx: number) => (
-              <img key={idx} src={imgUri} alt="" onClick={() => setFullScreenImage(imgUri)}
+              <img key={idx} src={getSafeImageUrl(imgUri)} alt="" onClick={() => setFullScreenImage(imgUri)}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', flexShrink: 0, scrollSnapAlign: 'start', cursor: 'pointer' }} />
             ))}
           </div>
@@ -164,7 +165,7 @@ const ItemDetailScreen = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             {isRented ? (
               activeRental.renter?.avatar_url ? (
-                <img src={activeRental.renter.avatar_url} alt="" style={{ width: 48, height: 48, borderRadius: 24, background: 'var(--border)', objectFit: 'cover' }} />
+                <img src={getSafeImageUrl(activeRental.renter.avatar_url)} alt="" style={{ width: 48, height: 48, borderRadius: 24, background: 'var(--border)', objectFit: 'cover' }} />
               ) : (
                 <div style={{ width: 48, height: 48, borderRadius: 24, background: 'var(--accent-solid)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-solid-text)', fontSize: 18, fontWeight: 700 }}>{activeRental.renter?.full_name?.[0] || 'N'}</div>
               )
@@ -210,7 +211,7 @@ const ItemDetailScreen = () => {
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   {req.renter?.avatar_url ? (
-                    <img src={req.renter.avatar_url} alt="" style={{ width: 40, height: 40, borderRadius: 20, background: 'var(--border)', objectFit: 'cover' }} />
+                    <img src={getSafeImageUrl(req.renter.avatar_url)} alt="" style={{ width: 40, height: 40, borderRadius: 20, background: 'var(--border)', objectFit: 'cover' }} />
                   ) : (
                     <div style={{ width: 40, height: 40, borderRadius: 20, background: 'var(--accent-solid)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-solid-text)', fontSize: 14, fontWeight: 700 }}>{req.renter?.full_name?.[0] || 'N'}</div>
                   )}
@@ -238,7 +239,7 @@ const ItemDetailScreen = () => {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 {owner?.avatar_url ? (
-                  <img src={owner.avatar_url} alt="" style={{ width: 48, height: 48, borderRadius: 24, background: 'var(--border)', objectFit: 'cover' }} />
+                  <img src={getSafeImageUrl(owner.avatar_url)} alt="" style={{ width: 48, height: 48, borderRadius: 24, background: 'var(--border)', objectFit: 'cover' }} />
                 ) : (
                   <div style={{ width: 48, height: 48, borderRadius: 24, background: 'var(--accent-solid)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-solid-text)', fontSize: 18, fontWeight: 700 }}>{owner?.full_name?.[0] || 'N'}</div>
                 )}
@@ -302,7 +303,7 @@ const ItemDetailScreen = () => {
           <button onClick={() => setFullScreenImage(null)} style={{ position: 'absolute', top: 50, right: 20, padding: 8, borderRadius: 20, background: 'rgba(0,0,0,0.5)', zIndex: 20 }}>
             <X color="white" size={30} />
           </button>
-          <img src={fullScreenImage} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+          <img src={getSafeImageUrl(fullScreenImage)} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
         </div>
       )}
 

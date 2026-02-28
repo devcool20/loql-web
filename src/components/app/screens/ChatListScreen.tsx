@@ -5,6 +5,7 @@ import { Search } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { formatRelativeTime } from '@/lib/dateUtils';
+import { getSafeImageUrl } from '@/lib/imageUtils';
 
 const ChatListScreen = () => {
   const { user, openChat } = useStore();
@@ -126,7 +127,7 @@ const ChatListScreen = () => {
               }}>
               {/* Avatar */}
               {item.avatar ? (
-                <img src={item.avatar} alt="" style={{ width: 56, height: 56, borderRadius: 28, background: 'var(--muted)', objectFit: 'cover' }} />
+                <img src={getSafeImageUrl(item.avatar)} alt="" style={{ width: 56, height: 56, borderRadius: 28, background: 'var(--muted)', objectFit: 'cover' }} />
               ) : (
                 <div style={{
                   width: 56, height: 56, borderRadius: 28, background: 'var(--accent-solid)',

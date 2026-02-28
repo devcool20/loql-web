@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { ListSkeleton } from '@/components/app/Skeleton';
 import { cacheGetStale, cacheSet, cacheInvalidate, CACHE_KEYS, TTL } from '@/lib/cache';
+import { getSafeImageUrl } from '@/lib/imageUtils';
 
 const RentalsScreen = () => {
   const { user, showAlert, navigateToDetail, setCurrentStack } = useStore();
@@ -222,7 +223,7 @@ const RentalsScreen = () => {
     <div key={item.id} className="scale-pressable" style={cardStyle} onClick={() => navigateToDetail(item)}>
       <div style={imageContainerStyle}>
         {item.images?.[0] ? (
-          <img src={item.images[0]} alt={item.title} style={imageStyle} />
+          <img src={getSafeImageUrl(item.images[0])} alt={item.title} style={imageStyle} />
         ) : (
           <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)', fontSize: 12 }}>No Img</div>
         )}
@@ -248,7 +249,7 @@ const RentalsScreen = () => {
       onClick={() => { if (item.items) navigateToDetail(item.items); }}>
       <div style={imageContainerStyle}>
         {item.items?.images?.[0] ? (
-          <img src={item.items.images[0]} alt="" style={imageStyle} />
+          <img src={getSafeImageUrl(item.items.images[0])} alt="" style={imageStyle} />
         ) : (
           <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)', fontSize: 11 }}>No Img</div>
         )}
@@ -271,7 +272,7 @@ const RentalsScreen = () => {
         onClick={() => { if (item.items) navigateToDetail(item.items); }}>
         <div style={imageContainerStyle}>
           {item.items?.images?.[0] ? (
-            <img src={item.items.images[0]} alt="" style={imageStyle} />
+            <img src={getSafeImageUrl(item.items.images[0])} alt="" style={imageStyle} />
           ) : (
           <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)', fontSize: 11 }}>No Img</div>
         )}
@@ -387,7 +388,7 @@ const RentalsScreen = () => {
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14, background: 'var(--surface-alt)', padding: 14, borderRadius: 20, border: '1px solid var(--border-light)', marginBottom: 20 }}>
                   {selectedOfferForPayment.items?.images?.[0] ? (
-                    <img src={selectedOfferForPayment.items.images[0]} alt="" style={{ width: 64, height: 64, borderRadius: 16, objectFit: 'cover' }} />
+                    <img src={getSafeImageUrl(selectedOfferForPayment.items.images[0])} alt="" style={{ width: 64, height: 64, borderRadius: 16, objectFit: 'cover' }} />
                   ) : (
                     <div style={{ width: 64, height: 64, borderRadius: 16, background: 'var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <Camera size={24} color="var(--text-light)" />

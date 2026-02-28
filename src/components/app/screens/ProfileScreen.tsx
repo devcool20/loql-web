@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { supabase } from '@/lib/supabase';
+import { getSafeImageUrl } from '@/lib/imageUtils';
 
 const ProfileScreen = () => {
   const { user, setUser, showAlert, setCurrentStack, setHistoryType, refreshTrigger, currentStack, theme, toggleTheme } = useStore();
@@ -84,7 +85,7 @@ const ProfileScreen = () => {
         <div style={{ display: 'flex', alignItems: 'center', marginTop: 8, marginBottom: 28 }}>
           <div style={{ marginRight: 18, borderRadius: 40, boxShadow: '0 6px 10px rgba(0,0,0,0.12)' }}>
             {avatarUrl ? (
-              <img src={avatarUrl} alt="" style={{ width: 76, height: 76, borderRadius: 38, objectFit: 'cover' }} />
+              <img src={getSafeImageUrl(avatarUrl)} alt="" style={{ width: 76, height: 76, borderRadius: 38, objectFit: 'cover' }} />
             ) : (
               <div style={{
                 width: 76, height: 76, borderRadius: 38, background: 'var(--accent-solid)',

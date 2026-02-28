@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, Send, Trash2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
+import { getSafeImageUrl } from '@/lib/imageUtils';
 
 interface ChatDetailScreenProps {
   targetUser: { id: string; full_name: string; avatar_url?: string };
@@ -130,7 +131,7 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
           <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
         {targetUser.avatar_url ? (
-          <img src={targetUser.avatar_url} alt="" style={{ width: 40, height: 40, borderRadius: 20, objectFit: 'cover' }} />
+          <img src={getSafeImageUrl(targetUser.avatar_url)} alt="" style={{ width: 40, height: 40, borderRadius: 20, objectFit: 'cover' }} />
         ) : (
           <div style={{
             width: 40, height: 40, borderRadius: 20, background: 'var(--accent-solid)',

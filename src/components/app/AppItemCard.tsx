@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { getSafeImageUrl } from '@/lib/imageUtils';
 
 interface ItemCardProps {
   item: any;
@@ -18,7 +19,7 @@ const AppItemCard = ({ item, onPress }: ItemCardProps) => {
       <div className="item-card-image-container">
         {item.images && item.images.length > 0 ? (
           <img
-            src={item.images[0]}
+            src={getSafeImageUrl(item.images[0])}
             alt={item.title}
             className="item-card-image"
             loading="lazy"
