@@ -1,0 +1,170 @@
+# Loql - Modernism Fusion
+
+## Product Overview
+
+**The Pitch:** Loql bridges the digital and physical divide, turning anonymous streets into connected communities. It’s a hyper-local lending and sharing platform steeped in cultural warmth, designed to make borrowing a ladder as natural as asking for a cup of sugar.
+
+**For:** Urban dwellers feeling disconnected from their immediate surroundings who want to share resources, reduce waste, and build local trust.
+
+**Device:** desktop
+
+**Design Direction:** Indian Modernism Fusion. A marriage of warm handcrafted textures (Mitti noise, Paper Cream), structured utility (grid systems, Community Teal), and vibrant bazaar energy (stacked cards, Marigold Glow).
+
+**Inspired by:** Airbnb (trust mechanics), Paper Magazine (editorial layout), and traditional Indian block print aesthetics (patterns and warmth).
+
+---
+
+## Screens
+
+- **The 'Dwar' (Welcome):** Immersive entry point establishing warmth and local context.
+- **The 'Aas-Paas' (Discovery):** Dynamic, stacked-card marketplace of neighborhood items.
+- **The 'Katha' (Item Detail):** Story-driven product page with Polaroid visuals and owner notes.
+- **The 'Samvaad' (Checkout):** Conversational request flow ending in a virtual handshake.
+
+---
+
+## Key Flows
+
+**Borrowing an Item:** A neighbor finds and requests an item securely.
+
+1. User is on **Aas-Paas** -> sees "The Loql Hero" featured items in a stacked grid.
+2. User clicks an item card -> transitions to **Katha** screen.
+3. User reads the handwritten note, clicks "Borrow with Love" -> opens **Samvaad** modal.
+4. User selects dates, writes a greeting, confirms -> sees "Virtual Handshake" success state.
+
+---
+
+<details>
+<summary>Design System</summary>
+
+## Color Palette
+
+- **Primary:** `#E27D60` (Saffron Earth) - Main CTAs, warm brand moments
+- **Background:** `#FDFBF7` (Paper Cream) - Base page background
+- **Surface:** `#FFFFFF` (Pure White) - Card backgrounds, modals
+- **Text:** `#2D3142` (Ink Dark) - Primary readability
+- **Muted:** `#8D99AE` (Stone Grey) - Secondary text, borders
+- **Accent 1:** `#41B3A3` (Community Teal) - Trust badges, verified ticks, secondary buttons
+- **Accent 2:** `#F64C72` (Marigold Glow) - Hover states, energetic highlights, notifications
+
+## Typography
+
+- **Headings:** Lora, 700, 32-64px - Used for editorial headers and storytelling
+- **Body:** Cabinet Grotesk, 400, 16px - High legibility, slight geometric quirk
+- **Small text:** Cabinet Grotesk, 500, 14px - Eyebrows, tags, dates
+- **Buttons:** Cabinet Grotesk, 700, 16px - Uppercase, 1px letter spacing
+
+**Style notes:** Heavy use of 24px organic border radii. Backgrounds feature a subtle `url('noise.png')` overlay at 3% opacity for a tactile "Mitti" (clay) feel. Shadows are warm and diffused, not harsh black. 
+
+## Design Tokens
+
+```css
+:root {
+  --color-saffron: #E27D60;
+  --color-teal: #41B3A3;
+  --color-marigold: #F64C72;
+  --color-paper: #FDFBF7;
+  --color-ink: #2D3142;
+  
+  --font-serif: 'Lora', serif;
+  --font-sans: 'Cabinet Grotesk', sans-serif;
+  
+  --radius-organic: 24px;
+  --radius-pill: 999px;
+  
+  --shadow-warm: 0 12px 32px rgba(226, 125, 96, 0.08);
+  --shadow-card: 0 4px 12px rgba(45, 49, 66, 0.04);
+  
+  --texture-mitti: url('/assets/noise-texture.png');
+}
+```
+
+</details>
+
+---
+
+<details>
+<summary>Screen Specifications</summary>
+
+### The 'Dwar' (Welcome)
+
+**Purpose:** Warm, immersive onboarding that asks for location.
+
+**Layout:** Split screen. Left: 40% solid Paper Cream with text. Right: 60% dynamic Rangoli-inspired geometric artwork.
+
+**Key Elements:**
+- **Greeting Typography:** 64px Lora header "Discover your neighborhood's hidden treasures."
+- **Location Input:** 64px height, Pill shape (`--radius-pill`), 2px Saffron border, large map pin icon.
+- **CTA Button:** "Step Into Your Neighborhood", solid Saffron, Cabinet Grotesk 700, sits right-aligned inside the input.
+
+**States:**
+- **Loading:** Rangoli shapes gently pulse in Marigold Glow.
+
+### The 'Aas-Paas' (Discovery Home)
+
+**Purpose:** Browsing available items and connecting with the community.
+
+**Layout:** 12-column grid. Top navigation. "The Loql Hero" spans top 8 columns. Waterfall stacked cards below.
+
+**Key Elements:**
+- **The Loql Hero:** Large feature banner, 24px radius, Community Teal background, 3D illustration of a neighbor.
+- **Stacked Item Cards:** White surface, warm shadow. Overlapping layout mimicking a physical bazaar.
+- **Category Pills:** Horizontal scrolling list. Marigold Glow active state.
+
+**Components:**
+- **Item Card:** 280x360px, White. Top 60% image (rounded 16px). Bottom: Item name (Lora 20px), distance (Teal tag).
+
+**Interactions:**
+- **Hover Card:** Rotates 2 degrees, slight Y-axis lift, `--shadow-warm` applies.
+
+### The 'Katha' (Item Detail Page)
+
+**Purpose:** Tell the story of the item and its owner to build trust.
+
+**Layout:** 2-column layout (60/40 split). Left: Visuals. Right: Details & Action.
+
+**Key Elements:**
+- **Polaroid Frame:** Main image sits in a white frame, bottom heavy, tilted -1deg.
+- **Handwritten Note:** Pale yellow background (`#FFF9E6`), Lora italic font, mimicking a real note from the owner.
+- **Verified Neighbor Badge:** Community Teal, shield icon, absolute positioned overlapping the owner's avatar.
+- **Borrow CTA:** "Borrow with Love", solid Saffron Earth, spans 100% width of the right column.
+
+**States:**
+- **Unavailable:** CTA turns Stone Grey, text reads "Currently with a neighbor".
+
+**Interactions:**
+- **Click Image:** Expands to full-screen lightbox.
+
+### The 'Samvaad' (Request/Checkout)
+
+**Purpose:** Finalize the request with empathy and scheduling.
+
+**Layout:** Centered modal over blurred 'Katha' background. 600px max-width, 24px radius.
+
+**Key Elements:**
+- **Date Picker:** Clean, minimalist grid. Teal accents for selected dates.
+- **Message Field:** Label reads "Say hi to your neighbor". 120px height textarea, Mitti texture background.
+- **Trust Banner:** Small footer in modal. "Your request is protected by Loql Promise."
+
+**States:**
+- **Success:** Modal collapses into a "Virtual Handshake" Lottie animation, dissolving into a Teal success checkmark.
+
+**Interactions:**
+- **Click Confirm:** Button shows spinning Marigold loader before success state.
+
+</details>
+
+---
+
+<details>
+<summary>Build Guide</summary>
+
+**Stack:** HTML + Tailwind CSS v3
+
+**Build Order:**
+1. **The 'Aas-Paas' (Discovery Home)** - Establishes the core grid, card components, and Mitti texture foundation.
+2. **The 'Katha' (Item Detail Page)** - Defines the typographic hierarchy (Lora vs Cabinet Grotesk) and the Polaroid visual style.
+3. **The 'Samvaad' (Checkout Modal)** - Implements form elements, states, and the crucial trust mechanics (Teal accents).
+4. **The 'Dwar' (Welcome)** - Final visual polish with the bold split-screen layout and Rangoli artwork.
+
+</details>

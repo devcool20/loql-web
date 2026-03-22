@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from 'next';
 export const metadata: Metadata = {
   title: 'loql — Your Neighborhood Rental Engine',
   description: 'Rent anything from your neighbors in your society. Tools, gear, party supplies, and more.',
-  themeColor: '#FAFAFA',
+  themeColor: '#FDFBF7',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',

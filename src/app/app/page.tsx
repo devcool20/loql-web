@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { MobileOnlyAppGate } from '@/components/app/MobileOnlyAppGate';
 
 const AppShell = dynamic(() => import('@/components/app/AppShell'), {
   ssr: false,
@@ -12,5 +13,9 @@ const AppShell = dynamic(() => import('@/components/app/AppShell'), {
 });
 
 export default function AppPage() {
-  return <AppShell />;
+  return (
+    <MobileOnlyAppGate>
+      <AppShell />
+    </MobileOnlyAppGate>
+  );
 }

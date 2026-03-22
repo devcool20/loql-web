@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, CreditCard, X, ShieldCheck, Camera } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { ListSkeleton } from '@/components/app/Skeleton';
 import { cacheGetStale, cacheSet, cacheInvalidate, CACHE_KEYS, TTL } from '@/lib/cache';
 import { getSafeImageUrl } from '@/lib/imageUtils';
+import AppTopBar from '@/components/app/AppTopBar';
 
 const RentalsScreen = () => {
   const { user, showAlert, navigateToDetail, setCurrentStack } = useStore();
@@ -316,28 +317,30 @@ const RentalsScreen = () => {
 
   return (
     <div style={{ background: 'var(--background)', minHeight: '100%', paddingBottom: 100 }}>
+      <AppTopBar />
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 24px 24px' }}>
-        <h1 style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', letterSpacing: -0.5 }}>My Rentals</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 24px 18px' }}>
+        <h1 className="font-serif" style={{ fontSize: 36, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: -0.5 }}>My Listings</h1>
         {activeTab === 'listings' && (
           <button className="scale-pressable" onClick={() => setCurrentStack('AddItem')}
-            style={{ width: 44, height: 44, borderRadius: 22, background: 'var(--accent-solid)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 8px rgba(0,0,0,0.2)' }}>
+            style={{ width: 44, height: 44, borderRadius: 22, background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--warm-glow)' }}>
             <Plus size={24} color="var(--accent-solid-text)" />
           </button>
         )}
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', padding: '0 24px', marginBottom: 16, gap: 10 }}>
+      <div style={{ display: 'flex', padding: '0 24px', marginBottom: 16, gap: 8, overflowX: 'auto' }}>
         {(['listings', 'offers', 'bookings'] as const).map((tab) => (
           <button key={tab} className="scale-pressable"
             onClick={() => setActiveTab(tab)}
             style={{
-              padding: '10px 22px', borderRadius: 50, border: `1.5px solid ${activeTab === tab ? 'var(--accent-solid)' : 'var(--border)'}`,
-              background: activeTab === tab ? 'var(--accent-solid)' : 'var(--surface)', color: activeTab === tab ? 'var(--accent-solid-text)' : 'var(--text-secondary)',
-              fontSize: 14, fontWeight: 500,
+              whiteSpace: 'nowrap',
+              padding: '10px 18px', borderRadius: 999, border: `1px solid ${activeTab === tab ? 'transparent' : 'var(--border-light)'}`,
+              background: activeTab === tab ? 'var(--primary)' : 'var(--surface)', color: activeTab === tab ? 'white' : 'var(--text-secondary)',
+              fontSize: 13, fontWeight: 700,
             }}>
-            {tab === 'listings' ? 'Listings' : tab === 'offers' ? 'My Offers' : 'Rentals'}
+            {tab === 'listings' ? 'All Items' : tab === 'offers' ? 'Offers' : 'Borrowed'}
           </button>
         ))}
       </div>

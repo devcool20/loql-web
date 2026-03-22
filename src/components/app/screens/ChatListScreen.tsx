@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { formatRelativeTime } from '@/lib/dateUtils';
 import { getSafeImageUrl } from '@/lib/imageUtils';
+import AppTopBar from '@/components/app/AppTopBar';
 
 const ChatListScreen = () => {
   const { user, openChat } = useStore();
@@ -94,15 +95,18 @@ const ChatListScreen = () => {
   }
 
   return (
-    <div style={{ background: 'var(--background)', minHeight: '100%', paddingTop: 20, paddingBottom: 100 }}>
-      <h1 style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', padding: '0 24px', marginBottom: 20, letterSpacing: -0.5 }}>
-        Messages
+    <div style={{ background: 'var(--background)', minHeight: '100%', paddingBottom: 100 }}>
+      <AppTopBar />
+      <div style={{ padding: '16px 20px 0' }}>
+      <h1 className="font-serif" style={{ fontSize: 34, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: -0.5 }}>
+        Neighborhood Conversations
       </h1>
+      <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginBottom: 16 }}>Connect with those around you.</p>
 
       {/* Search Bar */}
       <div style={{
         display: 'flex', alignItems: 'center', background: 'var(--surface)', margin: '0 20px', padding: '12px 16px',
-        borderRadius: 20, marginBottom: 24, border: '1px solid var(--border-light)', boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+        borderRadius: 999, marginBottom: 14, border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)', marginLeft: 0, marginRight: 0,
       }}>
         <Search size={20} color="var(--text-light)" />
         <input
@@ -113,8 +117,28 @@ const ChatListScreen = () => {
         />
       </div>
 
+      <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 14 }}>
+        {['All', 'Unread', 'Requests'].map((chip, idx) => (
+          <span
+            key={chip}
+            style={{
+              borderRadius: 999,
+              padding: '7px 14px',
+              whiteSpace: 'nowrap',
+              fontSize: 12,
+              fontWeight: 700,
+              color: idx === 0 ? 'white' : 'var(--text-secondary)',
+              background: idx === 0 ? 'var(--primary)' : 'var(--surface)',
+              border: idx === 0 ? 'none' : '1px solid var(--border-light)',
+            }}
+          >
+            {chip}
+          </span>
+        ))}
+      </div>
+
       {/* Chat List */}
-      <div style={{ padding: '0 20px' }}>
+      <div style={{ padding: 0 }}>
         {filtered.length === 0 ? (
           <p style={{ textAlign: 'center', color: 'var(--text-light)', marginTop: 60, fontSize: 15, fontWeight: 500 }}>No messages yet.</p>
         ) : (
@@ -122,8 +146,8 @@ const ChatListScreen = () => {
             <div key={item.id} className="scale-pressable"
               onClick={() => openChat({ id: item.id, full_name: item.name, avatar_url: item.avatar })}
               style={{
-                display: 'flex', alignItems: 'center', background: 'var(--surface)', padding: 16, borderRadius: 20,
-                marginBottom: 12, border: '1px solid var(--border-light)', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', background: 'var(--surface-container-lowest)', padding: 16, borderRadius: 24,
+                marginBottom: 12, border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)', cursor: 'pointer',
               }}>
               {/* Avatar */}
               {item.avatar ? (
@@ -159,6 +183,7 @@ const ChatListScreen = () => {
             </div>
           ))
         )}
+      </div>
       </div>
     </div>
   );

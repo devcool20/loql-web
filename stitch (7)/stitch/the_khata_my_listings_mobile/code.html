@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-low": "#FDFBF7",
+              "tertiary-container": "#ffdad6",
+              "on-secondary-fixed": "#00201f",
+              "surface-container": "#f8f6f6",
+              "on-primary": "#ffffff",
+              "on-tertiary-fixed": "#410002",
+              "on-tertiary-container": "#410002",
+              "inverse-primary": "#ffb5a1",
+              "tertiary-fixed-dim": "#ffb4ab",
+              "surface": "#FDFBF7",
+              "secondary": "#41B3A3",
+              "on-error-container": "#93000a",
+              "error-container": "#ffdad6",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed-variant": "#852407",
+              "on-primary-container": "#ffffff",
+              "primary-fixed-dim": "#ffb5a1",
+              "on-surface": "#2D3142",
+              "background": "#FDFBF7",
+              "outline-variant": "#dec0b8",
+              "secondary-fixed": "#78f6f3",
+              "on-secondary-container": "#004d40",
+              "surface-variant": "#f4ded8",
+              "on-secondary": "#ffffff",
+              "on-surface-variant": "#8D99AE",
+              "on-primary-fixed": "#3b0900",
+              "primary": "#f17350",
+              "error": "#ba1a1a",
+              "surface-container-high": "#f9e3de",
+              "on-secondary-fixed-variant": "#00504f",
+              "on-tertiary-fixed-variant": "#93000a",
+              "on-error": "#ffffff",
+              "primary-fixed": "#ffdbd1",
+              "primary-container": "#f17350",
+              "surface-bright": "#ffffff",
+              "inverse-on-surface": "#ffede8",
+              "surface-tint": "#f17350",
+              "secondary-fixed-dim": "#57d9d7",
+              "on-background": "#2D3142",
+              "tertiary-fixed": "#ffdad6",
+              "surface-container-lowest": "#ffffff",
+              "outline": "#8D99AE",
+              "inverse-surface": "#3a2d2a",
+              "tertiary": "#F64C72",
+              "surface-container-highest": "#f4ded8",
+              "secondary-container": "#e0f2f1",
+              "surface-dim": "#ebd5d0"
+            },
+            fontFamily: {
+              "headline": ["Work Sans"],
+              "body": ["Work Sans"],
+              "label": ["Work Sans"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .mitti-noise {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body min-h-screen relative overflow-x-hidden">
+<div class="fixed inset-0 mitti-noise z-[9999]"></div>
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-50 bg-[#FDFBF7] dark:bg-stone-950 bg-gradient-to-b from-stone-200/20 to-transparent flex items-center justify-between px-6 py-4">
+<div class="flex items-center gap-4">
+<button class="hover:bg-stone-100 dark:hover:bg-stone-800 transition-all p-2 rounded-full scale-95 duration-200">
+<span class="material-symbols-outlined text-[#f17350]">menu</span>
+</button>
+<h1 class="font-['Work_Sans'] font-black tracking-tighter text-2xl text-[#f17350]">Loql</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full border-2 border-primary/20 p-0.5 overflow-hidden">
+<img alt="Neighbor Profile" class="w-full h-full object-cover rounded-full" data-alt="Close up of a friendly smiling neighbor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJct2gQMF2nI7a1EM9xElrE18YXyxHEX7cN0UUxkLa_3cF5GxtLBzk-p7WGyjNdwjZhlMm-xxELF3jSiuNRk935NRhb00mZpLLNNdgQL0LdCMLXLdDejyTQZFWX3wAJS4TrsWiWLdVBTKxhcR-quPQKNL94msb8_cemLZxCTSHho4lJ8YDgJ4W8yCoCtnjpfcI4UO5wrSb65aSkQ53AIPIazwYFCyuwNmzRCN6BBao90sAcFTjIrO9QE1aqmbyOEruWmVFpTVwGKSm"/>
+</div>
+</div>
+</header>
+<main class="max-w-2xl mx-auto px-6 pt-8 pb-32">
+<header class="mb-10">
+<div class="flex items-center gap-2 mb-2">
+<span class="text-secondary font-bold text-sm uppercase tracking-widest">Your Neighborhood</span>
+</div>
+<h2 class="text-4xl font-black tracking-tight leading-none text-on-background mb-4">My Listings</h2>
+<p class="text-on-surface-variant max-w-sm">Manage the treasures you're sharing with your community.</p>
+</header>
+<!-- Bento Filter Area -->
+<div class="flex gap-2 overflow-x-auto pb-6 scrollbar-hide">
+<button class="px-6 py-2 rounded-full bg-primary text-on-primary font-bold shadow-sm whitespace-nowrap">All Items (8)</button>
+<button class="px-6 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-medium border border-stone-100 whitespace-nowrap">Active</button>
+<button class="px-6 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-medium border border-stone-100 whitespace-nowrap">Borrowed</button>
+<button class="px-6 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-medium border border-stone-100 whitespace-nowrap">Drafts</button>
+</div>
+<!-- Listings Stack -->
+<div class="space-y-6">
+<!-- Listing Card 1: Active -->
+<div class="group relative bg-surface-container-lowest rounded-lg p-3 shadow-[0_4px_12px_rgba(45,49,66,0.04)] transition-all duration-300 hover:-translate-y-2 hover:rotate-1">
+<div class="flex gap-5">
+<div class="w-32 h-32 rounded-lg overflow-hidden shrink-0">
+<img alt="Vintage Camera" class="w-full h-full object-cover" data-alt="A vintage silver film camera on a wooden table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAF46LGIQLfmGQv3U3t25turSk1YLVTSOVbZt7y24FhaV4QLX-XvHSL3PuuaGHyqSybeVrk7OL4srZ7JJL2zWncMX6D85OgRJMi2zguL-7XfDkqOLSi2-VB8VPJioSgv3fcWbVcAyS15xvD1ld7_ZdLxP2r-h9hJgljaZcla0xaOno9beYEllOwyvixGXPtcoFDez5dyPJjM0eVQT4t_QdEjf_aHNnaAkvbX6DqBKJZ2UvFos18Zx8iRxC-XOQH6u29xkClYXGwa4Uv"/>
+</div>
+<div class="flex flex-col justify-between py-1 flex-grow">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="text-xl font-bold tracking-tight text-on-background">Vintage Yashica Camera</h3>
+<span class="bg-secondary/10 text-secondary text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-tighter">Active</span>
+</div>
+<p class="text-on-surface-variant text-sm mt-1">Excellent condition, 35mm film.</p>
+</div>
+<div class="flex items-center justify-between mt-4">
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="text-xs font-medium">Bandra West</span>
+</div>
+<button class="bg-primary-fixed text-on-primary-fixed-variant px-5 py-2 rounded-full font-bold text-sm hover:bg-primary hover:text-white transition-colors">Manage</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Listing Card 2: Borrowed -->
+<div class="group relative bg-surface-container-lowest rounded-lg p-3 shadow-[0_4px_12px_rgba(45,49,66,0.04)] transition-all duration-300 hover:-translate-y-2 hover:-rotate-1">
+<div class="flex gap-5">
+<div class="w-32 h-32 rounded-lg overflow-hidden shrink-0 relative">
+<div class="absolute inset-0 bg-on-surface/20 z-10 flex items-center justify-center">
+<span class="bg-white/90 px-3 py-1 rounded-full text-[10px] font-bold text-on-surface">IN USE</span>
+</div>
+<img alt="Drill Machine" class="w-full h-full object-cover" data-alt="A professional heavy duty power drill" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkyXkR8_xzNSHOw3N_XGdDygzmrZfiJKrUpB_aAMbKrLdNyUKFi0DG_79ZRHoD82YE21mk-iYcg0Lmslzst10QqKbGLPnlhUAA68fgLqCVC9lIkkeV_eIsvyHTKSYtR1ifM7sx4-5sTJ_6mHbibiGNDXd4P9bkURoharB7Fd8bwyCUf5FNK2mMfDX7Dz79uMaXAh_ZA84J4JlX7-dTD6S-RFHo4rjSRObcdH8zVUDOdUtfskNScHojUDlvM8Vz7tBa6EsdWQk7VnmS"/>
+</div>
+<div class="flex flex-col justify-between py-1 flex-grow">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="text-xl font-bold tracking-tight text-on-background">Bosch Power Drill</h3>
+<span class="bg-tertiary/10 text-tertiary text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-tighter">Borrowed</span>
+</div>
+<p class="text-on-surface-variant text-sm mt-1">Shared with <span class="font-bold text-on-background">Arjun K.</span></p>
+</div>
+<div class="flex items-center justify-between mt-4">
+<div class="flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-sm">event</span>
+<span class="text-xs font-bold uppercase tracking-tighter">Returns in 2 days</span>
+</div>
+<button class="bg-primary-fixed text-on-primary-fixed-variant px-5 py-2 rounded-full font-bold text-sm hover:bg-primary hover:text-white transition-colors">Manage</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Listing Card 3: Active -->
+<div class="group relative bg-surface-container-lowest rounded-lg p-3 shadow-[0_4px_12px_rgba(45,49,66,0.04)] transition-all duration-300 hover:-translate-y-2 hover:rotate-2">
+<div class="flex gap-5">
+<div class="w-32 h-32 rounded-lg overflow-hidden shrink-0">
+<img alt="Books" class="w-full h-full object-cover" data-alt="A stack of beautifully bound hardback books" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-ZtB8q_t9olqPzQt6REPpdHe97YPm-AkL2UmUT4M8Asxk2nnCDfax858YJUMhq2VkfDcsn81fbub8s6qaiXOtrMVw9mlJYXGPuxGq-lFnVuQ8D5zSUUvwAwj8SctseQF2s1NoDRwMBUHfHT6gbtNVAxv5HihfXKnMEmlPj2DXWcEpWL-v6u2ZHgPmrkgbK6-c3X-2Fs1b38D8PkUVN06Rd7GYSsFLKP9qpaYZLE4NRz56DHsvsHWO13tT1MBc8JGmYyUSg999L-Ty"/>
+</div>
+<div class="flex flex-col justify-between py-1 flex-grow">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="text-xl font-bold tracking-tight text-on-background">Classic Lit. Collection</h3>
+<span class="bg-secondary/10 text-secondary text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-tighter">Active</span>
+</div>
+<p class="text-on-surface-variant text-sm mt-1">Set of 5 hardback classics.</p>
+</div>
+<div class="flex items-center justify-between mt-4">
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">visibility</span>
+<span class="text-xs font-medium">124 views this week</span>
+</div>
+<button class="bg-primary-fixed text-on-primary-fixed-variant px-5 py-2 rounded-full font-bold text-sm hover:bg-primary hover:text-white transition-colors">Manage</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Add New CTA -->
+<div class="mt-12 p-8 rounded-lg border-2 border-dashed border-stone-200 flex flex-col items-center justify-center text-center group cursor-pointer hover:border-primary transition-colors">
+<div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-4 group-hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-3xl text-primary">add</span>
+</div>
+<h4 class="text-xl font-bold text-on-background">List something new</h4>
+<p class="text-on-surface-variant text-sm mt-1">What's gathering dust in your attic?</p>
+</div>
+</main>
+<!-- FAB -->
+<button class="fixed right-6 bottom-28 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center z-50 transition-transform active:scale-90 hover:shadow-primary/20 hover:shadow-xl">
+<span class="material-symbols-outlined">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#FDFBF7]/90 dark:bg-stone-950/90 backdrop-blur-xl border-t border-stone-200/10 shadow-[0_-4px_12px_rgba(45,49,66,0.04)] rounded-t-[32px]">
+<a class="flex flex-col items-center justify-center text-[#2D3142] dark:text-stone-500 opacity-60 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-['Work_Sans'] font-semibold text-[10px] uppercase tracking-widest mt-1">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#f17350] bg-[#f17350]/10 rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-['Work_Sans'] font-semibold text-[10px] uppercase tracking-widest mt-1">Listings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#2D3142] dark:text-stone-500 opacity-60 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined">forum</span>
+<span class="font-['Work_Sans'] font-semibold text-[10px] uppercase tracking-widest mt-1">Chats</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#2D3142] dark:text-stone-500 opacity-60 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Work_Sans'] font-semibold text-[10px] uppercase tracking-widest mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

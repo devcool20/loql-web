@@ -1,12 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Montserrat } from "next/font/google";
+import { Lora, Work_Sans } from "next/font/google";
 import "./globals.css";
 
-const montserrat = Montserrat({
+const workSans = Work_Sans({
   subsets: ["latin"],
-  variable: "--font-montserrat",
+  variable: "--font-work-sans",
   display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+});
+
+const lora = Lora({
+  subsets: ["latin"],
+  variable: "--font-lora",
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -38,7 +45,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#FAFAFA",
+  themeColor: "#FDFBF7",
 };
 
 export default function RootLayout({
@@ -55,7 +62,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="loql" />
         <link rel="apple-touch-icon" href="/logo.png" />
       </head>
-      <body className={montserrat.variable}>{children}</body>
+      <body className={`${workSans.variable} ${lora.variable}`}>{children}</body>
     </html>
   );
 }

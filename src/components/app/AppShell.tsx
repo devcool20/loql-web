@@ -250,8 +250,11 @@ const AppShell = () => {
 
   return (
     <div className="app-shell" data-theme={theme}>
-      {renderContent()}
-      <CustomAlert />
+      <div className="mitti-noise-layer" aria-hidden="true" />
+      <div className="app-layer-content">
+        {renderContent()}
+        <CustomAlert />
+      </div>
 
       {showSplash && (
         <div className={`splash-screen ${!isLoading ? 'fade-out' : ''}`}>

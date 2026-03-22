@@ -151,11 +151,14 @@ const LoginScreen = () => {
   };
 
   return (
-    <div className="login-screen">
-      <div className="login-scroll">
-        <div className="login-header">
-          <h1 className="login-title">Welcome back!</h1>
-          <p className="login-subtitle">Sign in to Loql</p>
+    <div className="login-screen" style={{ background: 'var(--background)' }}>
+      <div className="login-scroll" style={{ paddingTop: 16 }}>
+        <div style={{ textAlign: 'center', marginBottom: 22 }}>
+          <span className="font-serif" style={{ fontSize: 34, color: 'var(--primary)', fontWeight: 700 }}>Loql</span>
+        </div>
+        <div className="login-header" style={{ marginTop: 14 }}>
+          <h1 className="login-title font-serif" style={{ fontSize: 42, lineHeight: 1.1 }}>Welcome Home, Neighbor</h1>
+          <p className="login-subtitle">Log in to connect with your local bazaar and what&apos;s nearby.</p>
         </div>
 
         {/* Method Toggle */}
@@ -293,6 +296,7 @@ const LoginScreen = () => {
           className="google-btn scale-pressable"
           onClick={handleGoogleSignIn}
           disabled={loading}
+          style={{ borderRadius: 999 }}
         >
           <div className="google-icon">G</div>
           <span className="google-btn-text">Continue with Google</span>

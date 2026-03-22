@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, MapPin, Bell } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import TypewriterText from '@/components/app/TypewriterText';
 import AppItemCard from '@/components/app/AppItemCard';
 import { HomeSkeletonGrid } from '@/components/app/Skeleton';
+import AppTopBar from '@/components/app/AppTopBar';
 import { processCompletedRentals } from '@/lib/rentalCompletion';
 import { cacheGet, cacheSet, cacheGetStale, CACHE_KEYS, TTL } from '@/lib/cache';
+import { getSafeImageUrl } from '@/lib/imageUtils';
 
 const HomeScreen = () => {
   const [items, setItems] = useState<any[]>([]);
@@ -21,7 +23,7 @@ const HomeScreen = () => {
   const [societyItemCount, setSocietyItemCount] = useState<number | null>(null);
 
   const user = useStore((state) => state.user);
-  const { navigateToDetail, setCurrentStack, showAlert } = useStore();
+  const { navigateToDetail, setCurrentStack, setCurrentTab } = useStore();
   const refreshTrigger = useStore(state => state.refreshTrigger);
 
   const categories = ['All', 'DIY Tools', 'Party', 'Gaming', 'Fitness', 'Electronics', 'Kitchen'];
@@ -169,6 +171,12 @@ const HomeScreen = () => {
   };
 
   const userName = user?.user_metadata?.full_name || 'Neighbor';
+  const rawAvatar =
+    user?.user_metadata?.avatar_url ||
+    user?.raw_user_meta_data?.avatar_url ||
+    user?.avatar_url ||
+    null;
+  const userAvatar = rawAvatar ? getSafeImageUrl(rawAvatar) : null;
 
   const filteredItems = items.filter((item) => {
     const titleMatch = item.title?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -181,6 +189,23 @@ const HomeScreen = () => {
 
   return (
     <div className="home-screen">
+      <AppTopBar
+        showAvatar
+        avatarUrl={userAvatar}
+        avatarLabel={userName}
+        onAvatarClick={() => setCurrentTab('Profile')}
+        rightSlot={(
+          <button
+            className="header-button scale-pressable"
+            onClick={() => setCurrentStack('Notification')}
+            id="notification-bell"
+            aria-label="Notifications"
+          >
+            <Bell size={20} color="var(--text-primary)" />
+          </button>
+        )}
+      />
+      <div style={{ padding: '0 20px' }}>
       {/* Header */}
       <div className="home-header">
         <div className="home-header-left">
@@ -214,13 +239,6 @@ const HomeScreen = () => {
           )}
         </div>
 
-        <button
-          className="header-button scale-pressable"
-          onClick={() => setCurrentStack('Notification')}
-          id="notification-bell"
-        >
-          <Bell size={22} color="var(--text-primary)" />
-        </button>
       </div>
 
       {/* Search Bar */}
@@ -232,6 +250,28 @@ const HomeScreen = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
+      </div>
+
+      <div
+        className="scale-pressable-up"
+        style={{
+          borderRadius: 24,
+          padding: 18,
+          marginBottom: 18,
+          background: 'linear-gradient(140deg, rgba(65,179,163,0.16), rgba(65,179,163,0.38))',
+          border: '1px solid rgba(65,179,163,0.24)',
+          boxShadow: 'var(--shadow-sm)',
+        }}
+      >
+        <span style={{ fontSize: 12, color: 'var(--secondary)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+          The Loql Hero
+        </span>
+        <h3 className="font-serif" style={{ fontSize: 26, lineHeight: 1.2, color: 'var(--text-primary)', marginTop: 8 }}>
+          Borrow what you need from trusted neighbors.
+        </h3>
+        <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 6 }}>
+          Curated picks from your society, updated all day.
+        </p>
       </div>
 
       {/* Categories */}
@@ -269,6 +309,7 @@ const HomeScreen = () => {
           )}
         </div>
       )}
+      </div>
     </div>
   );
 };

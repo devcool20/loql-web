@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Loql - Welcome Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800;900&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-low": "#FDFBF7",
+              "tertiary-container": "#ffdad6",
+              "on-secondary-fixed": "#00201f",
+              "surface-container": "#f8f6f6",
+              "on-primary": "#ffffff",
+              "on-tertiary-fixed": "#410002",
+              "on-tertiary-container": "#410002",
+              "inverse-primary": "#ffb5a1",
+              "tertiary-fixed-dim": "#ffb4ab",
+              "surface": "#FDFBF7",
+              "secondary": "#41B3A3",
+              "on-error-container": "#93000a",
+              "error-container": "#ffdad6",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed-variant": "#852407",
+              "on-primary-container": "#ffffff",
+              "primary-fixed-dim": "#ffb5a1",
+              "on-surface": "#2D3142",
+              "background": "#FDFBF7",
+              "outline-variant": "#dec0b8",
+              "secondary-fixed": "#78f6f3",
+              "on-secondary-container": "#004d40",
+              "surface-variant": "#f4ded8",
+              "on-secondary": "#ffffff",
+              "on-surface-variant": "#8D99AE",
+              "on-primary-fixed": "#3b0900",
+              "primary": "#f17350",
+              "error": "#ba1a1a",
+              "surface-container-high": "#f9e3de",
+              "on-secondary-fixed-variant": "#00504f",
+              "on-tertiary-fixed-variant": "#93000a",
+              "on-error": "#ffffff",
+              "primary-fixed": "#ffdbd1",
+              "primary-container": "#f17350",
+              "surface-bright": "#ffffff",
+              "inverse-on-surface": "#ffede8",
+              "surface-tint": "#f17350",
+              "secondary-fixed-dim": "#57d9d7",
+              "on-background": "#2D3142",
+              "tertiary-fixed": "#ffdad6",
+              "surface-container-lowest": "#ffffff",
+              "outline": "#8D99AE",
+              "inverse-surface": "#3a2d2a",
+              "tertiary": "#F64C72",
+              "surface-container-highest": "#f4ded8",
+              "secondary-container": "#e0f2f1",
+              "surface-dim": "#ebd5d0"
+            },
+            fontFamily: {
+              "headline": ["Work Sans"],
+              "body": ["Work Sans"],
+              "label": ["Work Sans"],
+              "playfair": ["Playfair Display"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }
+.mitti-texture {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuBBlUjAGDb4EU2VCRf5IahjetXFyGaz5Gls8Wm3sGyqb3n7rixPMr3hWr9sMDv_gRrSY_8fZvDi5xn8JtWrLMUDr22qP66ACZ16k4H08NWcuvoR0Qk0KRxu8deSremXhOYMlus4GzJq7S57VVMAdCAv4yQrHexP7B2wc1xv8EuiD3Nzzemvmwj6sVdc_m3l4J4Hl7L7ZC-a4WZPMLMZAZ1TlgCl6pNiJZNzEot79RPf-0HwSOQDDTlUyFjyfE-6FntjSRG_JxULe7RU);
+    background-blend-mode: multiply
+    }
+.dwar-illustration {
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%)
+    }</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface min-h-screen mitti-texture selection:bg-primary/30">
+<!-- Top Navigation Bar (Static/Transactional Mode: Nav Suppressed) -->
+<header class="w-full top-0 sticky z-50 flex items-center justify-between px-6 py-6 bg-transparent">
+<div class="flex items-center gap-2">
+<span class="text-primary font-black tracking-tighter text-2xl font-headline">Loql</span>
+</div>
+<div class="hidden md:flex items-center gap-6">
+<a class="text-sm font-semibold text-on-surface/60 hover:text-primary transition-colors" href="#">Join the Community</a>
+<a class="px-6 py-2 bg-on-surface text-surface rounded-full text-sm font-bold hover:scale-105 transition-transform" href="#">Help</a>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 py-8 md:py-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+<!-- Left Column: Visual & Brand Narrative -->
+<div class="relative flex flex-col items-start space-y-8 order-2 md:order-1">
+<div class="space-y-4 max-w-lg">
+<h1 class="text-5xl md:text-7xl font-playfair text-on-surface leading-[1.1]">
+                    Welcome Home, <br/><span class="text-primary italic">Neighbor</span>
+</h1>
+<p class="text-lg text-on-surface/70 font-medium leading-relaxed">
+                    Rediscover the warmth of community. Log in to connect with your local bazaar, share skills, and find what's nearby.
+                </p>
+</div>
+<!-- Illustration: The 'Dwar' (Neighborhood Gate) -->
+<div class="relative w-full aspect-square md:aspect-video rounded-xl overflow-hidden shadow-2xl dwar-illustration">
+<img class="w-full h-full object-cover" data-alt="Stylized modern Indian neighborhood gate illustration" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDa5AGmZ5U6KqyzqPQqphu6z-Zs9q8NaZA_dUaDY47seA6V8NAOiAsdSMvT7slnf95kR6VSatSafxZ0lGvikSJEA4DChtYWN-F7xBoMeaxF02ULzdA-PC-kzvv1Nw0BH2MjNsVABGAbPw2K1obJFjp6iWHUyKqUsrctXf2c1XAJN44v9v4NOtuhxuSsz7VhuB9rNV6M6XlAmqUQrjbJpjjaY10T84FGPuI3RsDfyRG47shscq7O13W3CKF6gOw6C0_nkRNciJxznFHY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent"></div>
+</div>
+<!-- Trust Badge Pill -->
+<div class="inline-flex items-center gap-3 bg-secondary/10 border border-secondary/20 px-4 py-2 rounded-full">
+<span class="material-symbols-outlined text-secondary text-lg" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="text-sm font-bold text-on-secondary-container tracking-wide uppercase">Trusted by 5,000+ Locals</span>
+</div>
+</div>
+<!-- Right Column: Login Card -->
+<div class="flex justify-center md:justify-end order-1 md:order-2">
+<div class="w-full max-w-md bg-surface-container-lowest p-8 md:p-12 rounded-[2rem] shadow-[0_20px_50px_rgba(45,49,66,0.05)] border border-stone-100 relative overflow-hidden">
+<!-- Decorative Corner Element -->
+<div class="absolute -top-12 -right-12 w-32 h-32 bg-primary/5 rounded-full blur-3xl"></div>
+<div class="relative z-10">
+<div class="mb-10">
+<h2 class="text-2xl font-headline font-bold text-on-surface tracking-tight">Step into your circle</h2>
+<p class="text-on-surface-variant text-sm mt-1">Enter your details to access Loql</p>
+</div>
+<form class="space-y-6">
+<!-- Email Input -->
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface/50 ml-4">Phone or Email</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">alternate_email</span>
+<input class="w-full pl-14 pr-6 py-4 bg-surface border-none ring-1 ring-stone-200 focus:ring-2 focus:ring-primary rounded-[1.5rem] text-on-surface placeholder:text-stone-300 transition-all" placeholder="neighbor@loql.com" type="text"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface/50 ml-4">Passkey</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">lock</span>
+<input class="w-full pl-14 pr-6 py-4 bg-surface border-none ring-1 ring-stone-200 focus:ring-2 focus:ring-primary rounded-[1.5rem] text-on-surface placeholder:text-stone-300 transition-all" placeholder="••••••••" type="password"/>
+<button class="absolute right-5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary" type="button">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</div>
+</div>
+<div class="flex items-center justify-between px-2">
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="w-5 h-5 rounded-md border-stone-300 text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-on-surface">Stay logged in</span>
+</label>
+<a class="text-sm font-bold text-primary hover:underline" href="#">Forgot?</a>
+</div>
+<button class="w-full py-5 bg-primary text-surface rounded-full font-bold text-lg shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-1 active:scale-95 transition-all duration-200 uppercase tracking-widest" type="submit">
+                            Step In
+                        </button>
+</form>
+<div class="mt-10 pt-8 border-t border-stone-100 flex flex-col items-center gap-6">
+<p class="text-sm text-on-surface-variant font-medium">Or enter via</p>
+<div class="flex gap-4 w-full">
+<button class="flex-1 flex items-center justify-center gap-2 py-3 bg-surface border border-stone-200 rounded-full hover:bg-stone-50 transition-colors">
+<img class="w-5 h-5" data-alt="Google logo icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuzKdanlJCDotP6SHNoBKCitB9Hm-6qLzt2a8vkT9ov5CRK8S_bNJRP2VPugOwkx_1-PCoFcEIJfGMOBkC5EQ1v7fPCFdTVECZk5n4MXn-JtkKgS6eMzBy-btQfybsRfvqxzd26DcjCyb532ksXgEmIJ3Slv2P3r-VsAaL_SRjKauTz8hEm1SjXH9i08eodoUjcYTSRWmBFze-U-Sz4atgvOuZlZqLRNnFnF-v74WmoG5Tzd9Wm0gAurKC1wOsztGHoiMx1aFmageE"/>
+<span class="text-xs font-bold uppercase">Google</span>
+</button>
+<button class="flex-1 flex items-center justify-center gap-2 py-3 bg-on-surface text-surface rounded-full hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">ios</span>
+<span class="text-xs font-bold uppercase">Apple</span>
+</button>
+</div>
+<p class="text-sm font-medium text-on-surface-variant">
+                            New here? <a class="text-secondary font-bold hover:underline" href="#">Join the Neighborhood</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Decorative Texture -->
+<div class="fixed bottom-0 left-0 w-full h-24 bg-gradient-to-t from-surface to-transparent pointer-events-none z-0"></div>
+</body></html>

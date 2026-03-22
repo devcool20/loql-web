@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Loql - Katha Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&amp;family=Lora:ital,wght@1,400;1,500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary": "#ffffff",
+              "on-primary": "#ffffff",
+              "surface-container-high": "#f9e3de",
+              "on-primary-fixed-variant": "#852407",
+              "on-tertiary-fixed": "#410002",
+              "inverse-primary": "#ffb5a1",
+              "on-secondary-container": "#004d40",
+              "error": "#ba1a1a",
+              "on-secondary-fixed": "#00201f",
+              "tertiary": "#F64C72",
+              "surface": "#FDFBF7",
+              "tertiary-container": "#ffdad6",
+              "surface-container-low": "#FDFBF7",
+              "secondary-fixed": "#78f6f3",
+              "inverse-surface": "#3a2d2a",
+              "surface-dim": "#ebd5d0",
+              "on-primary-container": "#ffffff",
+              "secondary": "#41B3A3",
+              "outline-variant": "#dec0b8",
+              "surface-tint": "#f17350",
+              "primary-fixed-dim": "#ffb5a1",
+              "primary-fixed": "#ffdbd1",
+              "on-error": "#ffffff",
+              "primary-container": "#f17350",
+              "surface-bright": "#ffffff",
+              "on-secondary": "#ffffff",
+              "on-tertiary-fixed-variant": "#93000a",
+              "surface-variant": "#f4ded8",
+              "on-tertiary-container": "#410002",
+              "on-error-container": "#93000a",
+              "secondary-fixed-dim": "#57d9d7",
+              "on-background": "#2D3142",
+              "secondary-container": "#e0f2f1",
+              "on-secondary-fixed-variant": "#00504f",
+              "background": "#FDFBF7",
+              "tertiary-fixed": "#ffdad6",
+              "inverse-on-surface": "#ffede8",
+              "surface-container": "#f8f6f6",
+              "primary": "#f17350",
+              "surface-container-highest": "#f4ded8",
+              "on-primary-fixed": "#3b0900",
+              "on-surface": "#2D3142",
+              "tertiary-fixed-dim": "#ffb4ab",
+              "on-surface-variant": "#8D99AE",
+              "error-container": "#ffdad6",
+              "surface-container-lowest": "#ffffff",
+              "outline": "#8D99AE"
+            },
+            fontFamily: {
+              "headline": ["Work Sans"],
+              "body": ["Work Sans"],
+              "label": ["Work Sans"],
+              "handwritten": ["Lora"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }
+.mitti-texture {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuBb__w98Wvd31LkAknY8MZZUMO0eiZVKtlGKetQFywEoBQqRiabNkaZkI85j-kcw-YcZhURO1079GYcC7ZGobrfUB45aFIaAso6oq1U-tDQj7k5JE7Vrq8zymjtNNHje7g86RbpOxZPYkaYUhGJ9vj3saTot6Z6OdLIs92Pej76zEC76UFVmfq_m7ANVauJ5i92O1LNQMko08GzRlBCT_Ca-HaCzSwuC9Ya1yDrhpTr5p6tw9AZdPJDcaoZRKxmBMmz_cyhHGvlUutT);
+    background-repeat: repeat
+    }
+.polaroid-shadow {
+    box-shadow: 0 8px 24px rgba(45, 49, 66, 0.08)
+    }</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body mitti-texture min-h-screen pb-32">
+<!-- Top AppBar (JSON Mapping) -->
+<header class="bg-[#FDFBF7] dark:bg-stone-950 border-none bg-opacity-90 backdrop-blur-md flex justify-between items-center w-full px-6 py-4 fixed top-0 z-50">
+<div class="flex items-center gap-4">
+<button class="text-[#f17350] hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors p-2 rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-2xl font-bold font-serif text-[#f17350] tracking-tight">Loql</h1>
+</div>
+<div class="flex items-center gap-3">
+<button class="text-[#2D3142] p-2 hover:bg-stone-100 rounded-full">
+<span class="material-symbols-outlined">share</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary">
+<img alt="User profile" data-alt="Close up portrait of a smiling person" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJgaorpVZyQ64VN7up1VNU5zzLtb5Osqec58MslH0ugIwsoZlB2ZdzJ_4SgVz3rbuKyDC5wvox1JdiUcGSjRleVTLVUyF2YXau1ibOdxm6sIIU0emsNuzBfpWfodOfVt-yL1f6aLnhw84sNthCvTqnjfBEniFiDvjOYiuI1ofGi3aYCRdaoFfDytGtSL_kyuIvVtUChv609jlzrr1b7u3TXB6qtxzGnQMgHaMyXdNHAtgVuLNUlOADykIv9UNqep0wiuuWt4GwIXbE"/>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-md mx-auto">
+<!-- Polaroid Gallery Section -->
+<div class="relative group mt-4">
+<div class="bg-white p-4 pb-12 polaroid-shadow rounded-sm rotate-[-1deg] transition-transform duration-500 hover:rotate-0">
+<div class="aspect-square w-full overflow-hidden bg-stone-100 rounded-sm mb-6">
+<img alt="Vintage Book" class="w-full h-full object-cover" data-alt="A vintage hardcover book with worn edges sitting on a wooden table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEfB_GxJMpcHm_2J-7B_NXubuwefa5mpxQaA6XcT_LSvx6CZnx96TfhcvNqlO7bdnB2M9sR2WTZXQTCeqXjl8-WmChVFlx_Rrtxhy5J_7GLiqeMDJxw3QlLATRkXRr4zvQLdEXt-C8wSNBDUfLuZMgycO81ju3f5A7KNvGSnG05BUqjBoOC1DTwldXtBInZRJxpISHyB2m6Gq4q6IBJ7GgJr_ojDV17WQrMwqy6-EYZloGbHmtICTlDlL8FQg-IYp-seAghBPtu4d2"/>
+</div>
+<div class="px-2">
+<span class="font-handwritten italic text-xl text-[#2D3142] opacity-80 leading-relaxed">
+                        "This book traveled with me through Hampi. It has some sand between the pages and a lot of heart."
+                    </span>
+</div>
+</div>
+<!-- Secondary Polaroid Peek -->
+<div class="absolute -z-10 top-2 right-[-10px] bg-white p-2 pb-8 polaroid-shadow rounded-sm rotate-[4deg] w-24 opacity-60">
+<div class="aspect-square bg-stone-200 rounded-sm">
+<img data-alt="Close up of book pages with handwritten notes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlwxPBTc_XKoZiU2xTkhxjGHq7qp8hkIQQFyE7zC_nGliEgs4eb9NM7FE9dIx3KLZzKHsGjEZbjGWFomtWygXkcwBcBbIfXsrj3y9oQOHlaP0Vs4lrN5rzjtOuQcrUboO6vaixrob0g0jDJAUSK2YJht__rmIq6TL50rzK8cY-pRKGUzYe4C5SnQAw4DqhQW1REjNT1M8xIbI6upTLkdS_SrX33DiExmCpvTFnpEA-FDMj8MPVYa8u5vdpgGeCkudeaUTR77FIjl-Q"/>
+</div>
+</div>
+</div>
+<!-- Product Details -->
+<div class="mt-12 space-y-6">
+<div class="flex justify-between items-start">
+<div>
+<h2 class="text-3xl font-bold tracking-tight text-on-surface">The Prophet</h2>
+<p class="text-on-surface-variant font-medium mt-1 uppercase text-xs tracking-widest">Kahlil Gibran • 1923 Edition</p>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-center gap-1 bg-secondary/10 px-3 py-1.5 rounded-full border border-secondary/20">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-[10px] font-bold text-secondary uppercase tracking-tighter">Verified Neighbor</span>
+</div>
+</div>
+</div>
+<!-- Neighborhood Context Bento Card -->
+<div class="bg-surface-container-lowest p-5 rounded-lg shadow-[0_4px_12px_rgba(45,49,66,0.04)] border border-stone-100">
+<div class="flex items-center gap-4">
+<div class="relative">
+<img alt="Owner" class="w-12 h-12 rounded-full object-cover border-2 border-primary/20" data-alt="Profile photo of a woman in a local neighborhood" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAU4JEc_FTLA-6IivfI3blXf7qgxTpNeeXkWVfLnoWT8KniPfYew1o0tw0kbjWYPQ6K_j0SjKpU_-TIgNLPkXaEq4wOwIpr2j1FYus4v1ghablc3Xsr5W90MNktyBJKHsWB3pKzoXzbxjvjEuZjyHermhpJL91MM_GVWSOTfDJNG8d7EJ7By3kdjp986XU0Qe6OQXMj66MmccWvKt9u1U7tuJ4Krjcp__WIW8UVy1qeXX8yGAMiCjGGQw4hopUWgyGFezFKCW9tlRFk"/>
+<div class="absolute -bottom-1 -right-1 bg-primary w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold">4</div>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-on-surface">Priya Sharma</h4>
+<p class="text-sm text-on-surface-variant">Indiranagar, 400m away</p>
+</div>
+<button class="bg-stone-100 p-2 rounded-full text-[#2D3142] active:scale-90 transition-transform">
+<span class="material-symbols-outlined">chat_bubble</span>
+</button>
+</div>
+<div class="mt-4 pt-4 border-t border-stone-50 grid grid-cols-2 gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">history</span>
+<span class="text-xs font-medium">3 Borrows this month</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-lg">eco</span>
+<span class="text-xs font-medium">9.2kg CO2 saved</span>
+</div>
+</div>
+</div>
+<!-- Description -->
+<div class="prose prose-stone">
+<h3 class="text-lg font-bold">About this copy</h3>
+<p class="text-on-surface-variant leading-relaxed">
+                    This isn't just a book; it's a conversation starter. I've highlighted passages that spoke to me during my travels. Looking to share this with someone who appreciates the weight of words and the smell of old paper. 
+                </p>
+</div>
+<!-- Trust Badge / Rules -->
+<div class="flex flex-wrap gap-2 pt-2">
+<span class="bg-stone-100 text-[#2D3142] text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">7 Days Max</span>
+<span class="bg-stone-100 text-[#2D3142] text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">No Markings</span>
+<span class="bg-stone-100 text-[#2D3142] text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">Meet at Starbucks</span>
+</div>
+</div>
+</main>
+<!-- Fixed Bottom Actions -->
+<div class="fixed bottom-24 left-0 w-full px-6 z-40">
+<button class="w-full bg-[#f17350] text-white py-5 rounded-full font-bold text-lg shadow-[0_12px_32px_rgba(241,115,80,0.25)] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+<span class="material-symbols-outlined">favorite</span>
+            Borrow with Love
+        </button>
+</div>
+<!-- Bottom Navigation Bar (JSON Mapping) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-[#FDFBF7]/80 dark:bg-stone-900/80 backdrop-blur-xl flex justify-around items-center px-4 pb-8 pt-4 rounded-t-[32px] shadow-[0_-4px_12px_rgba(45,49,66,0.04)]">
+<!-- Aas-Paas (Explore) -->
+<a class="flex flex-col items-center justify-center text-[#2D3142] dark:text-stone-400 opacity-70 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="text-[12px] font-semibold font-sans uppercase tracking-wider mt-1">Aas-Paas</span>
+</a>
+<!-- Katha (Stories/Active) -->
+<a class="flex flex-col items-center justify-center bg-[#f17350] text-white rounded-full px-5 py-2 shadow-[0_12px_32px_rgba(241,115,80,0.15)] translateY(-4px) rotate(1deg) transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+<span class="text-[12px] font-semibold font-sans uppercase tracking-wider mt-1">Katha</span>
+</a>
+<!-- Samvaad (Chat) -->
+<a class="flex flex-col items-center justify-center text-[#2D3142] dark:text-stone-400 opacity-70 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="text-[12px] font-semibold font-sans uppercase tracking-wider mt-1">Samvaad</span>
+</a>
+<!-- The Dwar (Home/Door) -->
+<a class="flex flex-col items-center justify-center text-[#2D3142] dark:text-stone-400 opacity-70 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined">door_front</span>
+<span class="text-[12px] font-semibold font-sans uppercase tracking-wider mt-1">The Dwar</span>
+</a>
+</nav>
+</body></html>

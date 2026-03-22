@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Loql - The Dwar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&amp;family=Lora:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary": "#ffffff",
+              "on-primary": "#ffffff",
+              "surface-container-high": "#f9e3de",
+              "on-primary-fixed-variant": "#852407",
+              "on-tertiary-fixed": "#410002",
+              "inverse-primary": "#ffb5a1",
+              "on-secondary-container": "#004d40",
+              "error": "#ba1a1a",
+              "on-secondary-fixed": "#00201f",
+              "tertiary": "#F64C72",
+              "surface": "#FDFBF7",
+              "tertiary-container": "#ffdad6",
+              "surface-container-low": "#FDFBF7",
+              "secondary-fixed": "#78f6f3",
+              "inverse-surface": "#3a2d2a",
+              "surface-dim": "#ebd5d0",
+              "on-primary-container": "#ffffff",
+              "secondary": "#41B3A3",
+              "outline-variant": "#dec0b8",
+              "surface-tint": "#f17350",
+              "primary-fixed-dim": "#ffb5a1",
+              "primary-fixed": "#ffdbd1",
+              "on-error": "#ffffff",
+              "primary-container": "#f17350",
+              "surface-bright": "#ffffff",
+              "on-secondary": "#ffffff",
+              "on-tertiary-fixed-variant": "#93000a",
+              "surface-variant": "#f4ded8",
+              "on-tertiary-container": "#410002",
+              "on-error-container": "#93000a",
+              "secondary-fixed-dim": "#57d9d7",
+              "on-background": "#2D3142",
+              "secondary-container": "#e0f2f1",
+              "on-secondary-fixed-variant": "#00504f",
+              "background": "#FDFBF7",
+              "tertiary-fixed": "#ffdad6",
+              "inverse-on-surface": "#ffede8",
+              "surface-container": "#f8f6f6",
+              "primary": "#f17350",
+              "surface-container-highest": "#f4ded8",
+              "on-primary-fixed": "#3b0900",
+              "on-surface": "#2D3142",
+              "tertiary-fixed-dim": "#ffb4ab",
+              "on-surface-variant": "#8D99AE",
+              "error-container": "#ffdad6",
+              "surface-container-lowest": "#ffffff",
+              "outline": "#8D99AE"
+            },
+            fontFamily: {
+              "headline": ["Work Sans", "sans-serif"],
+              "body": ["Work Sans", "sans-serif"],
+              "label": ["Work Sans", "sans-serif"],
+              "serif": ["Lora", "serif"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>.mitti-noise {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuCrrJ7UFwSkSgAMR_qgyFmu9NwHVLQLGJQ9nuoD0gYN_BU-xbcKn3UyBAmd0SYLfwyjY4UShou43knGJsUoSH8UJaJ-pVpQwsz2AYilLBRZi8uYPn803K46rJ9BbnZtUkGGUX5Urr9igOYa-hZcHlC_qDVWQ4AP2a3xuIF6Dfwa7RB0jP36yS7Fqwu6zEC6lnzys77wgez_ZJ_f5XOq9gwcZmVS93_6V722sUDK5Eg9g0BRC9VbhW5OPGzF1Dz-gnPE7cRqyQIB3NQM);
+    opacity: 0.03;
+    pointer-events: none
+    }
+.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body min-h-screen relative overflow-x-hidden">
+<!-- Texture Overlay -->
+<div class="fixed inset-0 mitti-noise z-[9999]"></div>
+<!-- Main Container -->
+<main class="flex flex-col min-h-screen">
+<!-- Top 50%: Hero Image/Illustration -->
+<section class="h-[442px] w-full relative overflow-hidden">
+<div class="absolute inset-0 bg-primary/10">
+<img alt="Neighbors sharing food and conversation in a vibrant neighborhood" class="w-full h-full object-cover" data-alt="Vibrant illustration of diverse neighbors sharing items and joy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCAHWtnGEKk3jNyHaP37u2HVE6qKVc5NJTC0fK-1DsY2bHAIiRH_3ZVLlHWX8czy4XqX8hqI_ZBeHU5Hoi2Ny73xd7T08E1Q3WeN_eHpNTPqRU3elMn6f9OBtEOWfbPLkq-mBXZ1qm_gZLDTu9u8UCfGlWudCoLq7_-OHA8oMSS41OxFhTUTtDDpd0Yi3HSwZtoMespGbK2NZ4BXoZaQ4nf5nOzTTPmOlGyEeQ4HQ7aKfRAmquVAyKILyBPCUCAlHNJ9W8tZCRpqjP"/>
+<!-- Warm Editorial Gradient Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+</div>
+<!-- Logo Overlay -->
+<div class="absolute top-8 left-0 w-full flex justify-center z-10">
+<span class="text-primary font-serif font-bold text-3xl tracking-tight">Loql</span>
+</div>
+</section>
+<!-- Bottom 50%: Content Section -->
+<section class="h-[442px] bg-background flex flex-col justify-between px-8 pt-8 pb-12 text-center relative z-20">
+<!-- Decorative Accent -->
+<div class="flex justify-center mb-4">
+<div class="h-1 w-12 bg-primary/20 rounded-full"></div>
+</div>
+<div class="space-y-6">
+<h1 class="font-serif text-[32px] leading-tight font-bold text-on-background">
+                    Discover your neighborhood's hidden treasures.
+                </h1>
+<p class="text-on-surface-variant text-lg max-w-[280px] mx-auto leading-relaxed">
+                    Connecting Indiranagar, one shared story at a time.
+                </p>
+</div>
+<div class="space-y-8 mt-auto">
+<!-- Saffron Earth CTA -->
+<button class="w-full bg-primary py-5 rounded-full text-on-primary font-bold text-lg shadow-[0_12px_32px_rgba(241,115,80,0.25)] hover:scale-105 transition-transform active:scale-95 flex items-center justify-center gap-3">
+                    Step Into Your Neighborhood
+                    <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<!-- Secondary Action -->
+<div class="flex items-center justify-center gap-2 text-sm font-semibold text-secondary">
+<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span>
+                    Indiranagar, Bengaluru
+                </div>
+</div>
+</section>
+</main>
+<!-- Navigation Shell: The Dwar active logic -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-background/80 backdrop-blur-xl shadow-[0_-4px_12px_rgba(45,49,66,0.04)] rounded-t-[32px] md:hidden">
+<!-- Aas-Paas -->
+<div class="flex flex-col items-center justify-center text-on-background dark:text-stone-400 opacity-70 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined mb-1" data-icon="explore">explore</span>
+<span class="text-[12px] font-semibold font-sans uppercase tracking-wider">Aas-Paas</span>
+</div>
+<!-- Katha -->
+<div class="flex flex-col items-center justify-center text-on-background dark:text-stone-400 opacity-70 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined mb-1" data-icon="menu_book">menu_book</span>
+<span class="text-[12px] font-semibold font-sans uppercase tracking-wider">Katha</span>
+</div>
+<!-- Samvaad -->
+<div class="flex flex-col items-center justify-center text-on-background dark:text-stone-400 opacity-70 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined mb-1" data-icon="chat_bubble">chat_bubble</span>
+<span class="text-[12px] font-semibold font-sans uppercase tracking-wider">Samvaad</span>
+</div>
+<!-- The Dwar (Active) -->
+<div class="flex flex-col items-center justify-center bg-primary text-white rounded-full px-4 py-1.5 shadow-[0_12px_32px_rgba(241,115,80,0.15)] translate-y-[-4px] rotate(1deg) transition-transform">
+<span class="material-symbols-outlined mb-1" data-icon="door_front">door_front</span>
+<span class="text-[12px] font-semibold font-sans uppercase tracking-wider">The Dwar</span>
+</div>
+</nav>
+<!-- Visual Polish: Floating Elements -->
+<div class="fixed top-12 right-6 z-30">
+<div class="w-12 h-12 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary" data-icon="notifications">notifications</span>
+</div>
+</div>
+</body></html>

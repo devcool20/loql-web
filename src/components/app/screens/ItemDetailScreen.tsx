@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ChevronLeft, Share2, MapPin, MessageCircle, Clock, X } from 'lucide-react';
+import { ChevronLeft, Share2, MessageCircle, X } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { createNotification } from '@/lib/notificationManager';
@@ -151,8 +151,8 @@ const ItemDetailScreen = () => {
         boxShadow: '0 -3px 8px rgba(0,0,0,0.1)', paddingBottom: 100,
       }}>
         <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 20px' }} />
-        <h1 style={{ fontSize: 24, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 4 }}>{item.title}</h1>
-        <p style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 24 }}>₹{item.daily_rate}/day</p>
+        <h1 className="font-serif" style={{ fontSize: 30, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4, lineHeight: 1.2 }}>{item.title}</h1>
+        <p style={{ fontSize: 18, fontWeight: 600, color: 'var(--secondary)', marginBottom: 24 }}>₹{item.daily_rate}/day</p>
 
         <div style={{ height: 1, background: 'var(--border-light)', margin: '0 0 24px' }} />
 
@@ -189,10 +189,16 @@ const ItemDetailScreen = () => {
           }}>{isRented ? 'Busy' : 'Available'}</span>
         </div>
 
+        <div style={{ background: '#FFF9E6', borderRadius: 16, padding: '14px 16px', marginBottom: 20, border: '1px solid rgba(141,153,174,0.2)' }}>
+          <span className="font-serif" style={{ fontStyle: 'italic', fontSize: 20, lineHeight: 1.5, color: 'var(--text-primary)', opacity: 0.9 }}>
+            "{item.description?.trim() || `This ${item.category?.toLowerCase() || 'item'} has helped many neighbors and is ready for its next story.`}"
+          </span>
+        </div>
+
         {/* Description */}
-        <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 12 }}>Description</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 12 }}>Katha</h3>
         <p style={{ fontSize: 15, color: 'var(--text-subtle)', lineHeight: 1.6, marginBottom: 24 }}>
-          {item.description?.trim() || `Professional grade ${item.category?.toLowerCase() || 'item'} suitable for your daily needs. Well maintained and ready for use.`}
+          Professional grade {item.category?.toLowerCase() || 'item'} suitable for your daily needs. Well maintained and ready for use.
         </p>
 
         {/* Owner/Renter Split View */}
@@ -264,8 +270,8 @@ const ItemDetailScreen = () => {
                 <span style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)' }}>₹{item.daily_rate}</span>
               </div>
               <button className="scale-pressable" onClick={() => setShowOfferModal(true)} disabled={requesting}
-                style={{ background: 'var(--accent-solid)', padding: '16px 32px', borderRadius: 16, color: 'var(--accent-solid-text)', fontWeight: 700, fontSize: 16 }}>
-                Make Offer
+                style={{ background: 'var(--primary)', padding: '16px 32px', borderRadius: 999, color: 'white', fontWeight: 700, fontSize: 16, boxShadow: 'var(--warm-glow)' }}>
+                Borrow with Love
               </button>
             </div>
           </>
@@ -276,7 +282,7 @@ const ItemDetailScreen = () => {
       {showOfferModal && (
         <div className="alert-overlay" onClick={() => setShowOfferModal(false)}>
           <div className="alert-card" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'left', maxWidth: 400 }}>
-            <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 20 }}>Make Offer for {item.title}</h3>
+            <h3 className="font-serif" style={{ fontSize: 24, fontWeight: 700, marginBottom: 20 }}>Samvaad for {item.title}</h3>
             <div className="input-group" style={{ marginBottom: 16 }}>
               <label className="input-label">Price per day (₹)</label>
               <input className="text-input" type="number" placeholder={`${item.daily_rate}`} value={offerPrice}

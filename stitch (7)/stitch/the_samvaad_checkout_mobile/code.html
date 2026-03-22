@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Loql - Samvaad Request</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary": "#ffffff",
+              "on-primary": "#ffffff",
+              "surface-container-high": "#f9e3de",
+              "on-primary-fixed-variant": "#852407",
+              "on-tertiary-fixed": "#410002",
+              "inverse-primary": "#ffb5a1",
+              "on-secondary-container": "#004d40",
+              "error": "#ba1a1a",
+              "on-secondary-fixed": "#00201f",
+              "tertiary": "#F64C72",
+              "surface": "#FDFBF7",
+              "tertiary-container": "#ffdad6",
+              "surface-container-low": "#FDFBF7",
+              "secondary-fixed": "#78f6f3",
+              "inverse-surface": "#3a2d2a",
+              "surface-dim": "#ebd5d0",
+              "on-primary-container": "#ffffff",
+              "secondary": "#41B3A3",
+              "outline-variant": "#dec0b8",
+              "surface-tint": "#f17350",
+              "primary-fixed-dim": "#ffb5a1",
+              "primary-fixed": "#ffdbd1",
+              "on-error": "#ffffff",
+              "primary-container": "#f17350",
+              "surface-bright": "#ffffff",
+              "on-secondary": "#ffffff",
+              "on-tertiary-fixed-variant": "#93000a",
+              "surface-variant": "#f4ded8",
+              "on-tertiary-container": "#410002",
+              "on-error-container": "#93000a",
+              "secondary-fixed-dim": "#57d9d7",
+              "on-background": "#2D3142",
+              "secondary-container": "#e0f2f1",
+              "on-secondary-fixed-variant": "#00504f",
+              "background": "#FDFBF7",
+              "tertiary-fixed": "#ffdad6",
+              "inverse-on-surface": "#ffede8",
+              "surface-container": "#f8f6f6",
+              "primary": "#f17350",
+              "surface-container-highest": "#f4ded8",
+              "on-primary-fixed": "#3b0900",
+              "on-surface": "#2D3142",
+              "tertiary-fixed-dim": "#ffb4ab",
+              "on-surface-variant": "#8D99AE",
+              "error-container": "#ffdad6",
+              "surface-container-lowest": "#ffffff",
+              "outline": "#8D99AE"
+            },
+            fontFamily: {
+              "headline": ["Work Sans"],
+              "body": ["Work Sans"],
+              "label": ["Work Sans"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #FDFBF7;
+            background-image: radial-gradient(#2D3142 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+            background-attachment: fixed;
+            opacity: 0.97;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body text-on-surface antialiased">
+<!-- TopAppBar (Small Center Aligned - Shared Component Logic) -->
+<header class="bg-[#FDFBF7] dark:bg-stone-950 border-none bg-opacity-90 backdrop-blur-md fixed top-0 w-full z-50">
+<div class="flex justify-between items-center w-full px-6 py-4">
+<button class="text-[#2D3142] dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors p-2 rounded-full">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h1 class="text-2xl font-bold font-serif text-[#f17350] tracking-tight">Samvaad</h1>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="Modern circular headshot of a smiling man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2WfkGCeA2Ib_EB7O4XR-Aa97SxAKMI9myFf3e-HM0ibgdtgVYFfhu0QbUmoMpCaP_S2fHeSf0FV7Rvx4qViMCNbiZ3zjuU5a2GPAu1t3kUWqY9EUDeatovtWlvcMvRiYkIxx8zsgh7P67pcPEvnE-3a4-tcj-XnYKHQWeNikqBikYAmgapdqSQIFooQO6mptL6UXdot5bxoosFWeU310bM8kzBFFB0LmD3jefRK4thpVlmdYAlQOabTsoG-2W-wmFpqo6lPWMWRHo"/>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-md mx-auto">
+<!-- Neighbor Context Card -->
+<section class="mb-8">
+<div class="bg-surface-container-lowest p-5 rounded-lg shadow-[0_4px_12px_rgba(45,49,66,0.04)] flex items-center gap-4">
+<div class="relative">
+<img alt="Neighbor profile" class="w-16 h-16 rounded-full object-cover border-2 border-secondary p-0.5" data-alt="Portrait of a friendly woman in Indiranagar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFfll9t6YZNs6nbvoPDHPnAqBAgKMX-LN9UxgDSl5yym70Am8XGxBZ7GzeyWYka13ClRwyh_jeOQD9Da9qGVQjic6AR2WaZ9dyfe4zk9nxhcidWLSGjhxiiCwdY0zIkJniKTl50Tdxa8Sb4vcMreNeZRZjAbzjRMBnOmITayPeq2bFjjYk-T2HCe_uVhe0YPv-AvvKm099dsHFQjEfj64h6NS53PtbDFZZK66HulDu4HpGtrrFRzHYd6cU_-IW1hIkLPBotXJS7AHW"/>
+<span class="absolute bottom-0 right-0 bg-secondary text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">Indiranagar</span>
+</div>
+<div>
+<h2 class="text-xl font-bold text-on-surface">Borrow from Priya</h2>
+<p class="text-on-surface-variant text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+                        Super Neighbor • 42 shares
+                    </p>
+</div>
+</div>
+</section>
+<!-- Product Summary -->
+<section class="mb-10">
+<div class="relative h-48 rounded-lg overflow-hidden bg-stone-200 group">
+<img alt="Item request" class="w-full h-full object-cover" data-alt="Professional grade pasta maker machine on wooden table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7_0e2uMQ24uWyd1wm3iGC0yQI2wCco_2HV5ldUZ1iE7JviSZ_w30PHBVM49M9oGqisSdiV7ELYYQA-S12je58e3Gc1FOdrhCCD3cxGBqsG2Ht5zQc_Cop_5W3e7CWsQxqMWjwIIZC21eA7kXT4XH6xWQfU6zKnXXUnSSuVZALRcNPmi1ERqn5qKv7FrYEIBseov0ul3EU-NeJhkZn9VTpu5AGdmy2iHOTytRdbgFOeaWmxMSAjCc4fAbUX7d8HrN33ECX9JtYAKVq"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-4 left-4 text-white">
+<span class="bg-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-2 inline-block">Requesting</span>
+<h3 class="text-lg font-bold">Manual Pasta Maker</h3>
+</div>
+</div>
+</section>
+<!-- Minimalist Date Picker -->
+<section class="mb-10">
+<h4 class="text-sm font-semibold uppercase tracking-wider text-on-surface-variant mb-4 ml-1">Select Dates</h4>
+<div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+<!-- Date Pill: Active -->
+<button class="flex-shrink-0 w-16 h-20 bg-secondary text-white rounded-lg flex flex-col items-center justify-center shadow-[0_12px_32px_rgba(65,179,163,0.15)]">
+<span class="text-[10px] font-bold uppercase opacity-80">Oct</span>
+<span class="text-xl font-bold">24</span>
+<span class="text-[10px] font-medium">Thu</span>
+</button>
+<!-- Date Pill -->
+<button class="flex-shrink-0 w-16 h-20 bg-surface-container-lowest text-on-surface rounded-lg flex flex-col items-center justify-center hover:bg-stone-100 transition-colors">
+<span class="text-[10px] font-bold uppercase text-on-surface-variant">Oct</span>
+<span class="text-xl font-bold">25</span>
+<span class="text-[10px] font-medium text-on-surface-variant">Fri</span>
+</button>
+<!-- Date Pill -->
+<button class="flex-shrink-0 w-16 h-20 bg-surface-container-lowest text-on-surface rounded-lg flex flex-col items-center justify-center hover:bg-stone-100 transition-colors">
+<span class="text-[10px] font-bold uppercase text-on-surface-variant">Oct</span>
+<span class="text-xl font-bold">26</span>
+<span class="text-[10px] font-medium text-on-surface-variant">Sat</span>
+</button>
+<!-- Date Pill -->
+<button class="flex-shrink-0 w-16 h-20 bg-surface-container-lowest text-on-surface rounded-lg flex flex-col items-center justify-center hover:bg-stone-100 transition-colors">
+<span class="text-[10px] font-bold uppercase text-on-surface-variant">Oct</span>
+<span class="text-xl font-bold">27</span>
+<span class="text-[10px] font-medium text-on-surface-variant">Sun</span>
+</button>
+</div>
+</section>
+<!-- Message Neighbor Area -->
+<section class="mb-10">
+<label class="block text-sm font-semibold uppercase tracking-wider text-on-surface-variant mb-4 ml-1" for="message">Say hi to your neighbor</label>
+<div class="relative group">
+<textarea class="w-full bg-surface-container-lowest border-none rounded-lg p-5 text-on-surface placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-secondary/30 transition-shadow shadow-sm resize-none" id="message" placeholder="Hi Priya! I'm hosting a small dinner party and would love to use your pasta maker. I'll take great care of it!" rows="4"></textarea>
+<div class="absolute bottom-4 right-4 text-[10px] font-bold text-secondary uppercase tracking-widest opacity-60">
+                    Friendly Tone Only
+                </div>
+</div>
+</section>
+<!-- Success Placeholder (Hidden by default, represented visually) -->
+<div class="hidden">
+<div class="flex flex-col items-center text-center py-12">
+<div class="w-24 h-24 bg-secondary/10 rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-secondary text-5xl" style="font-variation-settings: 'FILL' 1;">handshake</span>
+</div>
+<h3 class="text-2xl font-bold text-on-surface mb-2">Virtual Handshake Sent!</h3>
+<p class="text-on-surface-variant px-8">We've notified Priya. She usually responds within an hour.</p>
+</div>
+</div>
+<!-- Trust Indicator -->
+<div class="flex items-center justify-center gap-2 mb-8 opacity-60">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">shield_with_heart</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Loql Community Protected</span>
+</div>
+</main>
+<!-- Fixed Action Button (Bottom) -->
+<div class="fixed bottom-0 left-0 w-full p-6 bg-gradient-to-t from-[#FDFBF7] via-[#FDFBF7] to-transparent">
+<button class="w-full bg-primary text-white font-bold py-5 rounded-full shadow-[0_12px_32px_rgba(241,115,80,0.15)] hover:scale-[0.98] transition-transform flex items-center justify-center gap-3">
+<span class="material-symbols-outlined">send</span>
+<span>Send Request</span>
+</button>
+</div>
+<!-- BottomNavBar (Shared Component Logic - Suppressed because this is a focused task/transactional screen) -->
+<!-- The Navigation Shell is suppressed to prioritize the focused request journey. -->
+</body></html>

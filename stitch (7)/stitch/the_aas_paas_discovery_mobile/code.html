@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800&amp;family=Lora:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary": "#ffffff",
+              "on-primary": "#ffffff",
+              "surface-container-high": "#f9e3de",
+              "on-primary-fixed-variant": "#852407",
+              "on-tertiary-fixed": "#410002",
+              "inverse-primary": "#ffb5a1",
+              "on-secondary-container": "#004d40",
+              "error": "#ba1a1a",
+              "on-secondary-fixed": "#00201f",
+              "tertiary": "#F64C72",
+              "surface": "#FDFBF7",
+              "tertiary-container": "#ffdad6",
+              "surface-container-low": "#FDFBF7",
+              "secondary-fixed": "#78f6f3",
+              "inverse-surface": "#3a2d2a",
+              "surface-dim": "#ebd5d0",
+              "on-primary-container": "#ffffff",
+              "secondary": "#41B3A3",
+              "outline-variant": "#dec0b8",
+              "surface-tint": "#f17350",
+              "primary-fixed-dim": "#ffb5a1",
+              "primary-fixed": "#ffdbd1",
+              "on-error": "#ffffff",
+              "primary-container": "#f17350",
+              "surface-bright": "#ffffff",
+              "on-secondary": "#ffffff",
+              "on-tertiary-fixed-variant": "#93000a",
+              "surface-variant": "#f4ded8",
+              "on-tertiary-container": "#410002",
+              "on-error-container": "#93000a",
+              "secondary-fixed-dim": "#57d9d7",
+              "on-background": "#2D3142",
+              "secondary-container": "#e0f2f1",
+              "on-secondary-fixed-variant": "#00504f",
+              "background": "#FDFBF7",
+              "tertiary-fixed": "#ffdad6",
+              "inverse-on-surface": "#ffede8",
+              "surface-container": "#f8f6f6",
+              "primary": "#f17350",
+              "surface-container-highest": "#f4ded8",
+              "on-primary-fixed": "#3b0900",
+              "on-surface": "#2D3142",
+              "tertiary-fixed-dim": "#ffb4ab",
+              "on-surface-variant": "#8D99AE",
+              "error-container": "#ffdad6",
+              "surface-container-lowest": "#ffffff",
+              "outline": "#8D99AE"
+            },
+            fontFamily: {
+              "headline": ["Work Sans", "sans-serif"],
+              "body": ["Work Sans", "sans-serif"],
+              "label": ["Work Sans", "sans-serif"],
+              "serif": ["Lora", "serif"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .mitti-noise {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+        .bazaar-card:hover {
+            transform: translateY(-8px) rotate(1deg);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-white overflow-x-hidden">
+<!-- Mitti Texture Overlay -->
+<div class="fixed inset-0 mitti-noise z-[100]"></div>
+<!-- TopAppBar -->
+<header class="sticky top-0 z-40 bg-[#FDFBF7] border-none bg-opacity-90 backdrop-blur-md flex justify-between items-center w-full px-6 py-4">
+<div class="flex items-center gap-4">
+<button class="text-[#f17350] hover:bg-stone-100 transition-colors p-2 rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="text-2xl font-bold text-[#f17350] tracking-tight font-serif">Loql</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border-2 border-primary/10">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="Close up portrait of a smiling person" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCD5gUAnVP3dTU1b6zxsx5tOrFrTg7v3K3991TJ-TAlVIObZV45LYEvV8uO-dEw86xDYHRy4tDVzyr4AD8PKrEgvp4iJNUBe4XBrdbEOAgG7fV_ackkVOibZZXluZXkMmRenlsohwyswAO6HnU17x_FXp9o4uEsWHyOvjqP6r4jmM6rqRa4xnIFkZoKuB50Oyy_mRGOPICMkNLTD-vtPIdol-W85n_BLuhVXQE63IPrQ616EZFxUEADimSgTgV8vBLb7TidVzlZCody"/>
+</div>
+</header>
+<main class="pb-32">
+<!-- Search Bar -->
+<section class="px-6 pt-2 pb-6">
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="w-full bg-surface-container-lowest border-none rounded-full py-4 pl-12 pr-6 shadow-sm focus:ring-2 focus:ring-primary/20 placeholder:text-on-surface-variant/60 font-medium" placeholder="Search your neighborhood..." type="text"/>
+</div>
+</section>
+<!-- Category Pills -->
+<section class="mb-8 overflow-x-auto custom-scrollbar">
+<div class="flex gap-3 px-6 pb-2 min-w-max">
+<button class="bg-primary text-white px-6 py-2 rounded-full font-semibold text-sm shadow-[0_12px_32px_rgba(241,115,80,0.15)] flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">colors_spark</span>
+                    All
+                </button>
+<button class="bg-surface-container-lowest text-on-surface/70 px-6 py-2 rounded-full font-semibold text-sm border border-stone/10 hover:bg-stone-50 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">home_repair_service</span>
+                    Tools
+                </button>
+<button class="bg-surface-container-lowest text-on-surface/70 px-6 py-2 rounded-full font-semibold text-sm border border-stone/10 hover:bg-stone-50 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">flatware</span>
+                    Kitchen
+                </button>
+<button class="bg-surface-container-lowest text-on-surface/70 px-6 py-2 rounded-full font-semibold text-sm border border-stone/10 hover:bg-stone-50 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">eco</span>
+                    Garden
+                </button>
+</div>
+</section>
+<!-- The Loql Hero -->
+<section class="px-6 mb-10">
+<div class="relative bg-secondary-container rounded-xl overflow-hidden p-8 min-h-[220px] flex flex-col justify-end">
+<div class="absolute top-0 right-0 w-48 h-48 bg-secondary/10 rounded-full -mr-12 -mt-12"></div>
+<div class="relative z-10">
+<span class="inline-block bg-secondary text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3">Community Spotlight</span>
+<h2 class="text-3xl font-bold font-serif text-on-secondary-container leading-tight mb-2">The Loql Hero</h2>
+<p class="text-on-secondary-container/80 font-medium max-w-[200px]">Indiranagar's most helpful neighbor this week.</p>
+</div>
+<!-- Hand-drawn style illustration placeholder -->
+<div class="absolute top-4 right-4 w-32 h-32 opacity-20 transform rotate-12">
+<span class="material-symbols-outlined text-[120px] text-secondary" style="font-variation-settings: 'FILL' 1;">volunteer_activism</span>
+</div>
+</div>
+</section>
+<!-- Stacked Bazaar Cards Feed -->
+<section class="px-6 space-y-8">
+<h3 class="text-2xl font-bold font-serif px-2">Discover Aas-Paas</h3>
+<!-- Card 1 -->
+<div class="bazaar-card bg-surface-container-lowest rounded-[24px] p-1 shadow-[0_4px_12px_rgba(45,49,66,0.04)] transition-all duration-300">
+<div class="relative h-64 w-full rounded-[21px] overflow-hidden">
+<img alt="Kitchen mixer" class="w-full h-full object-cover" data-alt="High-end professional stand mixer on a kitchen counter" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIh00nesCK7XawwERA-fEr6fd14LIoffFSSf4jSS5LhTQuZiOxe8-jPPSigvlVsNvGbzkfiZ9mWXU6u-ZzDkRK-viAbcQ_-epwj3l0PmuJs1r7Y3AG1pOu2m8xBUNjyYqyW-8xF9Sq--_c5JhJZ0HQAVJEsTwI09CecBNtWhGM9kb-D_xKx_x15DHlbYYSKqf_RUchzm9rQ15WSCAd10niAiTbr-BbpJJPCwcOwdppyKUgQuiRvtQSWrHfW09wv-0vlHRSEvBuimft"/>
+<div class="absolute top-4 left-4">
+<span class="bg-tertiary text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">Hot Items</span>
+</div>
+<button class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-tertiary shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-xl font-bold font-headline">Professional Stand Mixer</h4>
+<span class="text-secondary font-bold text-sm">200m away</span>
+</div>
+<p class="text-on-surface-variant text-sm mb-4 line-clamp-2">Hardly used, perfect for your weekend baking projects. Borrow for up to 3 days.</p>
+<div class="flex items-center justify-between pt-4 border-t border-stone/10">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full overflow-hidden bg-stone-200">
+<img alt="Avatar" class="w-full h-full object-cover" data-alt="Close up portrait of a man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkzRDpSZ2evZi3tlnE2R97lOF9RQvKX6SqbZj_6usqhc0uwxldRtGgxrlvGjmDaGYKaHZCRIz8QXTQUc5EhAChOzd_H5vE4UK2O1ldE8pW7MwIPIjG7JyWxXwBJF3eyAmyE2lTFylMF4h24NKBERYfeYYCl_r-cPhCpk3xJUbLothK9Cu-bSjJMqo6Z-ycKpZa_wgZOdLNeWSsqu7Z2w3pAShIV6xXh3HlZ-YqqgEQxqy-BaGClC70eXDyRVHgnO-ghissY1t0AOyy"/>
+</div>
+<span class="text-xs font-semibold">Shared by Rahul</span>
+</div>
+<button class="bg-primary-container text-white px-5 py-2 rounded-full text-sm font-bold shadow-sm active:scale-95 transition-transform">Request</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bazaar-card bg-surface-container-lowest rounded-[24px] p-1 shadow-[0_4px_12px_rgba(45,49,66,0.04)] transition-all duration-300">
+<div class="relative h-64 w-full rounded-[21px] overflow-hidden">
+<img alt="Drill set" class="w-full h-full object-cover" data-alt="Yellow power drill and set of drill bits" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUJfzcDlQKoC4s6kpjjGq6ZfSKiYwgRpPPTF8GrmBIZKJJyfOq29Vnf1wTyxJP18Cv4xeS9wfszI8FtpkhTDVtaBNjjE8hqJZKeQjXZw3H7ZApRZ-SNaNtTcqkRjpoHmwZrqLcGh28WsL7T6OmMt0fVW6t7aHlWSoSfoEHA2zEyO1AYQiEoKoVqQEELRi-HZs9HibiQFBgfktOj3cS5j8J2wPMCyJZsti6RQOXHtVka6JLOYTRTi-j3VyAT7w-vom0PGxcYZkY6kGb"/>
+<div class="absolute top-4 left-4">
+<span class="bg-secondary text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">Most Borrowed</span>
+</div>
+<button class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-on-surface-variant shadow-sm">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-xl font-bold font-headline">Heavy Duty Drill Set</h4>
+<span class="text-secondary font-bold text-sm">450m away</span>
+</div>
+<p class="text-on-surface-variant text-sm mb-4 line-clamp-2">Full kit including masonry bits. Perfect for mounting those floating shelves.</p>
+<div class="flex items-center justify-between pt-4 border-t border-stone/10">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full overflow-hidden bg-stone-200">
+<img alt="Avatar" class="w-full h-full object-cover" data-alt="Close up portrait of a woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUi2JTRpldAyzpFjJHvyFVeZwIwNzUMRhk1BwHkAiMM6bE7X_2Hf1FaIAzK7rGX3t8d1LuepZ-rvEQvZbsOZXWdB4KfboaOODp6FITYEizDulcR3ssep1jliAnXTX8sx_apod-KDSp82zzY81z04k_hozxd76u2hvQxjpAXcJ31hO4LHW2NDNehjWA52csTshYH72eZ7wF_X5hdQd2QLIqkZueX2ZRN4a-2aZKNrGkzhg5r93gjwr_US1uli97Tlt6OGoXIhZGqWYM"/>
+</div>
+<span class="text-xs font-semibold">Shared by Priya</span>
+</div>
+<button class="bg-primary-container text-white px-5 py-2 rounded-full text-sm font-bold shadow-sm active:scale-95 transition-transform">Request</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bazaar-card bg-surface-container-lowest rounded-[24px] p-1 shadow-[0_4px_12px_rgba(45,49,66,0.04)] transition-all duration-300">
+<div class="relative h-64 w-full rounded-[21px] overflow-hidden">
+<img alt="Succulents" class="w-full h-full object-cover" data-alt="Small succulent plants in terra cotta pots" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDC_icFTP0ofPFChApefJkMez-CvRN8BEZut0WfdhDv_cT7_RmDOBkwisfjwtSNd9HpJsVeuyoc4vBnSTCWfT_8-OmeebrWsiR2bHvg85U550npcm327I_dE7eO88iseG5shJFk4WqVMVWYCrWsIwhLAH5DxvUHey2GfPYwp_M6LOPwwFn5kxPIlOLilN5HeYQUaTO5ieYytA1cb0b0L5mqEwZ_o6jteXvDJ8V7jLGzzzi-xN448hW-REhr2aahJ0RkLVBQYlscBqLT"/>
+<div class="absolute top-4 left-4">
+<span class="bg-primary text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">Giveaway</span>
+</div>
+<button class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-on-surface-variant shadow-sm">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-xl font-bold font-headline">Baby Succulent Pots</h4>
+<span class="text-secondary font-bold text-sm">800m away</span>
+</div>
+<p class="text-on-surface-variant text-sm mb-4 line-clamp-2">Grown with love! Have 5 small pots to give away to neighbors who love plants.</p>
+<div class="flex items-center justify-between pt-4 border-t border-stone/10">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full overflow-hidden bg-stone-200">
+<img alt="Avatar" class="w-full h-full object-cover" data-alt="Close up portrait of a smiling man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvZPZm9IJZ-mTutxLPmEVCVBFnftfxiMRSJASEMZyy0AVuROwi8JxNqqSNusLummGaDBL2L4mpZLSWsPcImLZPpt7uFjKYLIFbgSzgEZTysCaB311RKA5YFpjkWeVKbUlr3gOLstbh5INBfuJxP2w8yL_EyM66_UIl1Odu2rbjD47W5PcJKfFoFD57PXbd_veg0j6grwtvGTyooFRaOMtZuWlr7LCYaXk63hSctc2xBIugNk3Fg_JGmGzYqttavUrvM0gkPmeujVV0"/>
+</div>
+<span class="text-xs font-semibold">Shared by Arjun</span>
+</div>
+<button class="bg-primary-container text-white px-5 py-2 rounded-full text-sm font-bold shadow-sm active:scale-95 transition-transform">Claim</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- FAB -->
+<button class="fixed bottom-28 right-6 w-16 h-16 bg-primary text-white rounded-full shadow-[0_12px_32px_rgba(241,115,80,0.3)] flex items-center justify-center z-50 hover:scale-105 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-4 bg-[#FDFBF7]/80 dark:bg-stone-900/80 backdrop-blur-xl rounded-t-[32px] shadow-[0_-4px_12px_rgba(45,49,66,0.04)]">
+<!-- Active Tab: Aas-Paas -->
+<a class="flex flex-col items-center justify-center bg-[#f17350] text-white rounded-full px-6 py-2 shadow-[0_12px_32px_rgba(241,115,80,0.15)] transform translateY(-4px) rotate(1deg) transition-transform" href="#">
+<span class="material-symbols-outlined mb-0.5">explore</span>
+<span class="text-[10px] font-semibold font-sans uppercase tracking-wider">Aas-Paas</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#2D3142] dark:text-stone-400 opacity-70 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined mb-1">menu_book</span>
+<span class="text-[10px] font-semibold font-sans uppercase tracking-wider">Katha</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#2D3142] dark:text-stone-400 opacity-70 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined mb-1">chat_bubble</span>
+<span class="text-[10px] font-semibold font-sans uppercase tracking-wider">Samvaad</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#2D3142] dark:text-stone-400 opacity-70 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined mb-1">door_front</span>
+<span class="text-[10px] font-semibold font-sans uppercase tracking-wider">The Dwar</span>
+</a>
+</nav>
+</body></html>

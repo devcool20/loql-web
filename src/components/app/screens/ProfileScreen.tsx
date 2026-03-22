@@ -8,6 +8,7 @@ import {
 import { useStore } from '@/store/useStore';
 import { supabase } from '@/lib/supabase';
 import { getSafeImageUrl } from '@/lib/imageUtils';
+import AppTopBar from '@/components/app/AppTopBar';
 
 const ProfileScreen = () => {
   const { user, setUser, showAlert, setCurrentStack, setHistoryType, refreshTrigger, currentStack, theme, toggleTheme } = useStore();
@@ -18,13 +19,6 @@ const ProfileScreen = () => {
   const displayName = user?.user_metadata?.full_name || 'Neighbor';
   const avatarUrl = user?.user_metadata?.avatar_url;
   const phoneNumber = user?.phone || 'No phone number';
-
-  useEffect(() => {
-    if (user) {
-      fetchCounts();
-      fetchWalletBalance();
-    }
-  }, [user, currentStack, refreshTrigger]);
 
   const fetchCounts = async () => {
     try {
@@ -51,6 +45,13 @@ const ProfileScreen = () => {
     } catch (e) { setWalletBalance(0); }
   };
 
+  useEffect(() => {
+    if (user) {
+      fetchCounts();
+      fetchWalletBalance();
+    }
+  }, [user, currentStack, refreshTrigger]);
+
   const handleLogout = () => {
     showAlert('Log Out', 'Are you sure you want to log out?', 'info', undefined, false, [
       { text: 'Cancel', style: 'cancel' },
@@ -75,20 +76,17 @@ const ProfileScreen = () => {
 
   return (
     <div style={{ background: 'var(--background)', minHeight: '100%', paddingBottom: 120 }}>
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '14px 20px' }}>
-        <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>Profile</span>
-      </div>
+      <AppTopBar />
 
       <div style={{ padding: '0 24px' }}>
         {/* User Info */}
-        <div style={{ display: 'flex', alignItems: 'center', marginTop: 8, marginBottom: 28 }}>
-          <div style={{ marginRight: 18, borderRadius: 40, boxShadow: '0 6px 10px rgba(0,0,0,0.12)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', marginTop: 14, marginBottom: 24 }}>
+          <div style={{ marginRight: 18, borderRadius: 20, boxShadow: 'var(--shadow-md)', transform: 'rotate(-3deg)', border: '4px solid var(--surface-container-lowest)' }}>
             {avatarUrl ? (
-              <img src={getSafeImageUrl(avatarUrl)} alt="" style={{ width: 76, height: 76, borderRadius: 38, objectFit: 'cover' }} />
+              <img src={getSafeImageUrl(avatarUrl)} alt="" style={{ width: 92, height: 92, borderRadius: 18, objectFit: 'cover' }} />
             ) : (
               <div style={{
-                width: 76, height: 76, borderRadius: 38, background: 'var(--accent-solid)',
+                width: 92, height: 92, borderRadius: 18, background: 'var(--accent-solid)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 color: 'var(--accent-solid-text)', fontSize: 26, fontWeight: 700,
               }}>{displayName[0]}</div>
@@ -104,8 +102,8 @@ const ProfileScreen = () => {
         <div className="scale-pressable"
           onClick={() => setCurrentStack('Wallet')}
           style={{
-            display: 'flex', alignItems: 'center', background: 'var(--accent-solid)', padding: 20, borderRadius: 24, marginBottom: 30,
-            boxShadow: '0 10px 20px rgba(17,24,39,0.25)', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', background: 'var(--accent-solid)', padding: 20, borderRadius: 24, marginBottom: 26,
+            boxShadow: 'var(--warm-glow)', cursor: 'pointer',
           }}>
           <div style={{
             width: 48, height: 48, borderRadius: 24, background: 'var(--accent-solid-muted)',
@@ -121,7 +119,7 @@ const ProfileScreen = () => {
         </div>
 
         {/* History */}
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 14, letterSpacing: -0.3 }}>History</h3>
+        <h3 className="font-serif" style={{ fontSize: 28, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 14, letterSpacing: -0.3 }}>Pehchan</h3>
         <div style={{ display: 'flex', gap: 12, marginBottom: 8 }}>
           {[
             { icon: <ShoppingBag size={20} color="var(--accent-solid-text)" />, label: 'Rented', count: rentedCount, type: 'rented' as const },
