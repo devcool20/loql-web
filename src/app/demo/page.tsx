@@ -82,36 +82,31 @@ function DemoPageContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [stepIndex, setStepIndex] = useState(0);
-  const [checkingDevice, setCheckingDevice] = useState(true);
+
+  const checkingDevice = (() => {
+    if (typeof window !== 'undefined' && isMobileViewport()) {
+      router.replace('/app');
+    }
+    return false;
+  })();
 
   useEffect(() => {
-    if (isMobileViewport()) {
-      router.replace('/app');
-      return;
-    }
-    setCheckingDevice(false);
-
     preloadImages([
       STEP_IMAGES.dwarHero,
       STEP_IMAGES.kathaMain,
       STEP_IMAGES.discoverA,
       STEP_IMAGES.discoverB,
     ]);
-  }, [router]);
+  }, []);
 
   useEffect(() => {
-    if (checkingDevice) return;
     const requestedStep = searchParams.get('step');
-    if (!requestedStep) {
-      setStepIndex(0);
-      return;
-    }
+    if (!requestedStep) return;
     const idx = STORY_STEPS.findIndex((item) => item.id === requestedStep);
     setStepIndex(idx >= 0 ? idx : 0);
-  }, [checkingDevice, searchParams]);
+  }, [searchParams]);
 
   useEffect(() => {
-    if (checkingDevice) return;
     const currentStepId = STORY_STEPS[stepIndex].id;
     if (searchParams.get('step') === currentStepId) return;
 
@@ -493,7 +488,7 @@ function renderPhoneScreen(stepId: string, setStepById: (id: DemoStep['id']) => 
         />
         <div style={{ marginTop: 10, borderRadius: 14, padding: 10, background: '#FFF9E6', border: '1px solid rgba(141,153,174,0.2)' }}>
           <p className="font-serif" style={{ fontStyle: 'italic', fontSize: 16, lineHeight: 1.3 }}>
-            "Easy setup, waterproof fabric, and perfect for a 2-night weekend."
+            &ldquo;Easy setup, waterproof fabric, and perfect for a 2-night weekend.&rdquo;
           </p>
         </div>
         <h3 className="font-serif" style={{ fontSize: 24, marginTop: 8 }}>2-Person Tent</h3>

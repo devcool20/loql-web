@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(npm install:*)",
+      "Bash(npx next:*)",
+      "Bash(npm run:*)",
+      "WebFetch(domain:localhost)",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(curl -s http://localhost:3000/app)",
+      "Bash(curl -s http://localhost:3000/register)",
+      "Bash(ls:*)",
+      "Bash(npx puppeteer:*)",
+      "Bash(npx playwright:*)",
+      "Bash(npx eslint:*)",
+      "Bash(sed -i 's/<Rv d={[0-9]*}>//g' src/app/page.tsx)",
+      "Bash(sed -i 's/<Rv d={[0-9]*}/<Rv>/g' src/app/page.tsx)",
+      "Bash(npx tailwindcss:*)",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/tailwindcss/package.json'\\).version\\)\")",
+      "Bash(npm list:*)",
+      "Bash(pkill -f \"next dev\")"
+    ]
+  }
+}

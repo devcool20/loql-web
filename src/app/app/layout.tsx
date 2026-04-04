@@ -24,10 +24,5 @@ export const viewport: Viewport = {
 };
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <link rel="apple-touch-icon" href="/logo.png" />
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }

@@ -42,10 +42,10 @@ export default function Register() {
 
       setStatus('success');
       
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
       setStatus('error');
-      setErrorMessage(err.message || 'An unexpected error occurred. Please try again.');
+      setErrorMessage((err as Error).message || 'An unexpected error occurred. Please try again.');
     }
   };
 

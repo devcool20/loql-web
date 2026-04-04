@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+/* Ensure all app source is scanned (Tailwind v4) */
+@source "../**/*.{js,ts,jsx,tsx,mdx}";
+
+@theme inline {
+  /* Custom animations */
+  --animate-bounce-slow: bounce-slow 4s ease-in-out infinite;
+  --animate-blob-float: blobFloat 12s ease-in-out infinite;
+  --animate-blob-float-delay: blobFloat 12s ease-in-out -4s infinite;
+
+  /* ── Colors: exact values from reference design ── */
+  --color-primary: #f17350;
+  --color-primary-hover: #d76244;
+  --color-primary-container: #f17350;
+  --color-secondary: #41B3A3;
+  --color-secondary-container: #e0f2f1;
+  --color-tertiary: #F64C72;
+  --color-tertiary-container: #ffdad6;
+  --color-background: #FDFBF7;
+  --color-surface: #FDFBF7;
+  --color-surface-bright: #ffffff;
+  --color-surface-dim: #ebd5d0;
+  --color-surface-variant: #f4ded8;
+  --color-surface-container: #f8f6f6;
+  --color-surface-container-low: #FDFBF7;
+  --color-surface-container-high: #f9e3de;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-highest: #f4ded8;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #ffffff;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #004d40;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #410002;
+  --color-on-background: #2D3142;
+  --color-on-surface: #2D3142;
+  --color-on-surface-variant: #8D99AE;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #93000a;
+  --color-outline: #8D99AE;
+  --color-outline-variant: #dec0b8;
+  --color-inverse-surface: #3a2d2a;
+  --color-inverse-on-surface: #ffede8;
+  --color-inverse-primary: #ffb5a1;
+  --color-surface-tint: #f17350;
+  --color-primary-fixed: #ffdbd1;
+  --color-primary-fixed-dim: #ffb5a1;
+  --color-secondary-fixed: #78f6f3;
+  --color-secondary-fixed-dim: #57d9d7;
+  --color-tertiary-fixed: #ffdad6;
+  --color-tertiary-fixed-dim: #ffb4ab;
+
+  /* Legacy token aliases (for globals.css CSS var references) */
+  --color-foreground: #2D3142;
+  --color-accent: #F64C72;
+  --color-surface-alt: #f8f6f6;
+  --color-text-primary: #2D3142;
+  --color-text-secondary: #8D99AE;
+  --color-text-light: #8D99AE;
+  --color-muted: #f4ded8;
+  --color-border: rgba(141, 153, 174, 0.2);
+  --color-border-light: rgba(141, 153, 174, 0.15);
+
+  /* Typography: use Next.js font CSS variables (see layout.tsx) */
+  --font-headline: var(--font-playfair), "Playfair Display", Georgia, serif;
+  --font-body: var(--font-work-sans), "Work Sans", system-ui, sans-serif;
+  --font-label: var(--font-work-sans), "Work Sans", system-ui, sans-serif;
+
+  /* Do not override --radius-* here — it breaks rounded-lg / rounded-xl across the UI */
+}
+
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes blobFloat {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(16px, -24px, 0); }
+}
