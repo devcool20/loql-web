@@ -78,8 +78,6 @@ function useActiveNavSection() {
   return active;
 }
 
-const heroImg = '/brand/loql-neighborhood-hero.png';
-
 /** Indian-context listing imagery (Unsplash — stable IDs) */
 const bazaarCamImg =
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7nlz3EcdDm_2NLBq6gqugJ1iYNbRIR0aPLw&s?w=800&q=80&auto=format&fit=crop';
@@ -227,7 +225,7 @@ export default function LandingPage() {
       {/* ── TopNavBar (narrow pill bar + visible primary CTA) ── */}
       <header className="fixed top-0 left-0 right-0 z-50 pointer-events-none px-3 pt-3 sm:pt-4">
         <nav
-          className="pointer-events-auto mx-auto flex max-w-5xl items-center justify-between gap-2 rounded-full border border-stone-200/90 bg-white/95 py-2 pl-3 pr-2 shadow-md shadow-stone-900/5 backdrop-blur-xl md:gap-3 md:py-2.5 md:pl-5 md:pr-3"
+          className="landing-ui-scale pointer-events-auto mx-auto flex max-w-5xl items-center justify-between gap-2 rounded-full border border-stone-200/90 bg-white/95 py-2 pl-3 pr-2 shadow-md shadow-stone-900/5 backdrop-blur-xl md:gap-3 md:py-2.5 md:pl-5 md:pr-3"
           aria-label="Main"
         >
           <a
@@ -252,17 +250,6 @@ export default function LandingPage() {
               </button>
               <button
                 type="button"
-                onClick={() => scrollToId('community')}
-                className={`rounded-full px-3 py-1.5 text-xs font-bold tracking-tight transition-all duration-200 ease-out lg:px-4 lg:text-[13px] ${
-                  activeNav === 'community'
-                    ? 'bg-white text-[#f17350] shadow-sm ring-1 ring-stone-200/80'
-                    : 'text-[#2D3142] hover:bg-white/70 hover:text-[#f17350]'
-                }`}
-              >
-                Community
-              </button>
-              <button
-                type="button"
                 onClick={() => scrollToId('bazaar')}
                 className={`rounded-full px-3 py-1.5 text-xs font-bold tracking-tight transition-all duration-200 ease-out lg:px-4 lg:text-[13px] ${
                   activeNav === 'bazaar'
@@ -282,6 +269,17 @@ export default function LandingPage() {
                 }`}
               >
                 Stories
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToId('community')}
+                className={`rounded-full px-3 py-1.5 text-xs font-bold tracking-tight transition-all duration-200 ease-out lg:px-4 lg:text-[13px] ${
+                  activeNav === 'community'
+                    ? 'bg-white text-[#f17350] shadow-sm ring-1 ring-stone-200/80'
+                    : 'text-[#2D3142] hover:bg-white/70 hover:text-[#f17350]'
+                }`}
+              >
+                Community
               </button>
             </div>
           </div>
@@ -307,6 +305,7 @@ export default function LandingPage() {
         </nav>
       </header>
 
+      <div className="landing-ui-scale origin-top">
       {/* ── Hero ── */}
       <section
         id="hero"
@@ -348,18 +347,18 @@ export default function LandingPage() {
           </div>
 
           <div ref={heroImgRef} className="reveal-stagger relative min-w-0 w-full">
-            <div className="relative w-full rounded-2xl overflow-hidden bg-surface-container shadow-2xl ring-1 ring-stone-200/60">
-              {/* Full illustration visible (no bottom crop); letterboxing on wide screens */}
-              <Image
-                className="mx-auto block h-auto w-full max-h-[min(88vh,820px)] object-contain object-center"
-                src={heroImg}
-                alt="Illustration of neighbours sharing items across balconies in an Indian neighbourhood, with a phone and QR code"
-                width={1600}
-                height={900}
-                priority
-                fetchPriority="high"
-                sizes="(max-width: 1023px) 100vw, 50vw"
-              />
+            <div className="landing-media-scale relative w-full rounded-2xl overflow-hidden bg-stone-100 shadow-2xl ring-1 ring-stone-200/60">
+              <div className="relative aspect-video w-full max-h-[min(88vh,820px)] overflow-hidden">
+                <video
+                  className="absolute inset-0 h-full w-full origin-center object-cover object-center outline-none scale-[1.14]"
+                  src="/Vibrant_Indian_Neighborhood_Looping_Video.mp4"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  aria-label="Neighbours sharing across balconies in an Indian neighbourhood"
+                />
+              </div>
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background/50 to-transparent" />
             </div>
             <FloatingCardTop />
@@ -399,7 +398,7 @@ export default function LandingPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               <div className="bazaar-card bg-white p-2 rounded-lg shadow-sm">
-                <div className="relative mb-4 h-64 overflow-hidden rounded-lg">
+                <div className="landing-media-scale relative mb-4 h-64 overflow-hidden rounded-lg">
                   <Image
                     src={bazaarCamImg}
                     alt="DSLR camera kit"
@@ -433,7 +432,7 @@ export default function LandingPage() {
               </div>
 
               <div className="bazaar-card bg-white p-2 rounded-lg shadow-sm mt-8">
-                <div className="relative mb-4 h-80 overflow-hidden rounded-lg">
+                <div className="landing-media-scale relative mb-4 h-80 overflow-hidden rounded-lg">
                   <Image
                     src={bazaarApplianceImg}
                     alt="Mixer grinder"
@@ -465,7 +464,7 @@ export default function LandingPage() {
               </div>
 
               <div className="bazaar-card bg-white p-2 rounded-lg shadow-sm">
-                <div className="relative mb-4 h-72 overflow-hidden rounded-lg">
+                <div className="landing-media-scale relative mb-4 h-72 overflow-hidden rounded-lg">
                   <Image
                     src={bazaarBooksImg}
                     alt="Stack of books"
@@ -516,14 +515,16 @@ export default function LandingPage() {
           <div ref={kathaCardRef} className="reveal-scroll relative order-2 lg:order-1">
             <div className="absolute -top-10 -left-10 w-40 h-40 bg-tertiary/10 rounded-full blur-2xl" aria-hidden="true" />
             <div className="relative bg-white p-6 shadow-2xl rounded-sm transform -rotate-3 hover:rotate-0 transition-transform duration-500 border-b-[40px] border-stone-50">
-              <Image
-                className="mb-4 h-[280px] w-full object-cover sm:h-[400px]"
-                src={kathaKitchenImg}
-                alt="Indian kitchen with mixer and utensils"
-                width={900}
-                height={600}
-                sizes="(max-width: 1023px) 100vw, 50vw"
-              />
+              <div className="landing-media-scale mb-4 overflow-hidden">
+                <Image
+                  className="h-[280px] w-full object-cover sm:h-[400px]"
+                  src={kathaKitchenImg}
+                  alt="Indian kitchen with mixer and utensils"
+                  width={900}
+                  height={600}
+                  sizes="(max-width: 1023px) 100vw, 50vw"
+                />
+              </div>
               <p className="font-headline italic text-2xl text-on-background text-center">
                 &quot;Shared with love from my kitchen to yours.&quot;
               </p>
@@ -666,7 +667,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4">
-                  <div className="relative h-56 w-full overflow-hidden rounded-2xl shadow-lg ring-1 ring-stone-200/50 sm:h-64 sm:rounded-3xl">
+                  <div className="landing-media-scale relative h-56 w-full overflow-hidden rounded-2xl shadow-lg ring-1 ring-stone-200/50 sm:h-64 sm:rounded-3xl">
                     <Image
                       src={impactImgLeft}
                       alt="Apartment blocks and neighbourhood — community life"
@@ -675,7 +676,7 @@ export default function LandingPage() {
                       sizes="(max-width: 1024px) 45vw, 22vw"
                     />
                   </div>
-                  <div className="relative mt-6 h-56 w-full overflow-hidden rounded-2xl shadow-lg ring-1 ring-stone-200/50 sm:mt-8 sm:h-64 sm:rounded-3xl">
+                  <div className="landing-media-scale relative mt-6 h-56 w-full overflow-hidden rounded-2xl shadow-lg ring-1 ring-stone-200/50 sm:mt-8 sm:h-64 sm:rounded-3xl">
                     <Image
                       src={impactImgRight}
                       alt="Balconies and everyday life in an Indian society"
@@ -693,7 +694,15 @@ export default function LandingPage() {
 
       {/* ── Footer ── */}
       <footer className="bg-[#FDFBF7] relative overflow-hidden w-full rounded-t-[48px] mt-20">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 px-12 py-20 max-w-screen-2xl mx-auto">
+        <div
+          className="pointer-events-none absolute inset-0 flex items-end justify-center overflow-hidden select-none"
+          aria-hidden={true}
+        >
+          <span className="font-black leading-none text-[min(22vw,14rem)] text-[#2D3142] opacity-[0.07] translate-y-[22%]">
+            Loql
+          </span>
+        </div>
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-4 gap-12 px-12 py-20 max-w-screen-2xl mx-auto">
           <div className="col-span-1 md:col-span-1">
             <a href="#hero" className="block text-3xl font-black text-[#2D3142] mb-6">
               Loql
@@ -782,6 +791,7 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+      </div>
     </main>
   );
 }

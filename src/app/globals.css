@@ -106,6 +106,15 @@
   --shadow-float: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
+/* Landing page: 75% UI scale; reset media with .landing-media-scale (zoom 1/0.75) */
+.landing-ui-scale {
+  zoom: 0.75;
+}
+
+.landing-media-scale {
+  zoom: 1.3333333333;
+}
+
 /* Do not zero margin/padding on * — it breaks Tailwind space-* utilities and fights Preflight. */
 *,
 *::before,
