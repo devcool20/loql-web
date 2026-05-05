@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Lora, Playfair_Display, Work_Sans } from "next/font/google";
+import RouteMotion from "@/components/motion/RouteMotion";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -84,7 +85,9 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
         />
       </head>
-      <body className={`${fraunces.variable} ${workSans.variable} ${playfair.variable} ${lora.variable}`}>{children}</body>
+      <body className={`${fraunces.variable} ${workSans.variable} ${playfair.variable} ${lora.variable}`}>
+        <RouteMotion>{children}</RouteMotion>
+      </body>
     </html>
   );
 }

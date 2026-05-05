@@ -1,16 +1,17 @@
 'use client';
 
 import React from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useStore } from '@/store/useStore';
 import HomeScreen from './screens/HomeScreen';
 import RentalsScreen from './screens/RentalsScreen';
 import ChatListScreen from './screens/ChatListScreen';
 import ProfileScreen from './screens/ProfileScreen';
-
-const TAB_ORDER = ['Home', 'Rentals', 'Chat', 'Profile'] as const;
+import { iosSpring } from '@/components/motion/motionPrimitives';
 
 const AnimatedTabNavigator = () => {
   const { currentTab } = useStore();
+  const shouldReduceMotion = useReducedMotion();
 
   const tabContent: Record<string, React.ReactNode> = {
     Home: <HomeScreen />,
@@ -21,21 +22,18 @@ const AnimatedTabNavigator = () => {
 
   return (
     <div className="tab-content">
-      {TAB_ORDER.map((tab) => {
-        const isActive = currentTab === tab;
-        return (
-          <div
-            key={tab}
-            className={`tab-screen ${isActive ? 'active' : 'hidden'}`}
-            style={{
-              transition: 'opacity 0.2s ease-out, transform 0.2s ease-out',
-              opacity: isActive ? 1 : 0,
-            }}
-          >
-            {tabContent[tab]}
-          </div>
-        );
-      })}
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.div
+          key={currentTab}
+          className="tab-screen active"
+          initial={shouldReduceMotion ? false : { opacity: 0, x: 18, scale: 0.992 }}
+          animate={shouldReduceMotion ? undefined : { opacity: 1, x: 0, scale: 1 }}
+          exit={shouldReduceMotion ? undefined : { opacity: 0, x: -12, scale: 0.995 }}
+          transition={iosSpring}
+        >
+          {tabContent[currentTab]}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 };

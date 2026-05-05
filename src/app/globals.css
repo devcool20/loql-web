@@ -35,6 +35,10 @@
   --surface-container-high: #f9e3de;
   --on-surface-variant: #8D99AE;
   --warm-glow: 0 12px 32px rgba(241, 115, 80, 0.16);
+  --app-topbar-bg: rgba(253, 251, 247, 0.9);
+  --app-tabbar-bg: rgba(255, 255, 255, 0.84);
+  --app-tabbar-border: rgba(141, 153, 174, 0.15);
+  --app-chrome-shadow: 0 10px 30px rgba(45, 49, 66, 0.08);
 
   /* Material Design token aliases for landing page */
   --onBackground: #2D3142;
@@ -97,6 +101,10 @@
   --surface-container-high: #4b3a35;
   --on-surface-variant: #d2b5ab;
   --warm-glow: 0 12px 32px rgba(255, 136, 102, 0.26);
+  --app-topbar-bg: rgba(42, 33, 30, 0.9);
+  --app-tabbar-bg: rgba(42, 33, 30, 0.86);
+  --app-tabbar-border: rgba(255, 203, 186, 0.16);
+  --app-chrome-shadow: 0 12px 34px rgba(0, 0, 0, 0.42);
 
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.32);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.26);
@@ -151,6 +159,11 @@ body {
   font-family: var(--font-work-sans), 'Work Sans', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.route-motion-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .font-serif {
@@ -262,6 +275,26 @@ textarea {
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+  will-change: opacity, transform;
+}
+
+.app-stack-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  background: var(--background);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  transform-origin: 50% 100%;
+  will-change: opacity, transform;
+}
+
+@media (min-width: 769px) {
+  .app-stack-screen {
+    left: calc(50% - 215px);
+    width: 430px;
+  }
 }
 
 .tab-screen.active {
@@ -287,7 +320,7 @@ textarea {
   left: 20px;
   right: 20px;
   height: 64px;
-  background: rgba(255, 255, 255, 0.84);
+  background: var(--app-tabbar-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 32px;
@@ -295,8 +328,8 @@ textarea {
   justify-content: space-between;
   align-items: center;
   padding: 0 16px;
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-md);
+  border: 1px solid var(--app-tabbar-border);
+  box-shadow: var(--app-chrome-shadow);
   z-index: 100;
   box-sizing: border-box;
 }
@@ -336,6 +369,7 @@ textarea {
 
 .tab-button.active {
   background: var(--muted);
+  box-shadow: inset 0 0 0 1px var(--border-light);
 }
 
 .tab-label {
@@ -347,18 +381,30 @@ textarea {
 
 /* ─── Scale Pressable (for buttons / cards) ─── */
 .scale-pressable {
-  transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), filter 0.18s ease;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
 }
 
 .scale-pressable:active {
-  transform: scale(0.96);
+  transform: scale(0.965);
+  filter: saturate(1.04);
 }
 
 .scale-pressable-up:active {
-  transform: scale(1.03);
+  transform: scale(1.025);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 
 /* ─── Custom Alert Modal ─── */
@@ -373,7 +419,6 @@ textarea {
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  animation: fadeIn 0.2s ease;
 }
 
 .alert-card {
@@ -384,7 +429,6 @@ textarea {
   padding: 24px;
   text-align: center;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  animation: scaleIn 0.2s ease;
 }
 
 .alert-title {
@@ -1293,10 +1337,10 @@ textarea {
 
 /* Glass Morphism */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--app-topbar-bg);
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--border-light);
 }
 
 .shadow-premium {

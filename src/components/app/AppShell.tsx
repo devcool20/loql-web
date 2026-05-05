@@ -1,9 +1,12 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import type { User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { startRentalExpirationChecker } from '@/lib/rentalExpirationManager';
+import AppStackTransition from '@/components/motion/AppStackTransition';
 import WelcomeScreen from './screens/WelcomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import ProfileCreationScreen from './screens/ProfileCreationScreen';
@@ -160,7 +163,7 @@ const AppShell = () => {
     }, remaining);
   };
 
-  const checkProfile = async (currentUser: any) => {
+  const checkProfile = async (currentUser: User) => {
     try {
       const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
       if (data) {
@@ -243,7 +246,6 @@ const AppShell = () => {
       <div className="tab-container">
         <AnimatedTabNavigator />
         <BottomTabBar />
-        {renderStackScreen()}
       </div>
     );
   };
@@ -254,6 +256,13 @@ const AppShell = () => {
       <div className="app-layer-content">
         {renderContent()}
         <CustomAlert />
+        <AnimatePresence mode="wait" initial={false}>
+          {currentStack && (
+            <AppStackTransition key={currentStack}>
+              {renderStackScreen()}
+            </AppStackTransition>
+          )}
+        </AnimatePresence>
       </div>
 
       {showSplash && (
