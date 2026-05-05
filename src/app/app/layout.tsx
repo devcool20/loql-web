@@ -3,7 +3,6 @@ import type { Metadata, Viewport } from 'next';
 export const metadata: Metadata = {
   title: 'loql — Your Neighborhood Rental Engine',
   description: 'Rent anything from your neighbors in your society. Tools, gear, party supplies, and more.',
-  themeColor: '#FDFBF7',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -21,6 +20,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: 'cover',
+  themeColor: '#FDFBF7',
 };
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {

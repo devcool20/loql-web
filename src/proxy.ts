@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 // Mobile user-agent patterns
 const MOBILE_REGEX = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i;
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
     // Only intercept the root path "/"
