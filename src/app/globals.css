@@ -64,6 +64,7 @@
   --shadow-lg: 0 8px 16px rgba(45, 49, 66, 0.08);
   --shadow-xl: 0 10px 30px -10px rgba(45, 49, 66, 0.12);
   --shadow-float: 0 4px 12px rgba(45, 49, 66, 0.08);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 [data-theme="dark"] {
@@ -276,6 +277,7 @@ textarea {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   will-change: opacity, transform;
+  padding-bottom: calc(96px + var(--safe-area-bottom));
 }
 
 .app-stack-screen {
@@ -316,11 +318,11 @@ textarea {
 /* ─── Bottom Tab Bar ─── */
 .bottom-tab-bar {
   position: fixed;
-  bottom: 24px;
+  bottom: calc(12px + var(--safe-area-bottom));
   left: 20px;
   right: 20px;
   height: 64px;
-  background: var(--app-tabbar-bg);
+  background: var(--surface);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 32px;
@@ -330,8 +332,10 @@ textarea {
   padding: 0 16px;
   border: 1px solid var(--app-tabbar-border);
   box-shadow: var(--app-chrome-shadow);
-  z-index: 100;
+  z-index: 260;
   box-sizing: border-box;
+  overflow: hidden;
+  isolation: isolate;
 }
 
 @media (min-width: 769px) {
@@ -1281,10 +1285,6 @@ textarea {
 
 /* PWA Safe Area */
 @supports (padding: env(safe-area-inset-bottom)) {
-  .bottom-tab-bar {
-    padding-bottom: calc(0px + env(safe-area-inset-bottom));
-  }
-
   .home-screen,
   .login-scroll {
     padding-top: env(safe-area-inset-top);
