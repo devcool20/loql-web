@@ -6,7 +6,6 @@ import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { formatRelativeTime } from '@/lib/dateUtils';
 import { getSafeImageUrl } from '@/lib/imageUtils';
-import AppTopBar from '@/components/app/AppTopBar';
 
 const ChatListScreen = () => {
   const { user, openChat } = useStore();
@@ -95,13 +94,12 @@ const ChatListScreen = () => {
   }
 
   return (
-    <div style={{ background: 'var(--background)', minHeight: '100%', paddingBottom: 100 }}>
-      <AppTopBar />
-      <div style={{ padding: '16px 20px 0' }}>
-      <h1 className="font-serif" style={{ fontSize: 34, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: -0.5 }}>
-        Neighborhood Conversations
+    <div style={{ background: 'var(--background)', minHeight: '100%', padding: '24px 0 100px' }}>
+      <div style={{ padding: '0 20px' }}>
+      <h1 className="font-serif" style={{ fontSize: 28, lineHeight: '32px', fontWeight: 650, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: '-0.03em' }}>
+        Samvaad
       </h1>
-      <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginBottom: 16 }}>Connect with those around you.</p>
+      <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 16, fontWeight: 550 }}>Apne padosiyon se baat-cheet.</p>
 
       {/* Search Bar */}
       <div style={{

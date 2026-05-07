@@ -84,6 +84,55 @@ $$;
 
 grant execute on function public.check_geofence_access(uuid, double precision, double precision, double precision) to authenticated;
 
+create or replace function public.calibrate_my_society_geofence(
+  p_user_id uuid,
+  p_lat double precision,
+  p_lng double precision,
+  p_radius_meters integer default 500
+)
+returns table(
+  allowed boolean,
+  distance_meters double precision,
+  radius_meters integer,
+  society_id uuid,
+  society_name text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_society_id uuid;
+  v_radius integer;
+begin
+  if auth.uid() is distinct from p_user_id then
+    raise exception 'Not authorized to calibrate society geofence for this user';
+  end if;
+
+  select p.society_id into v_society_id
+  from public.profiles p
+  where p.id = p_user_id;
+
+  if v_society_id is null then
+    raise exception 'Your profile is not linked to a valid society yet.';
+  end if;
+
+  v_radius := least(greatest(coalesce(p_radius_meters, 500), 100), 500);
+
+  update public.societies
+  set latitude = p_lat,
+      longitude = p_lng,
+      radius_meters = v_radius
+  where id = v_society_id;
+
+  return query
+  select *
+  from public.check_geofence_access(p_user_id, p_lat, p_lng, 0);
+end;
+$$;
+
+grant execute on function public.calibrate_my_society_geofence(uuid, double precision, double precision, integer) to authenticated;
+
 create or replace function public.get_feed_items_geofenced(
   p_user_id uuid,
   p_lat double precision,

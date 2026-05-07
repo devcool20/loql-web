@@ -3,8 +3,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, react-hooks/exhaustive-deps */
 
 import React, { useEffect, useState } from 'react';
-import { Camera, CreditCard, Plus, ShieldCheck, Trash2, X } from 'lucide-react';
-import AppTopBar from '@/components/app/AppTopBar';
+import {
+  CheckCircle2,
+  Clock3,
+  CreditCard,
+  PackageOpen,
+  Plus,
+  ShieldCheck,
+  X,
+} from 'lucide-react';
 import { ListSkeleton } from '@/components/app/Skeleton';
 import { cacheGetStale, cacheInvalidate, cacheSet, CACHE_KEYS, TTL } from '@/lib/cache';
 import { getSafeImageUrl } from '@/lib/imageUtils';
@@ -13,11 +20,19 @@ import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { assertGeofenceAllowed } from '@/lib/geofence';
 
-type RentalsTab = 'listings' | 'offers' | 'bookings';
-
 const RentalsScreen = () => {
-  const { user, showAlert, navigateToDetail, setCurrentStack, setPermission, setCoords, refreshGeofence } = useStore();
-  const [activeTab, setActiveTab] = useState<RentalsTab>('listings');
+  const {
+    user,
+    showAlert,
+    navigateToDetail,
+    setCurrentStack,
+    setPermission,
+    setCoords,
+    refreshGeofence,
+    rentalsMode,
+    setRentalsMode,
+  } = useStore();
+
   const [listings, setListings] = useState<any[]>([]);
   const [bookings, setBookings] = useState<any[]>([]);
   const [offers, setOffers] = useState<any[]>([]);
@@ -29,8 +44,8 @@ const RentalsScreen = () => {
   const [paying, setPaying] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
-  useEffect(() => { fetchUserSociety(); }, [user]);
-  useEffect(() => { if (userSocietyId) loadData(); }, [activeTab, userSocietyId]);
+  useEffect(() => { fetchUserSociety(); }, [user?.id]);
+  useEffect(() => { if (userSocietyId) loadData(); }, [userSocietyId]);
 
   const fetchUserSociety = async () => {
     if (!user?.id) return;
@@ -42,57 +57,70 @@ const RentalsScreen = () => {
     }
   };
 
-  const getCacheKey = () => {
-    if (activeTab === 'listings') return CACHE_KEYS.listings(user.id);
-    if (activeTab === 'bookings') return CACHE_KEYS.bookings(user.id);
-    return CACHE_KEYS.offers(user.id);
-  };
-
   const loadData = async (forceRefresh = false) => {
-    const cacheKey = getCacheKey();
+    if (!user?.id || !userSocietyId) return;
+    setLoading(true);
+
     if (!forceRefresh) {
-      const { data: stale } = await cacheGetStale<any[]>(cacheKey);
-      if (stale && stale.length > 0) {
-        if (activeTab === 'listings') setListings(stale);
-        else if (activeTab === 'bookings') setBookings(stale);
-        else setOffers(stale);
+      const [listingCache, bookingCache, offerCache] = await Promise.all([
+        cacheGetStale<any[]>(CACHE_KEYS.listings(user.id)),
+        cacheGetStale<any[]>(CACHE_KEYS.bookings(user.id)),
+        cacheGetStale<any[]>(CACHE_KEYS.offers(user.id)),
+      ]);
+
+      const hasCachedData = listingCache.data || bookingCache.data || offerCache.data;
+      if (hasCachedData) {
+        setListings(listingCache.data || []);
+        setBookings(bookingCache.data || []);
+        setOffers(offerCache.data || []);
         setLoading(false);
-        fetchFreshData(cacheKey);
+        fetchFreshData();
         return;
       }
     }
-    setLoading(true);
-    await fetchFreshData(cacheKey);
+
+    await fetchFreshData();
   };
 
-  const fetchFreshData = async (cacheKey: string) => {
+  const fetchFreshData = async () => {
+    if (!user?.id || !userSocietyId) return;
+
     try {
-      if (activeTab === 'listings') {
-        const { data } = await supabase.from('items')
+      const [listingsRes, bookingsRes, offersRes] = await Promise.all([
+        supabase.from('items')
           .select('id, title, daily_rate, images, category, status, created_at, owner_id, society_id')
           .eq('owner_id', user.id)
           .eq('society_id', userSocietyId)
-          .order('created_at', { ascending: false });
-        setListings(data || []);
-        cacheSet(cacheKey, data || [], TTL.SHORT);
-      } else if (activeTab === 'bookings') {
-        const { data } = await supabase.from('rentals')
-          .select('*, items(id, title, images, daily_rate)')
+          .order('created_at', { ascending: false }),
+        supabase.from('rentals')
+          .select('*, items(id, title, images, daily_rate, status, owner_id)')
           .eq('renter_id', user.id)
-          .order('created_at', { ascending: false });
-        setBookings(data || []);
-        cacheSet(cacheKey, data || [], TTL.SHORT);
-      } else {
-        const { data } = await supabase.from('offers')
-          .select('*, items(id, title, images, daily_rate, market_price, owner_id)')
+          .order('created_at', { ascending: false }),
+        supabase.from('offers')
+          .select('*, items(id, title, images, daily_rate, market_price, owner_id, status)')
           .eq('sender_id', user.id)
           .neq('status', 'completed')
-          .order('created_at', { ascending: false });
-        setOffers(data || []);
-        cacheSet(cacheKey, data || [], TTL.SHORT);
-      }
+          .order('created_at', { ascending: false }),
+      ]);
+
+      if (listingsRes.error) throw listingsRes.error;
+      if (bookingsRes.error) throw bookingsRes.error;
+      if (offersRes.error) throw offersRes.error;
+
+      const nextListings = listingsRes.data || [];
+      const nextBookings = bookingsRes.data || [];
+      const nextOffers = offersRes.data || [];
+
+      setListings(nextListings);
+      setBookings(nextBookings);
+      setOffers(nextOffers);
+
+      cacheSet(CACHE_KEYS.listings(user.id), nextListings, TTL.SHORT);
+      cacheSet(CACHE_KEYS.bookings(user.id), nextBookings, TTL.SHORT);
+      cacheSet(CACHE_KEYS.offers(user.id), nextOffers, TTL.SHORT);
     } catch (error) {
       console.error(error);
+      showAlert('Could not load Kiraya', 'Please try again in a moment.', 'error');
     } finally {
       setLoading(false);
     }
@@ -102,22 +130,34 @@ const RentalsScreen = () => {
     switch (status) {
       case 'accepted':
       case 'approved':
-        return { bg: 'rgba(16,185,129,0.12)', text: '#059669', border: 'rgba(16,185,129,0.18)' };
+        return { bg: 'rgba(16,185,129,0.12)', text: '#047857', border: 'rgba(16,185,129,0.18)', label: 'Accepted' };
       case 'countered':
-        return { bg: 'rgba(245,158,11,0.13)', text: '#B45309', border: 'rgba(245,158,11,0.2)' };
+        return { bg: 'rgba(245,158,11,0.13)', text: '#B45309', border: 'rgba(245,158,11,0.2)', label: 'Counter' };
       case 'declined':
-        return { bg: 'rgba(239,68,68,0.1)', text: '#DC2626', border: 'rgba(239,68,68,0.18)' };
+        return { bg: 'rgba(239,68,68,0.1)', text: '#DC2626', border: 'rgba(239,68,68,0.18)', label: 'Declined' };
       case 'active':
-        return { bg: 'var(--text-primary)', text: 'var(--surface)', border: 'var(--text-primary)' };
+      case 'rented':
+        return { bg: 'rgba(65,179,163,0.14)', text: 'var(--secondary)', border: 'rgba(65,179,163,0.24)', label: 'Active' };
       case 'completed':
-        return { bg: 'rgba(65,179,163,0.13)', text: 'var(--secondary)', border: 'rgba(65,179,163,0.22)' };
+        return { bg: 'rgba(141,153,174,0.13)', text: 'var(--text-subtle)', border: 'rgba(141,153,174,0.2)', label: 'Done' };
+      case 'pending':
+        return { bg: 'var(--muted)', text: 'var(--text-subtle)', border: 'var(--border-light)', label: 'Pending' };
       default:
-        return { bg: 'var(--muted)', text: 'var(--text-subtle)', border: 'var(--border-light)' };
+        return { bg: 'rgba(65,179,163,0.12)', text: 'var(--secondary)', border: 'rgba(65,179,163,0.2)', label: 'Available' };
     }
   };
 
   const formatCurrency = (value?: number | string | null) => `\u20B9${Number(value || 0).toLocaleString('en-IN')}`;
   const formatDays = (hours?: number) => `${Math.max(1, Math.round((hours || 24) / 24))}d`;
+
+  const invalidateRentalCaches = async () => {
+    await Promise.all([
+      cacheInvalidate(CACHE_KEYS.listings(user.id)),
+      cacheInvalidate(CACHE_KEYS.bookings(user.id)),
+      cacheInvalidate(CACHE_KEYS.offers(user.id)),
+      userSocietyId ? cacheInvalidate(CACHE_KEYS.homeItems(userSocietyId)) : Promise.resolve(),
+    ]);
+  };
 
   const handleAcceptCounter = async (offer: any) => {
     try {
@@ -134,8 +174,8 @@ const RentalsScreen = () => {
 
       const { error } = await supabase.from('offers').update({ status: 'accepted' }).eq('id', offer.id);
       if (error) throw error;
-      showAlert('Offer Accepted', 'You can now proceed to payment.', 'success');
-      cacheInvalidate(CACHE_KEYS.offers(user.id));
+      showAlert('Offer Accepted', 'You can now complete the handover payment.', 'success');
+      await invalidateRentalCaches();
       loadData(true);
     } catch (error: any) {
       showAlert('Error', error.message, 'error');
@@ -146,31 +186,12 @@ const RentalsScreen = () => {
     try {
       const { error } = await supabase.from('offers').update({ status: 'declined' }).eq('id', offer.id);
       if (error) throw error;
-      showAlert('Offer Declined', 'Offer has been removed.', 'success');
-      cacheInvalidate(CACHE_KEYS.offers(user.id));
+      showAlert('Offer Declined', 'The offer has been removed from your active flow.', 'success');
+      await invalidateRentalCaches();
       loadData(true);
     } catch (error: any) {
       showAlert('Error', error.message, 'error');
     }
-  };
-
-  const handleDelete = (item: any) => {
-    showAlert('Delete Item', `Remove "${item.title}"? This cannot be undone.`, 'info', undefined, false, [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            const { error } = await supabase.from('items').delete().eq('id', item.id);
-            if (error) throw error;
-            setListings((prev) => prev.filter((listing) => listing.id !== item.id));
-          } catch (error: any) {
-            showAlert('Error', error.message, 'error');
-          }
-        },
-      },
-    ]);
   };
 
   const openPaymentModal = (offer: any) => {
@@ -254,15 +275,14 @@ const RentalsScreen = () => {
       await supabase.from('offers').update({ status: 'completed' }).eq('id', offer.id);
 
       setPaymentSuccess(true);
-      cacheInvalidate(CACHE_KEYS.bookings(user.id));
-      cacheInvalidate(CACHE_KEYS.offers(user.id));
+      setRentalsMode('borrowing');
+      await invalidateRentalCaches();
 
       setTimeout(() => {
         setShowPaymentModal(false);
         setSelectedOfferForPayment(null);
         loadData(true);
-        setActiveTab('bookings');
-      }, 1800);
+      }, 1400);
     } catch (error: any) {
       showAlert('Payment Failed', error.message, 'error');
     } finally {
@@ -274,140 +294,181 @@ const RentalsScreen = () => {
     const tone = toneForStatus(status);
     return (
       <span style={{ ...styles.badge, background: tone.bg, color: tone.text, borderColor: tone.border }}>
-        {(status || 'available').toUpperCase()}
+        {tone.label}
       </span>
     );
   };
 
   const Media = ({ src, title }: { src?: string; title?: string }) => (
     <div style={styles.imageContainer}>
-      {src ? (
-        <SmartImage
-          src={getSafeImageUrl(src)}
-          alt={title || 'Item'}
-          fallbackLabel={title || 'Item'}
-          rounded={styles.imageContainer.borderRadius}
-          style={styles.image}
-        />
-      ) : (
-        <div style={styles.emptyImage}>No image</div>
-      )}
+      <SmartImage
+        src={src ? getSafeImageUrl(src) : null}
+        alt={title || 'Item'}
+        fallbackLabel={title || 'Item'}
+        rounded={styles.imageContainer.borderRadius}
+        style={styles.image}
+      />
     </div>
   );
 
-  const renderListingCard = (item: any) => (
-    <article key={item.id} className="scale-pressable-up" style={styles.card} onClick={() => navigateToDetail(item)}>
-      <Media src={item.images?.[0]} title={item.title} />
+  const renderCoreCard = ({
+    keyValue,
+    image,
+    title,
+    price,
+    status,
+    meta,
+    onClick,
+    children,
+  }: {
+    keyValue: string;
+    image?: string;
+    title: string;
+    price?: number | string | null;
+    status?: string;
+    meta?: string;
+    onClick?: () => void;
+    children?: React.ReactNode;
+  }) => (
+    <article key={keyValue} className="scale-pressable-up" style={styles.card} onClick={onClick}>
+      <Media src={image} title={title} />
       <div style={styles.cardContent}>
-        <div style={styles.cardHeader}>
-          <div style={styles.titleBlock}>
-            <h3 style={styles.cardTitle}>{item.title}</h3>
-            <p style={styles.cardMeta}>{item.category || 'Listed item'}</p>
-          </div>
-          <button
-            className="scale-pressable"
-            aria-label={`Delete ${item.title}`}
-            style={styles.deleteButton}
-            onClick={(event) => { event.stopPropagation(); handleDelete(item); }}
-          >
-            <Trash2 size={15} color="var(--text-subtle)" />
-          </button>
+        <div style={styles.cardTopLine}>
+          <h3 style={styles.cardTitle}>{title}</h3>
+          {price !== undefined && price !== null && (
+            <span style={styles.price}>{formatCurrency(price)}<span style={styles.priceUnit}>/day</span></span>
+          )}
         </div>
+        {meta && <p style={styles.cardMeta}>{meta}</p>}
         <div style={styles.cardFooter}>
-          <StatusPill status={item.status} />
-          <span style={styles.price}>{formatCurrency(item.daily_rate)}<span style={styles.priceUnit}>/day</span></span>
+          <StatusPill status={status} />
+          {children}
         </div>
       </div>
     </article>
   );
 
-  const renderBookingCard = (item: any) => (
-    <article key={item.id} className="scale-pressable-up" style={styles.card} onClick={() => { if (item.items) navigateToDetail(item.items); }}>
-      <Media src={item.items?.images?.[0]} title={item.items?.title} />
-      <div style={styles.cardContent}>
-        <div style={styles.cardHeader}>
-          <div style={styles.titleBlock}>
-            <h3 style={styles.cardTitle}>{item.items?.title || 'Unknown item'}</h3>
-            <p style={styles.cardMeta}>{new Date(item.start_date || item.created_at).toLocaleDateString()}</p>
-          </div>
-        </div>
-        <div style={styles.cardFooter}>
-          <StatusPill status={item.status} />
-          {item.status === 'pending' && <span style={styles.helperText}>Waiting for confirmation</span>}
-        </div>
-      </div>
-    </article>
-  );
+  const renderListingCard = (item: any) => renderCoreCard({
+    keyValue: item.id,
+    image: item.images?.[0],
+    title: item.title,
+    price: item.daily_rate,
+    status: item.status,
+    meta: item.category || 'Ready for neighborhood use',
+    onClick: () => navigateToDetail(item),
+  });
 
-  const renderOfferCard = (item: any) => {
-    const totalCost = Math.ceil((item.offered_price * item.duration_hours) / 24);
-    return (
-      <article key={item.id} className="scale-pressable-up" style={styles.card} onClick={() => { if (item.items) navigateToDetail(item.items); }}>
-        <Media src={item.items?.images?.[0]} title={item.items?.title} />
-        <div style={styles.cardContent}>
-          <div style={styles.cardHeader}>
-            <div style={styles.titleBlock}>
-              <h3 style={styles.cardTitle}>{item.items?.title || 'Item'}</h3>
-              <p style={styles.cardMeta}>{formatCurrency(item.offered_price)}/day · {formatDays(item.duration_hours)} request</p>
-            </div>
-          </div>
-          <div style={styles.cardFooter}><StatusPill status={item.status} /></div>
-          {item.status === 'countered' && (
+  const renderBookingCard = (rental: any) => {
+    const item = rental.items;
+    return renderCoreCard({
+      keyValue: rental.id,
+      image: item?.images?.[0],
+      title: item?.title || 'Rental',
+      price: item?.daily_rate || rental.final_price,
+      status: rental.status,
+      meta: rental.start_time ? `Started ${new Date(rental.start_time).toLocaleDateString()}` : 'Rental timeline',
+      onClick: () => item && navigateToDetail(item),
+    });
+  };
+
+  const renderOfferCard = (offer: any) => {
+    const item = offer.items;
+    const totalCost = Math.ceil((offer.offered_price * offer.duration_hours) / 24);
+    return renderCoreCard({
+      keyValue: offer.id,
+      image: item?.images?.[0],
+      title: item?.title || 'Item',
+      price: offer.offered_price,
+      status: offer.status,
+      meta: `${formatDays(offer.duration_hours)} request`,
+      onClick: () => item && navigateToDetail(item),
+      children: (
+        <>
+          {offer.status === 'accepted' && (
+            <button className="scale-pressable" onClick={(event) => { event.stopPropagation(); openPaymentModal(offer); }} style={styles.payButton}>
+              <CreditCard size={14} color="var(--accent-solid-text)" />
+              <span>Pay {formatCurrency(totalCost)}</span>
+            </button>
+          )}
+          {offer.status === 'countered' && (
             <div style={styles.actionRow}>
-              <button className="scale-pressable" style={styles.primarySmallButton} onClick={(event) => { event.stopPropagation(); handleAcceptCounter(item); }}>
+              <button className="scale-pressable" style={styles.primarySmallButton} onClick={(event) => { event.stopPropagation(); handleAcceptCounter(offer); }}>
                 Accept
               </button>
-              <button className="scale-pressable" style={styles.secondarySmallButton} onClick={(event) => { event.stopPropagation(); handleDeclineCounter(item); }}>
+              <button className="scale-pressable" style={styles.secondarySmallButton} onClick={(event) => { event.stopPropagation(); handleDeclineCounter(offer); }}>
                 Decline
               </button>
             </div>
           )}
-          {item.status === 'accepted' && (
-            <button className="scale-pressable" onClick={(event) => { event.stopPropagation(); openPaymentModal(item); }} style={styles.payButton}>
-              <CreditCard size={16} color="var(--accent-solid-text)" />
-              <span>Pay {formatCurrency(totalCost)}</span>
-            </button>
-          )}
-          {!['countered', 'accepted'].includes(item.status) && (
-            <span style={styles.helperText}>{formatDays(item.duration_hours)} request</span>
-          )}
-        </div>
-      </article>
-    );
+        </>
+      ),
+    });
   };
 
-  const activeData = activeTab === 'listings' ? listings : activeTab === 'offers' ? offers : bookings;
-  const renderCard = activeTab === 'listings' ? renderListingCard : activeTab === 'offers' ? renderOfferCard : renderBookingCard;
+  const isBorrowingEmpty = offers.length === 0 && bookings.length === 0;
 
   return (
-    <div style={{ background: 'var(--background)', minHeight: '100%', paddingBottom: 100 }}>
-      <AppTopBar />
+    <div style={styles.screen}>
       <div style={styles.header}>
-        <h1 className="font-serif" style={styles.title}>My Listings</h1>
-        {activeTab === 'listings' && (
-          <button className="scale-pressable" onClick={() => setCurrentStack('AddItem')} style={styles.addButton}>
-            <Plus size={24} color="var(--accent-solid-text)" />
+        <div>
+          <span style={styles.eyebrow}>Loql Kiraya</span>
+          <h1 className="font-serif" style={styles.title}>Kiraya</h1>
+        </div>
+        {rentalsMode === 'owned' && (
+          <button className="scale-pressable" onClick={() => setCurrentStack('AddItem')} style={styles.addButton} aria-label="Add item">
+            <Plus size={22} color="var(--accent-solid-text)" />
           </button>
         )}
       </div>
 
-      <div style={styles.tabRow}>
-        {(['listings', 'offers', 'bookings'] as const).map((tab) => (
-          <button key={tab} className="scale-pressable" onClick={() => setActiveTab(tab)} style={{
-            ...styles.segment,
-            ...(activeTab === tab ? styles.segmentActive : {}),
-          }}>
-            {tab === 'listings' ? 'All Items' : tab === 'offers' ? 'Offers' : 'Borrowed'}
-          </button>
-        ))}
+      <div style={styles.modeSwitch} role="tablist" aria-label="Kiraya view">
+        {[
+          { id: 'owned', label: 'Mera Samaan', icon: PackageOpen },
+          { id: 'borrowing', label: 'Kiraye Par', icon: Clock3 },
+        ].map((mode) => {
+          const Icon = mode.icon;
+          const active = rentalsMode === mode.id;
+          return (
+            <button
+              key={mode.id}
+              role="tab"
+              aria-selected={active}
+              className="scale-pressable"
+              onClick={() => setRentalsMode(mode.id as 'owned' | 'borrowing')}
+              style={{ ...styles.modeButton, ...(active ? styles.modeButtonActive : {}) }}
+            >
+              <Icon size={15} color={active ? 'var(--accent-solid-text)' : 'var(--text-secondary)'} />
+              {mode.label}
+            </button>
+          );
+        })}
       </div>
 
       {loading ? (
-        <div style={{ padding: '8px 20px' }}><ListSkeleton count={5} /></div>
-      ) : activeData.length === 0 ? (
-        <p style={styles.emptyState}>Nothing here yet.</p>
+        <div style={{ padding: '8px 20px' }}><ListSkeleton count={4} /></div>
+      ) : rentalsMode === 'owned' ? (
+        listings.length === 0 ? (
+          <EmptyState title="No items listed yet" copy="Add something useful from your room and let your society borrow it safely." />
+        ) : (
+          <div style={styles.list}>{listings.map(renderListingCard)}</div>
+        )
+      ) : isBorrowingEmpty ? (
+        <EmptyState title="Nothing on kiraya yet" copy="Send an offer on any item and it will show up here." />
       ) : (
-        <div style={styles.list}>{activeData.map(renderCard)}</div>
+        <div style={styles.list}>
+          {offers.length > 0 && (
+            <section style={styles.section}>
+              <SectionTitle title="Offers" count={offers.length} />
+              {offers.map(renderOfferCard)}
+            </section>
+          )}
+          {bookings.length > 0 && (
+            <section style={styles.section}>
+              <SectionTitle title="Rentals" count={bookings.length} />
+              {bookings.map(renderBookingCard)}
+            </section>
+          )}
+        </div>
       )}
 
       {showPaymentModal && selectedOfferForPayment && (
@@ -425,6 +486,21 @@ const RentalsScreen = () => {
     </div>
   );
 };
+
+const SectionTitle = ({ title, count }: { title: string; count: number }) => (
+  <div style={styles.sectionHeader}>
+    <h2 style={styles.sectionTitle}>{title}</h2>
+    <span style={styles.sectionCount}>{count}</span>
+  </div>
+);
+
+const EmptyState = ({ title, copy }: { title: string; copy: string }) => (
+  <div style={styles.emptyCard}>
+    <PackageOpen size={28} color="var(--primary)" />
+    <h3 style={styles.emptyTitle}>{title}</h3>
+    <p style={styles.emptyCopy}>{copy}</p>
+  </div>
+);
 
 const PaymentSheet = ({
   offer,
@@ -454,25 +530,30 @@ const PaymentSheet = ({
       <div onClick={(event) => event.stopPropagation()} style={styles.sheet}>
         {paymentSuccess ? (
           <div style={styles.successState}>
-            <div style={styles.successIcon}><ShieldCheck size={40} color="#10B981" /></div>
-            <h3 style={styles.sheetTitle}>Payment Successful!</h3>
-            <p style={styles.sheetCopy}>Rental started. Enjoy your item!</p>
+            <div style={styles.successIcon}><CheckCircle2 size={42} color="#10B981" /></div>
+            <h3 style={styles.sheetTitle}>Rental Active</h3>
+            <p style={styles.sheetCopy}>Payment is complete. The item is now in your Kiraye Par list.</p>
           </div>
         ) : (
           <>
             <div style={styles.sheetHeader}>
-              <h3 style={styles.sheetTitle}>Complete Payment</h3>
-              <button className="scale-pressable" onClick={onClose} style={styles.closeButton}>
+              <div>
+                <span style={styles.sheetEyebrow}>Handover payment</span>
+                <h3 style={styles.sheetTitle}>Start rental</h3>
+              </div>
+              <button className="scale-pressable" onClick={onClose} style={styles.closeButton} aria-label="Close payment">
                 <X size={20} color="var(--text-primary)" />
               </button>
             </div>
 
             <div style={styles.paymentItem}>
-              {offer.items?.images?.[0] ? (
-                <img src={getSafeImageUrl(offer.items.images[0])} alt="" style={styles.paymentImage} />
-              ) : (
-                <div style={styles.paymentImageFallback}><Camera size={24} color="var(--text-light)" /></div>
-              )}
+              <SmartImage
+                src={offer.items?.images?.[0] ? getSafeImageUrl(offer.items.images[0]) : null}
+                alt={offer.items?.title || 'Item'}
+                fallbackLabel={offer.items?.title || 'Item'}
+                rounded={18}
+                style={styles.paymentImage}
+              />
               <div style={{ minWidth: 0, flex: 1 }}>
                 <span style={styles.paymentTitle}>{offer.items?.title}</span>
                 <span style={styles.paymentMeta}>{formatCurrency(offer.offered_price)}/day · {Math.max(1, Math.round(offer.duration_hours / 24))} days</span>
@@ -480,26 +561,26 @@ const PaymentSheet = ({
             </div>
 
             <div style={styles.costCard}>
-              <div style={styles.costRow}><span>Rental subscription</span><strong>{formatCurrency(baseCost)}</strong></div>
+              <div style={styles.costRow}><span>Rental amount</span><strong>{formatCurrency(baseCost)}</strong></div>
               {insurance > 0 && <div style={styles.costRow}><span>Security insurance</span><strong>{formatCurrency(insurance)}</strong></div>}
               <div style={styles.costDivider} />
-              <div style={styles.costTotal}><span>Total amount</span><strong>{formatCurrency(total)}</strong></div>
+              <div style={styles.costTotal}><span>Total</span><strong>{formatCurrency(total)}</strong></div>
             </div>
 
-            <div style={{ marginBottom: 28 }}>
+            <div style={{ marginBottom: 24 }}>
               <div style={styles.handoverLabel}>
                 <ShieldCheck size={16} color="var(--text-primary)" />
-                <label>Handover verification</label>
+                <label>Owner handover code</label>
               </div>
               <input
                 type="text"
                 maxLength={6}
                 value={handoverCode}
                 onChange={(event) => setHandoverCode(event.target.value.toUpperCase())}
-                placeholder="••••••"
+                placeholder="ABC123"
                 style={styles.handoverInput}
               />
-              <p style={styles.handoverHelp}>Enter the 6-character code from the item owner</p>
+              <p style={styles.handoverHelp}>Ask the owner for the 6-character code shown on their request card.</p>
             </div>
 
             <button className="login-btn scale-pressable" onClick={onPay} disabled={paying || handoverCode.length !== 6} style={{
@@ -516,118 +597,151 @@ const PaymentSheet = ({
 };
 
 const styles: Record<string, React.CSSProperties> = {
+  screen: {
+    background: 'var(--background)',
+    minHeight: '100%',
+    padding: '24px 0 108px',
+  },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '18px 24px 14px',
+    padding: '0 24px 16px',
+  },
+  eyebrow: {
+    color: 'var(--primary)',
+    fontSize: 11,
+    fontWeight: 800,
+    letterSpacing: '0.12em',
+    textTransform: 'uppercase',
   },
   title: {
-    fontSize: 36,
-    fontWeight: 700,
+    fontSize: 28,
+    lineHeight: '32px',
+    fontWeight: 650,
     color: 'var(--text-primary)',
-    letterSpacing: -0.5,
+    letterSpacing: '-0.03em',
+    marginTop: 4,
   },
   addButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     background: 'var(--primary)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     boxShadow: 'var(--warm-glow)',
   },
-  tabRow: {
-    display: 'flex',
-    padding: '0 24px',
-    marginBottom: 16,
-    gap: 8,
-    overflowX: 'auto',
-  },
-  segment: {
-    whiteSpace: 'nowrap',
-    padding: '10px 16px',
+  modeSwitch: {
+    margin: '0 20px 18px',
+    padding: 5,
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: 5,
     borderRadius: 999,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: 'var(--border-light)',
     background: 'var(--surface)',
+    border: '1px solid var(--border-light)',
+    boxShadow: 'var(--shadow-sm)',
+  },
+  modeButton: {
+    minHeight: 38,
+    borderRadius: 999,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 7,
+    color: 'var(--text-secondary)',
+    fontSize: 12,
+    fontWeight: 750,
+    letterSpacing: '-0.01em',
+  },
+  modeButtonActive: {
+    background: 'var(--primary)',
+    color: 'var(--accent-solid-text)',
+    boxShadow: '0 8px 18px rgba(241,115,80,0.2)',
+  },
+  list: {
+    padding: '0 18px',
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '0 4px 10px',
+  },
+  sectionTitle: {
+    color: 'var(--text-primary)',
+    fontSize: 16,
+    fontWeight: 750,
+    letterSpacing: '-0.02em',
+  },
+  sectionCount: {
+    minWidth: 24,
+    height: 24,
+    borderRadius: 12,
+    display: 'grid',
+    placeItems: 'center',
+    background: 'var(--muted)',
     color: 'var(--text-secondary)',
     fontSize: 12,
     fontWeight: 800,
-    letterSpacing: '-0.01em',
-  },
-  segmentActive: {
-    borderColor: 'transparent',
-    background: 'var(--primary)',
-    color: 'var(--accent-solid-text)',
-  },
-  list: {
-    padding: '8px 18px 0',
   },
   card: {
     display: 'flex',
     flexDirection: 'row',
-    gap: 14,
+    gap: 13,
     background: 'linear-gradient(180deg, var(--surface), var(--surface-container-lowest))',
     borderRadius: 24,
-    padding: 14,
-    marginBottom: 14,
-    border: '1px solid var(--border-light)',
-    boxShadow: '0 10px 28px rgba(45,49,66,0.06)',
-    alignItems: 'stretch',
+    padding: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border-light)',
+    boxShadow: '0 12px 30px rgba(45,49,66,0.07)',
+    alignItems: 'center',
     cursor: 'pointer',
   },
   imageContainer: {
-    width: 92,
-    height: 92,
+    width: 78,
+    height: 78,
     borderRadius: 20,
     background: 'var(--img-placeholder)',
     overflow: 'hidden',
-    border: '1px solid var(--border-light)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border-light)',
     flexShrink: 0,
   },
   image: {
     width: '100%',
     height: '100%',
-    objectFit: 'cover',
+    objectFit: 'contain',
     borderRadius: 20,
-  },
-  emptyImage: {
-    color: 'var(--text-light)',
-    fontSize: 12,
-    fontWeight: 700,
-    letterSpacing: '0.02em',
   },
   cardContent: {
     flex: 1,
     minWidth: 0,
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
-    padding: '3px 0',
+    gap: 6,
   },
-  cardHeader: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
+  cardTopLine: {
+    display: 'grid',
+    gridTemplateColumns: 'minmax(0, 1fr) auto',
+    alignItems: 'start',
     gap: 10,
-  },
-  titleBlock: {
-    minWidth: 0,
-    flex: 1,
   },
   cardTitle: {
     margin: 0,
     color: 'var(--text-primary)',
     fontSize: 15,
     lineHeight: 1.25,
-    fontWeight: 700,
-    letterSpacing: '-0.01em',
+    fontWeight: 650,
+    letterSpacing: '-0.015em',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     display: '-webkit-box',
@@ -635,151 +749,159 @@ const styles: Record<string, React.CSSProperties> = {
     WebkitBoxOrient: 'vertical',
   },
   cardMeta: {
-    margin: '5px 0 0',
+    margin: 0,
     color: 'var(--text-secondary)',
     fontSize: 12,
     lineHeight: 1.35,
-    fontWeight: 600,
+    fontWeight: 550,
   },
   cardFooter: {
     display: 'flex',
     alignItems: 'center',
     flexWrap: 'wrap',
     gap: 8,
-    marginTop: 10,
   },
   badge: {
     padding: '5px 9px',
     borderRadius: 999,
-    fontSize: 9,
+    fontSize: 10,
     lineHeight: 1,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--border-light)',
-    letterSpacing: '0.06em',
-    fontWeight: 800,
-    textTransform: 'uppercase',
+    letterSpacing: '0.02em',
+    fontWeight: 750,
   },
   price: {
     color: 'var(--text-primary)',
-    fontSize: 14,
-    fontWeight: 800,
+    fontSize: 13,
+    lineHeight: 1.2,
+    fontWeight: 750,
     letterSpacing: '-0.01em',
+    whiteSpace: 'nowrap',
   },
   priceUnit: {
     color: 'var(--text-secondary)',
-    fontSize: 11,
-    fontWeight: 700,
+    fontSize: 10,
+    fontWeight: 650,
     marginLeft: 2,
-  },
-  helperText: {
-    color: 'var(--text-light)',
-    fontSize: 12,
-    fontWeight: 600,
-    marginTop: 8,
-  },
-  deleteButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 14,
-    background: 'var(--muted)',
-    border: '1px solid var(--border-light)',
-    display: 'grid',
-    placeItems: 'center',
-    flexShrink: 0,
   },
   actionRow: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
     gap: 8,
-    marginTop: 12,
+    width: '100%',
+    marginTop: 4,
   },
   primarySmallButton: {
-    padding: '10px 12px',
+    padding: '9px 12px',
     borderRadius: 14,
     background: 'var(--accent-solid)',
     color: 'var(--accent-solid-text)',
-    fontSize: 13,
-    fontWeight: 800,
+    fontSize: 12,
+    fontWeight: 750,
   },
   secondarySmallButton: {
-    padding: '10px 12px',
+    padding: '9px 12px',
     borderRadius: 14,
     background: 'var(--surface)',
-    border: '1px solid var(--border)',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
     color: 'var(--text-subtle)',
-    fontSize: 13,
-    fontWeight: 800,
+    fontSize: 12,
+    fontWeight: 750,
   },
   payButton: {
-    width: '100%',
     justifyContent: 'center',
-    padding: '12px 16px',
-    borderRadius: 16,
+    padding: '8px 12px',
+    borderRadius: 999,
     background: 'var(--accent-solid)',
     color: 'var(--accent-solid-text)',
-    fontSize: 14,
-    fontWeight: 800,
-    marginTop: 12,
+    fontSize: 12,
+    fontWeight: 750,
     display: 'flex',
     alignItems: 'center',
-    gap: 8,
-    boxShadow: '0 8px 18px rgba(241,115,80,0.24)',
+    gap: 6,
+    boxShadow: '0 8px 18px rgba(241,115,80,0.2)',
   },
-  emptyState: {
+  emptyCard: {
+    margin: '12px 20px 0',
+    padding: 22,
+    borderRadius: 24,
+    background: 'var(--surface)',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border-light)',
+    boxShadow: 'var(--shadow-sm)',
     textAlign: 'center',
-    marginTop: 60,
-    color: 'var(--text-light)',
-    fontSize: 15,
-    fontWeight: 600,
+  },
+  emptyTitle: {
+    color: 'var(--text-primary)',
+    fontSize: 17,
+    fontWeight: 750,
+    margin: '10px 0 6px',
+  },
+  emptyCopy: {
+    color: 'var(--text-secondary)',
+    fontSize: 13,
+    lineHeight: 1.5,
+    margin: 0,
   },
   sheet: {
     background: 'var(--surface)',
-    borderRadius: '32px 32px 0 0',
+    borderRadius: '30px 30px 0 0',
     width: '100%',
     maxWidth: 430,
     position: 'fixed',
     bottom: 0,
     left: '50%',
     transform: 'translateX(-50%)',
-    padding: '24px 24px 110px',
+    padding: '22px 24px 110px',
     animation: 'slideUp 0.3s ease-out',
-    boxShadow: '0 -8px 32px rgba(0,0,0,0.1)',
+    boxShadow: '0 -8px 32px rgba(0,0,0,0.12)',
   },
   successState: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: '32px 0',
+    padding: '30px 0',
   },
   successIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 78,
+    height: 78,
+    borderRadius: 39,
     background: '#D1FAE5',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: 18,
   },
   sheetHeader: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 24,
+    alignItems: 'flex-start',
+    marginBottom: 22,
+  },
+  sheetEyebrow: {
+    color: 'var(--primary)',
+    fontSize: 11,
+    fontWeight: 800,
+    textTransform: 'uppercase',
+    letterSpacing: '0.1em',
   },
   sheetTitle: {
     fontSize: 22,
-    fontWeight: 800,
+    fontWeight: 750,
     color: 'var(--text-primary)',
-    letterSpacing: '-0.02em',
+    letterSpacing: '-0.025em',
     margin: 0,
   },
   sheetCopy: {
-    fontSize: 15,
+    fontSize: 14,
     color: 'var(--text-secondary)',
     textAlign: 'center',
     margin: 0,
+    lineHeight: 1.5,
   },
   closeButton: {
     padding: 8,
@@ -791,29 +913,22 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: 14,
     background: 'var(--surface-alt)',
-    padding: 14,
+    padding: 13,
     borderRadius: 20,
-    border: '1px solid var(--border-light)',
-    marginBottom: 20,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border-light)',
+    marginBottom: 18,
   },
   paymentImage: {
-    width: 64,
-    height: 64,
-    borderRadius: 16,
-    objectFit: 'cover',
-  },
-  paymentImageFallback: {
-    width: 64,
-    height: 64,
-    borderRadius: 16,
-    background: 'var(--border)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: 62,
+    height: 62,
+    borderRadius: 18,
+    objectFit: 'contain',
   },
   paymentTitle: {
-    fontSize: 17,
-    fontWeight: 800,
+    fontSize: 16,
+    fontWeight: 750,
     color: 'var(--text-primary)',
     display: 'block',
     marginBottom: 2,
@@ -822,22 +937,24 @@ const styles: Record<string, React.CSSProperties> = {
     whiteSpace: 'nowrap',
   },
   paymentMeta: {
-    fontSize: 14,
+    fontSize: 13,
     color: 'var(--text-secondary)',
     fontWeight: 600,
   },
   costCard: {
     background: 'var(--surface-alt)',
-    padding: 18,
+    padding: 16,
     borderRadius: 20,
-    border: '1px solid var(--border-light)',
-    marginBottom: 24,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border-light)',
+    marginBottom: 22,
   },
   costRow: {
     display: 'flex',
     justifyContent: 'space-between',
     color: 'var(--text-secondary)',
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: 600,
     marginBottom: 10,
   },
@@ -851,7 +968,7 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: 'space-between',
     alignItems: 'center',
     color: 'var(--text-primary)',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 800,
   },
   handoverLabel: {
@@ -861,31 +978,30 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: 10,
     marginLeft: 4,
     color: 'var(--text-primary)',
-    fontSize: 14,
-    fontWeight: 800,
-    textTransform: 'capitalize',
+    fontSize: 13,
+    fontWeight: 750,
   },
   handoverInput: {
     width: '100%',
     textAlign: 'center',
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: 800,
-    letterSpacing: 12,
-    padding: '20px 0',
+    letterSpacing: 8,
+    padding: '18px 0',
     borderRadius: 20,
-    border: '2px solid var(--border)',
+    borderWidth: 2,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
     color: 'var(--text-primary)',
     fontFamily: 'monospace',
     outline: 'none',
     background: 'var(--surface)',
-    boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
-    transition: 'all 0.2s ease',
   },
   handoverHelp: {
-    fontSize: 13,
+    fontSize: 12,
     color: 'var(--text-light)',
     textAlign: 'center',
-    marginTop: 12,
+    marginTop: 10,
     fontWeight: 600,
   },
 };

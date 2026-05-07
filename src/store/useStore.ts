@@ -20,6 +20,7 @@ interface AlertState {
 type ThemeType = 'light' | 'dark';
 type TabType = 'Home' | 'Rentals' | 'Chat' | 'Profile';
 type StackType = 'AddItem' | 'ItemDetail' | 'EditProfile' | 'Wallet' | 'Notification' | 'ChatDetail' | 'HistoryDetail' | null;
+type RentalsModeType = 'owned' | 'borrowing';
 type LocationPermissionState = 'unknown' | 'granted' | 'denied' | 'prompt' | 'unavailable';
 type GeofenceStatus = 'unknown' | 'inside' | 'outside';
 
@@ -46,6 +47,8 @@ interface AppState {
     setCurrentTab: (tab: TabType) => void;
     currentStack: StackType;
     setCurrentStack: (stack: StackType) => void;
+    rentalsMode: RentalsModeType;
+    setRentalsMode: (mode: RentalsModeType) => void;
 
     // Selected data
     selectedItem: any | null;
@@ -115,6 +118,8 @@ export const useStore = create<AppState>((set) => ({
     setCurrentTab: (currentTab) => set({ currentTab, currentStack: null }),
     currentStack: null,
     setCurrentStack: (currentStack) => set({ currentStack }),
+    rentalsMode: 'owned',
+    setRentalsMode: (rentalsMode) => set({ rentalsMode }),
 
     // Selected data
     selectedItem: null,

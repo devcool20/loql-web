@@ -119,6 +119,26 @@ export const checkGeofenceAccess = async (userId: string, coords: GeofenceCoords
   return row;
 };
 
+export const calibrateMySocietyGeofence = async (
+  userId: string,
+  coords: GeofenceCoords,
+): Promise<GeofenceAccessResult> => {
+  const { data, error } = await supabase.rpc('calibrate_my_society_geofence', {
+    p_user_id: userId,
+    p_lat: coords.latitude,
+    p_lng: coords.longitude,
+    p_radius_meters: 500,
+  });
+
+  if (error) {
+    throw new Error(error.message || 'Unable to calibrate society geofence.');
+  }
+
+  const row = getSingleRow<GeofenceAccessResult>(data);
+  if (!row) throw new Error('Unable to calibrate society geofence.');
+  return row;
+};
+
 export const assertGeofenceAllowed = async (
   userId: string,
   opts?: { force?: boolean },

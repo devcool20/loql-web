@@ -9,10 +9,11 @@ import AppItemCard from '@/components/app/AppItemCard';
 import { HomeSkeletonGrid } from '@/components/app/Skeleton';
 import AppTopBar from '@/components/app/AppTopBar';
 import { processCompletedRentals } from '@/lib/rentalCompletion';
-import { cacheGet, cacheSet, cacheGetStale, CACHE_KEYS, TTL } from '@/lib/cache';
+import { cacheGet, cacheSet, cacheGetStale, cacheInvalidate, CACHE_KEYS, TTL } from '@/lib/cache';
 import { getSafeImageUrl } from '@/lib/imageUtils';
 import {
   GEOFENCE_MESSAGES,
+  calibrateMySocietyGeofence,
   checkGeofenceAccess,
   fetchFeedItemsGeofenced,
   getLocationPermissionState,
@@ -271,6 +272,38 @@ const HomeScreen = () => {
     }
   };
 
+  const handleCalibrateSociety = async () => {
+    if (!user?.id || !userSocietyId) return;
+
+    setLoading(true);
+    try {
+      const coords = await requestCurrentLocation();
+      setCoords(coords);
+      const access = await calibrateMySocietyGeofence(user.id, coords);
+      setGeofenceContext({
+        distanceMeters: access.distance_meters,
+        radiusMeters: access.radius_meters || 500,
+        accuracyMeters: coords.accuracyMeters ?? null,
+        societyName: access.society_name || locationName || null,
+        permission: 'granted',
+      });
+      refreshGeofence({
+        geofenceStatus: 'inside',
+        distanceMeters: access.distance_meters,
+        radiusMeters: access.radius_meters || 500,
+        geofenceSocietyName: access.society_name,
+        locationPermission: 'granted',
+      });
+      cacheInvalidate(CACHE_KEYS.homeItems(userSocietyId));
+      setGeofenceBlockReason(null);
+      await loadItems(true, coords);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unable to calibrate location.';
+      setGeofenceBlockReason(message);
+      setLoading(false);
+    }
+  };
+
   const userName = user?.user_metadata?.full_name || 'Neighbor';
   const rawAvatar =
     user?.user_metadata?.avatar_url ||
@@ -480,6 +513,25 @@ const HomeScreen = () => {
           >
             Re-check location
           </button>
+          {geofenceContext?.distanceMeters != null && geofenceContext.distanceMeters <= 900 && (
+            <button
+              className="scale-pressable"
+              onClick={handleCalibrateSociety}
+              style={{
+                marginTop: 10,
+                marginLeft: 8,
+                borderRadius: 999,
+                border: '1px solid rgba(244,111,82,0.28)',
+                background: 'var(--accent-solid)',
+                padding: '9px 14px',
+                fontSize: 13,
+                fontWeight: 800,
+                color: 'var(--accent-solid-text)',
+              }}
+            >
+              Set phone location as center
+            </button>
+          )}
         </div>
       ) : loading && items.length === 0 ? (
         <HomeSkeletonGrid count={6} />

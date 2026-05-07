@@ -8,7 +8,6 @@ import {
 import { useStore } from '@/store/useStore';
 import { supabase } from '@/lib/supabase';
 import { getSafeImageUrl } from '@/lib/imageUtils';
-import AppTopBar from '@/components/app/AppTopBar';
 import SmartImage from '@/components/app/SmartImage';
 
 const ProfileScreen = () => {
@@ -76,9 +75,7 @@ const ProfileScreen = () => {
   ];
 
   return (
-    <div style={{ background: 'var(--background)', minHeight: '100%', paddingBottom: 120 }}>
-      <AppTopBar />
-
+    <div style={{ background: 'var(--background)', minHeight: '100%', padding: '24px 0 120px' }}>
       <div style={{ padding: '0 24px' }}>
         {/* User Info */}
         <div style={{ display: 'flex', alignItems: 'center', marginTop: 14, marginBottom: 24 }}>
