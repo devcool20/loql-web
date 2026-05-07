@@ -6,6 +6,8 @@ import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { cacheInvalidate, CACHE_KEYS } from '@/lib/cache';
 import { assertGeofenceAllowed, createItemGeofenced } from '@/lib/geofence';
+import { resizeImageFile } from '@/lib/clientImage';
+import SmartImage from '@/components/app/SmartImage';
 
 const CATEGORIES = ['DIY Tools', 'Party', 'Gaming', 'Fitness', 'Electronics', 'Kitchen', 'Other'];
 
@@ -33,14 +35,11 @@ const AddItemScreen = () => {
 
   const handleSelectImages = () => { fileInputRef.current?.click(); };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
-    Array.from(files).forEach(file => {
-      const reader = new FileReader();
-      reader.onload = () => { setImages(prev => [...prev, reader.result as string]); };
-      reader.readAsDataURL(file);
-    });
+    const processed = await Promise.all(Array.from(files).map(file => resizeImageFile(file)));
+    setImages(prev => [...prev, ...processed]);
     e.target.value = '';
   };
 
@@ -154,7 +153,7 @@ const AddItemScreen = () => {
           </button>
           {images.map((img, idx) => (
             <div key={idx} style={{ position: 'relative', flexShrink: 0 }}>
-              <img src={img} alt="" style={{ width: 100, height: 100, borderRadius: 16, objectFit: 'cover' }} />
+              <SmartImage src={img} alt="" fallbackLabel={title || 'Item'} rounded={16} style={{ width: 100, height: 100, borderRadius: 16, objectFit: 'cover' }} />
               <button onClick={() => removeImage(idx)}
                 style={{ position: 'absolute', top: -8, right: -8, width: 24, height: 24, borderRadius: 12, background: '#EF4444', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <X size={14} color="white" />

@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
         hostname: "jusbswsbucsvmmdmxthn.supabase.co",
         pathname: "/storage/v1/object/public/**",
       },
+      {
+        protocol: "https",
+        hostname: "loql-proxy.sharmadivyanshu265.workers.dev",
+        pathname: "/storage/v1/object/public/**",
+      },
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
       { protocol: "https", hostname: "img.freepik.com", pathname: "/**" },
       { protocol: "https", hostname: "encrypted-tbn0.gstatic.com", pathname: "/**" },

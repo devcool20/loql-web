@@ -26,6 +26,7 @@ type GeofenceStatus = 'unknown' | 'inside' | 'outside';
 interface GeofenceCoords {
     latitude: number;
     longitude: number;
+    accuracyMeters?: number | null;
 }
 
 interface AppState {

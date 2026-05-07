@@ -7,6 +7,7 @@ import { useStore } from '@/store/useStore';
 import { createNotification } from '@/lib/notificationManager';
 import UserProfileModal from '../modals/UserProfileModal';
 import { getSafeImageUrl } from '@/lib/imageUtils';
+import SmartImage from '@/components/app/SmartImage';
 import { assertGeofenceAllowed, createOfferGeofenced } from '@/lib/geofence';
 
 const ItemDetailScreen = () => {
@@ -143,8 +144,17 @@ const ItemDetailScreen = () => {
               setActiveIndex(Math.round(el.scrollLeft / el.offsetWidth));
             }}>
             {images.map((imgUri: string, idx: number) => (
-              <img key={idx} src={getSafeImageUrl(imgUri)} alt="" onClick={() => setFullScreenImage(imgUri)}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', flexShrink: 0, scrollSnapAlign: 'start', cursor: 'pointer' }} />
+              <SmartImage
+                key={idx}
+                src={getSafeImageUrl(imgUri)}
+                alt={item.title || 'Item image'}
+                fallbackLabel={item.title}
+                loading={idx === 0 ? 'eager' : 'lazy'}
+                fetchPriority={idx === 0 ? 'high' : 'auto'}
+                onClick={() => setFullScreenImage(imgUri)}
+                containerStyle={{ width: '100%', height: '100%', flexShrink: 0, scrollSnapAlign: 'start', cursor: 'pointer' }}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
             ))}
           </div>
         ) : (
@@ -180,7 +190,7 @@ const ItemDetailScreen = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             {isRented ? (
               activeRental.renter?.avatar_url ? (
-                <img src={getSafeImageUrl(activeRental.renter.avatar_url)} alt="" style={{ width: 48, height: 48, borderRadius: 24, background: 'var(--border)', objectFit: 'cover' }} />
+                <SmartImage src={getSafeImageUrl(activeRental.renter.avatar_url)} alt="" fallbackLabel={activeRental.renter?.full_name} rounded={24} style={{ width: 48, height: 48, borderRadius: 24, objectFit: 'cover' }} />
               ) : (
                 <div style={{ width: 48, height: 48, borderRadius: 24, background: 'var(--accent-solid)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-solid-text)', fontSize: 18, fontWeight: 700 }}>{activeRental.renter?.full_name?.[0] || 'N'}</div>
               )

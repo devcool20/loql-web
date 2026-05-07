@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import SmartImage from '@/components/app/SmartImage';
 
 type AppTopBarProps = {
   avatarUrl?: string | null;
@@ -59,7 +60,15 @@ const AppTopBar = ({ avatarUrl, avatarLabel, showAvatar = false, onAvatarClick, 
             }}
           >
             {avatarUrl ? (
-              <img src={avatarUrl} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <SmartImage
+                src={avatarUrl}
+                alt="Profile"
+                fallbackLabel={avatarLabel}
+                loading="eager"
+                fetchPriority="high"
+                rounded="50%"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
             ) : (
               <span style={{ color: 'var(--text-secondary)', fontSize: 16, fontWeight: 700 }}>{avatarInitial}</span>
             )}

@@ -8,9 +8,16 @@ const PROXY_DOMAIN = 'loql-proxy.sharmadivyanshu265.workers.dev';
 export const getSafeImageUrl = (url: string | null | undefined): string => {
     if (!url) return '';
 
-    if (url.includes(SUPABASE_DOMAIN)) {
-        return url.replace(SUPABASE_DOMAIN, PROXY_DOMAIN);
+    const trimmed = url.trim();
+    if (!trimmed) return '';
+
+    if (trimmed.startsWith('data:') || trimmed.startsWith('blob:') || trimmed.startsWith('/')) {
+        return trimmed;
     }
 
-    return url;
+    if (trimmed.includes(SUPABASE_DOMAIN)) {
+        return trimmed.replace(SUPABASE_DOMAIN, PROXY_DOMAIN);
+    }
+
+    return trimmed;
 };

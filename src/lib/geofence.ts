@@ -5,6 +5,7 @@ export type LocationPermissionState = 'unknown' | 'granted' | 'denied' | 'prompt
 export interface GeofenceCoords {
   latitude: number;
   longitude: number;
+  accuracyMeters?: number | null;
 }
 
 export interface GeofenceAccessResult {
@@ -48,6 +49,16 @@ const getSingleRow = <T>(value: T | T[] | null): T | null => {
   return Array.isArray(value) ? value[0] ?? null : value;
 };
 
+const getAccuracyMeters = (coords: GeofenceCoords) => {
+  return Number.isFinite(coords.accuracyMeters) ? Math.max(coords.accuracyMeters ?? 0, 0) : 0;
+};
+
+const isRpcSignatureMismatch = (error: { code?: string; message?: string } | null) => {
+  if (!error) return false;
+  const message = error.message?.toLowerCase() || '';
+  return error.code === 'PGRST202' || message.includes('could not find the function') || message.includes('schema cache');
+};
+
 export const getLocationPermissionState = async (): Promise<LocationPermissionState> => {
   if (typeof window === 'undefined' || !navigator.geolocation) return 'unavailable';
 
@@ -71,7 +82,12 @@ export const requestCurrentLocation = (): Promise<GeofenceCoords> => {
     }
 
     navigator.geolocation.getCurrentPosition(
-      (position) => resolve({ latitude: position.coords.latitude, longitude: position.coords.longitude }),
+      (position) =>
+        resolve({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracyMeters: Number.isFinite(position.coords.accuracy) ? position.coords.accuracy : null,
+        }),
       () => reject(new Error(LOCATION_ERROR_MESSAGE)),
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 },
     );
@@ -79,17 +95,26 @@ export const requestCurrentLocation = (): Promise<GeofenceCoords> => {
 };
 
 export const checkGeofenceAccess = async (userId: string, coords: GeofenceCoords): Promise<GeofenceAccessResult> => {
-  const { data, error } = await supabase.rpc('check_geofence_access', {
+  let result = await supabase.rpc('check_geofence_access', {
     p_user_id: userId,
     p_lat: coords.latitude,
     p_lng: coords.longitude,
+    p_accuracy_meters: getAccuracyMeters(coords),
   });
 
-  if (error) {
-    throw new Error(error.message || 'Unable to verify society geofence.');
+  if (result.error && isRpcSignatureMismatch(result.error)) {
+    result = await supabase.rpc('check_geofence_access', {
+      p_user_id: userId,
+      p_lat: coords.latitude,
+      p_lng: coords.longitude,
+    });
   }
 
-  const row = getSingleRow<GeofenceAccessResult>(data);
+  if (result.error) {
+    throw new Error(result.error.message || 'Unable to verify society geofence.');
+  }
+
+  const row = getSingleRow<GeofenceAccessResult>(result.data);
   if (!row) throw new Error('Unable to verify society geofence.');
   return row;
 };
@@ -132,13 +157,23 @@ export const assertGeofenceAllowed = async (
 };
 
 export const fetchFeedItemsGeofenced = async (userId: string, coords: GeofenceCoords) => {
-  const { data, error } = await supabase.rpc('get_feed_items_geofenced', {
+  let result = await supabase.rpc('get_feed_items_geofenced', {
     p_user_id: userId,
     p_lat: coords.latitude,
     p_lng: coords.longitude,
+    p_accuracy_meters: getAccuracyMeters(coords),
   });
-  if (error) throw new Error(error.message || 'Unable to load geofenced feed.');
-  return (data || []) as unknown[];
+
+  if (result.error && isRpcSignatureMismatch(result.error)) {
+    result = await supabase.rpc('get_feed_items_geofenced', {
+      p_user_id: userId,
+      p_lat: coords.latitude,
+      p_lng: coords.longitude,
+    });
+  }
+
+  if (result.error) throw new Error(result.error.message || 'Unable to load geofenced feed.');
+  return (result.data || []) as unknown[];
 };
 
 export const createItemGeofenced = async (params: {
@@ -151,7 +186,7 @@ export const createItemGeofenced = async (params: {
   marketPrice?: number | null;
   coords: GeofenceCoords;
 }) => {
-  const { data, error } = await supabase.rpc('create_item_geofenced', {
+  let result = await supabase.rpc('create_item_geofenced', {
     p_owner_id: params.userId,
     p_title: params.title,
     p_description: params.description || '',
@@ -161,9 +196,25 @@ export const createItemGeofenced = async (params: {
     p_market_price: params.marketPrice ?? null,
     p_lat: params.coords.latitude,
     p_lng: params.coords.longitude,
+    p_accuracy_meters: getAccuracyMeters(params.coords),
   });
-  if (error) throw new Error(error.message || 'Unable to create item inside geofence.');
-  return getSingleRow<GeofencedItemResult>(data);
+
+  if (result.error && isRpcSignatureMismatch(result.error)) {
+    result = await supabase.rpc('create_item_geofenced', {
+      p_owner_id: params.userId,
+      p_title: params.title,
+      p_description: params.description || '',
+      p_daily_rate: params.dailyRate,
+      p_category: params.category,
+      p_images: params.images,
+      p_market_price: params.marketPrice ?? null,
+      p_lat: params.coords.latitude,
+      p_lng: params.coords.longitude,
+    });
+  }
+
+  if (result.error) throw new Error(result.error.message || 'Unable to create item inside geofence.');
+  return getSingleRow<GeofencedItemResult>(result.data);
 };
 
 export const createOfferGeofenced = async (params: {
@@ -174,7 +225,7 @@ export const createOfferGeofenced = async (params: {
   durationHours: number;
   coords: GeofenceCoords;
 }) => {
-  const { data, error } = await supabase.rpc('create_offer_geofenced', {
+  let result = await supabase.rpc('create_offer_geofenced', {
     p_sender_id: params.senderId,
     p_receiver_id: params.receiverId,
     p_item_id: params.itemId,
@@ -182,9 +233,23 @@ export const createOfferGeofenced = async (params: {
     p_duration_hours: params.durationHours,
     p_lat: params.coords.latitude,
     p_lng: params.coords.longitude,
+    p_accuracy_meters: getAccuracyMeters(params.coords),
   });
-  if (error) throw new Error(error.message || 'Unable to create offer outside geofence.');
-  return getSingleRow<GeofencedOfferResult>(data);
+
+  if (result.error && isRpcSignatureMismatch(result.error)) {
+    result = await supabase.rpc('create_offer_geofenced', {
+      p_sender_id: params.senderId,
+      p_receiver_id: params.receiverId,
+      p_item_id: params.itemId,
+      p_offered_price: params.offeredPrice,
+      p_duration_hours: params.durationHours,
+      p_lat: params.coords.latitude,
+      p_lng: params.coords.longitude,
+    });
+  }
+
+  if (result.error) throw new Error(result.error.message || 'Unable to create offer outside geofence.');
+  return getSingleRow<GeofencedOfferResult>(result.data);
 };
 
 export const GEOFENCE_MESSAGES = {

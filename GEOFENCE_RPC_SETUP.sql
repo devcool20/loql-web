@@ -1,5 +1,7 @@
 -- Geofencing primitives + strict 500m enforcement RPCs
 -- Run in Supabase SQL editor
+-- GPS readings can drift by tens of meters. The fence remains 500m, but checks
+-- allow a capped accuracy buffer up to 100m to prevent false blocks during testing.
 
 alter table public.societies
   add column if not exists latitude numeric,
@@ -32,7 +34,8 @@ $$;
 create or replace function public.check_geofence_access(
   p_user_id uuid,
   p_lat double precision,
-  p_lng double precision
+  p_lng double precision,
+  p_accuracy_meters double precision default 0
 )
 returns table(
   allowed boolean,
@@ -52,6 +55,7 @@ declare
   v_lng double precision;
   v_radius integer;
   v_distance double precision;
+  v_accuracy_allowance double precision;
 begin
   select p.society_id into v_society_id
   from public.profiles p
@@ -73,16 +77,18 @@ begin
   end if;
 
   v_distance := public.haversine_distance_meters(p_lat, p_lng, v_lat, v_lng);
-  return query select (v_distance <= v_radius), v_distance, v_radius, v_society_id, v_society_name;
+  v_accuracy_allowance := least(greatest(coalesce(p_accuracy_meters, 0), 0), 100);
+  return query select (v_distance <= (v_radius + v_accuracy_allowance)), v_distance, v_radius, v_society_id, v_society_name;
 end;
 $$;
 
-grant execute on function public.check_geofence_access(uuid, double precision, double precision) to authenticated;
+grant execute on function public.check_geofence_access(uuid, double precision, double precision, double precision) to authenticated;
 
 create or replace function public.get_feed_items_geofenced(
   p_user_id uuid,
   p_lat double precision,
-  p_lng double precision
+  p_lng double precision,
+  p_accuracy_meters double precision default 0
 )
 returns setof public.items
 language plpgsql
@@ -92,7 +98,7 @@ as $$
 declare
   v_access record;
 begin
-  select * into v_access from public.check_geofence_access(p_user_id, p_lat, p_lng);
+  select * into v_access from public.check_geofence_access(p_user_id, p_lat, p_lng, p_accuracy_meters);
   if not coalesce(v_access.allowed, false) then
     return;
   end if;
@@ -106,7 +112,7 @@ begin
 end;
 $$;
 
-grant execute on function public.get_feed_items_geofenced(uuid, double precision, double precision) to authenticated;
+grant execute on function public.get_feed_items_geofenced(uuid, double precision, double precision, double precision) to authenticated;
 
 create or replace function public.create_item_geofenced(
   p_owner_id uuid,
@@ -117,7 +123,8 @@ create or replace function public.create_item_geofenced(
   p_images text[],
   p_market_price numeric,
   p_lat double precision,
-  p_lng double precision
+  p_lng double precision,
+  p_accuracy_meters double precision default 0
 )
 returns public.items
 language plpgsql
@@ -132,7 +139,7 @@ begin
     raise exception 'Not authorized to list for this user';
   end if;
 
-  select * into v_access from public.check_geofence_access(p_owner_id, p_lat, p_lng);
+  select * into v_access from public.check_geofence_access(p_owner_id, p_lat, p_lng, p_accuracy_meters);
   if not coalesce(v_access.allowed, false) then
     raise exception 'You are outside your society''s 500m verified zone.';
   end if;
@@ -157,7 +164,7 @@ begin
 end;
 $$;
 
-grant execute on function public.create_item_geofenced(uuid, text, text, numeric, text, text[], numeric, double precision, double precision) to authenticated;
+grant execute on function public.create_item_geofenced(uuid, text, text, numeric, text, text[], numeric, double precision, double precision, double precision) to authenticated;
 
 create or replace function public.create_offer_geofenced(
   p_sender_id uuid,
@@ -166,7 +173,8 @@ create or replace function public.create_offer_geofenced(
   p_offered_price numeric,
   p_duration_hours integer,
   p_lat double precision,
-  p_lng double precision
+  p_lng double precision,
+  p_accuracy_meters double precision default 0
 )
 returns public.offers
 language plpgsql
@@ -183,7 +191,7 @@ begin
     raise exception 'Not authorized to create offer for this user';
   end if;
 
-  select * into v_access from public.check_geofence_access(p_sender_id, p_lat, p_lng);
+  select * into v_access from public.check_geofence_access(p_sender_id, p_lat, p_lng, p_accuracy_meters);
   if not coalesce(v_access.allowed, false) then
     raise exception 'You are outside your society''s 500m verified zone.';
   end if;
@@ -214,4 +222,4 @@ begin
 end;
 $$;
 
-grant execute on function public.create_offer_geofenced(uuid, uuid, uuid, numeric, integer, double precision, double precision) to authenticated;
+grant execute on function public.create_offer_geofenced(uuid, uuid, uuid, numeric, integer, double precision, double precision, double precision) to authenticated;

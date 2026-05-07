@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { getSafeImageUrl } from '@/lib/imageUtils';
+import SmartImage from '@/components/app/SmartImage';
 
 interface ItemCardProps {
   item: any;
@@ -18,11 +19,13 @@ const AppItemCard = ({ item, onPress }: ItemCardProps) => {
     >
       <div className="item-card-image-container">
         {item.images && item.images.length > 0 ? (
-          <img
+          <SmartImage
             src={getSafeImageUrl(item.images[0])}
             alt={item.title}
             className="item-card-image"
             loading="lazy"
+            fallbackLabel={item.title}
+            rounded={0}
           />
         ) : (
           <div className="item-card-no-image">No Image</div>

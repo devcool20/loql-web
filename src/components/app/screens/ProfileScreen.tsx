@@ -9,6 +9,7 @@ import { useStore } from '@/store/useStore';
 import { supabase } from '@/lib/supabase';
 import { getSafeImageUrl } from '@/lib/imageUtils';
 import AppTopBar from '@/components/app/AppTopBar';
+import SmartImage from '@/components/app/SmartImage';
 
 const ProfileScreen = () => {
   const { user, setUser, showAlert, setCurrentStack, setHistoryType, refreshTrigger, currentStack, theme, toggleTheme } = useStore();
@@ -83,7 +84,15 @@ const ProfileScreen = () => {
         <div style={{ display: 'flex', alignItems: 'center', marginTop: 14, marginBottom: 24 }}>
           <div style={{ marginRight: 18, borderRadius: 20, boxShadow: 'var(--shadow-md)', transform: 'rotate(-3deg)', border: '4px solid var(--surface-container-lowest)' }}>
             {avatarUrl ? (
-              <img src={getSafeImageUrl(avatarUrl)} alt="" style={{ width: 92, height: 92, borderRadius: 18, objectFit: 'cover' }} />
+              <SmartImage
+                src={getSafeImageUrl(avatarUrl)}
+                alt={displayName}
+                fallbackLabel={displayName}
+                loading="eager"
+                fetchPriority="high"
+                rounded={18}
+                style={{ width: 92, height: 92, borderRadius: 18, objectFit: 'cover' }}
+              />
             ) : (
               <div style={{
                 width: 92, height: 92, borderRadius: 18, background: 'var(--accent-solid)',

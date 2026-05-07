@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Camera, User } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
+import { resizeImageFile } from '@/lib/clientImage';
+import SmartImage from '@/components/app/SmartImage';
 
 interface ProfileCreationScreenProps {
   onComplete: () => void;
@@ -46,12 +48,8 @@ const ProfileCreationScreen = ({ onComplete }: ProfileCreationScreenProps) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Preview
-    const reader = new FileReader();
-    reader.onload = () => {
-      setAvatarUri(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+    setAvatarUri(await resizeImageFile(file, { maxSize: 900, quality: 0.76 }));
+    e.target.value = '';
   };
 
   const handleSubmit = async () => {
@@ -144,7 +142,7 @@ const ProfileCreationScreen = ({ onComplete }: ProfileCreationScreenProps) => {
             style={{ position: 'relative' }}
           >
             {avatarUri ? (
-              <img src={avatarUri} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+              <SmartImage src={avatarUri} alt="Avatar" fallbackLabel={fullName || 'Profile'} rounded="50%" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
             ) : (
               <User size={40} color="#9CA3AF" />
             )}

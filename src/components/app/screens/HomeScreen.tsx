@@ -17,6 +17,7 @@ import {
   fetchFeedItemsGeofenced,
   getLocationPermissionState,
   requestCurrentLocation,
+  type GeofenceCoords,
 } from '@/lib/geofence';
 
 interface HomeItem {
@@ -41,6 +42,7 @@ const HomeScreen = () => {
   const [geofenceContext, setGeofenceContext] = useState<{
     distanceMeters: number | null;
     radiusMeters: number;
+    accuracyMeters: number | null;
     societyName: string | null;
     permission: string;
   } | null>(null);
@@ -135,6 +137,7 @@ const HomeScreen = () => {
         setGeofenceContext({
           distanceMeters: null,
           radiusMeters: 500,
+          accuracyMeters: null,
           societyName: locationName || null,
           permission,
         });
@@ -158,6 +161,7 @@ const HomeScreen = () => {
       setGeofenceContext({
         distanceMeters: access.distance_meters,
         radiusMeters: access.radius_meters || 500,
+        accuracyMeters: coords.accuracyMeters ?? null,
         societyName: access.society_name || locationName || null,
         permission: 'granted',
       });
@@ -191,6 +195,7 @@ const HomeScreen = () => {
       setGeofenceContext((prev) => prev || {
         distanceMeters: null,
         radiusMeters: 500,
+        accuracyMeters: null,
         societyName: locationName || null,
         permission: 'unknown',
       });
@@ -198,7 +203,7 @@ const HomeScreen = () => {
     }
   };
 
-  const loadItems = async (forceRefresh = false, coords?: { latitude: number; longitude: number }) => {
+  const loadItems = async (forceRefresh = false, coords?: GeofenceCoords) => {
     if (!user?.id || !userSocietyId) return;
     const cacheKey = CACHE_KEYS.homeItems(userSocietyId);
 
@@ -216,7 +221,7 @@ const HomeScreen = () => {
     await fetchFreshItems(cacheKey, coords);
   };
 
-  const fetchFreshItems = async (cacheKey: string, coords?: { latitude: number; longitude: number }) => {
+  const fetchFreshItems = async (cacheKey: string, coords?: GeofenceCoords) => {
     try {
       await processCompletedRentals();
 
@@ -417,7 +422,7 @@ const HomeScreen = () => {
           <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.55 }}>
             {geofenceBlockReason}
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 10 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: geofenceContext?.accuracyMeters != null ? '1fr 1fr 1fr' : '1fr 1fr', gap: 8, marginTop: 10 }}>
             <div style={{
               border: '1px solid var(--border-light)',
               borderRadius: 12,
@@ -440,6 +445,19 @@ const HomeScreen = () => {
                 {Math.round(geofenceContext?.radiusMeters ?? 500)}m
               </div>
             </div>
+            {geofenceContext?.accuracyMeters != null && (
+              <div style={{
+                border: '1px solid var(--border-light)',
+                borderRadius: 12,
+                padding: '8px 10px',
+                background: 'var(--surface)',
+              }}>
+                <div style={{ color: 'var(--text-light)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>GPS Accuracy</div>
+                <div style={{ color: 'var(--text-primary)', fontSize: 13, fontWeight: 700 }}>
+                  ±{Math.round(geofenceContext.accuracyMeters)}m
+                </div>
+              </div>
+            )}
           </div>
           {geofenceContext?.societyName && (
             <p style={{ margin: '8px 0 0', color: 'var(--text-light)', fontSize: 12, lineHeight: 1.4 }}>

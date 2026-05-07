@@ -6,6 +6,8 @@ import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { cacheInvalidate, CACHE_KEYS } from '@/lib/cache';
 import { getSafeImageUrl } from '@/lib/imageUtils';
+import { resizeImageFile } from '@/lib/clientImage';
+import SmartImage from '@/components/app/SmartImage';
 
 const EditProfileScreen = () => {
   const { user, setUser, showAlert, closeStack } = useStore();
@@ -41,16 +43,12 @@ const EditProfileScreen = () => {
 
   const handleSelectImage = () => { fileInputRef.current?.click(); };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      setAvatarUri(result);
-      setNewAvatarData(result);
-    };
-    reader.readAsDataURL(file);
+    const result = await resizeImageFile(file, { maxSize: 900, quality: 0.76 });
+    setAvatarUri(result);
+    setNewAvatarData(result);
     e.target.value = '';
   };
 
@@ -151,7 +149,7 @@ const EditProfileScreen = () => {
           <div onClick={handleSelectImage} className="scale-pressable"
             style={{ position: 'relative', cursor: 'pointer', marginBottom: 12 }}>
             {avatarUri ? (
-              <img src={getSafeImageUrl(avatarUri)} alt="" style={{ width: 100, height: 100, borderRadius: 50, objectFit: 'cover' }} />
+              <SmartImage src={getSafeImageUrl(avatarUri)} alt={fullName || 'Profile'} fallbackLabel={fullName} rounded={50} style={{ width: 100, height: 100, borderRadius: 50, objectFit: 'cover' }} />
             ) : (
               <div style={{ width: 100, height: 100, borderRadius: 50, background: 'var(--muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <User size={40} color="var(--text-light)" />

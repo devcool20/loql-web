@@ -8,6 +8,7 @@ import AppTopBar from '@/components/app/AppTopBar';
 import { ListSkeleton } from '@/components/app/Skeleton';
 import { cacheGetStale, cacheInvalidate, cacheSet, CACHE_KEYS, TTL } from '@/lib/cache';
 import { getSafeImageUrl } from '@/lib/imageUtils';
+import SmartImage from '@/components/app/SmartImage';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { assertGeofenceAllowed } from '@/lib/geofence';
@@ -281,7 +282,13 @@ const RentalsScreen = () => {
   const Media = ({ src, title }: { src?: string; title?: string }) => (
     <div style={styles.imageContainer}>
       {src ? (
-        <img src={getSafeImageUrl(src)} alt={title || 'Item'} style={styles.image} />
+        <SmartImage
+          src={getSafeImageUrl(src)}
+          alt={title || 'Item'}
+          fallbackLabel={title || 'Item'}
+          rounded={styles.imageContainer.borderRadius}
+          style={styles.image}
+        />
       ) : (
         <div style={styles.emptyImage}>No image</div>
       )}
