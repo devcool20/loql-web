@@ -11,9 +11,25 @@ import AppTopBar from '@/components/app/AppTopBar';
 import { processCompletedRentals } from '@/lib/rentalCompletion';
 import { cacheGet, cacheSet, cacheGetStale, CACHE_KEYS, TTL } from '@/lib/cache';
 import { getSafeImageUrl } from '@/lib/imageUtils';
+import {
+  GEOFENCE_MESSAGES,
+  checkGeofenceAccess,
+  fetchFeedItemsGeofenced,
+  getLocationPermissionState,
+  requestCurrentLocation,
+} from '@/lib/geofence';
+
+interface HomeItem {
+  id: string;
+  owner_id: string;
+  title?: string;
+  description?: string;
+  category?: string;
+  [key: string]: unknown;
+}
 
 const HomeScreen = () => {
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<HomeItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [locationName, setLocationName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -21,9 +37,23 @@ const HomeScreen = () => {
   const [userSocietyId, setUserSocietyId] = useState<string | null>(null);
   const [showSocietyTooltip, setShowSocietyTooltip] = useState(false);
   const [societyItemCount, setSocietyItemCount] = useState<number | null>(null);
+  const [geofenceBlockReason, setGeofenceBlockReason] = useState<string | null>(null);
+  const [geofenceContext, setGeofenceContext] = useState<{
+    distanceMeters: number | null;
+    radiusMeters: number;
+    societyName: string | null;
+    permission: string;
+  } | null>(null);
 
   const user = useStore((state) => state.user);
-  const { navigateToDetail, setCurrentStack, setCurrentTab } = useStore();
+  const {
+    navigateToDetail,
+    setCurrentStack,
+    setCurrentTab,
+    setPermission,
+    setCoords,
+    refreshGeofence,
+  } = useStore();
   const refreshTrigger = useStore(state => state.refreshTrigger);
 
   const categories = ['All', 'DIY Tools', 'Party', 'Gaming', 'Fitness', 'Electronics', 'Kitchen'];
@@ -43,7 +73,7 @@ const HomeScreen = () => {
   useEffect(() => {
     if (userSocietyId) {
       setupLocation();
-      loadItems(true); // force load when refreshTrigger changes
+      refreshGeofenceAndLoad(true);
     }
   }, [userSocietyId, refreshTrigger]);
 
@@ -88,48 +118,114 @@ const HomeScreen = () => {
         setLocationName(data.name);
         cacheSet(CACHE_KEYS.societyName(userSocietyId), data.name, TTL.LONG);
       }
-    } catch (error) {
+    } catch {
       setLocationName('Your Society');
     }
   };
 
-  const loadItems = async (forceRefresh = false) => {
-    if (!userSocietyId) return;
+  const refreshGeofenceAndLoad = async (forceRefresh = false) => {
+    if (!user?.id || !userSocietyId) return;
+
+    setLoading(true);
+    try {
+      const permission = await getLocationPermissionState();
+      setPermission(permission);
+
+      if (permission === 'denied' || permission === 'unavailable') {
+        setGeofenceContext({
+          distanceMeters: null,
+          radiusMeters: 500,
+          societyName: locationName || null,
+          permission,
+        });
+        refreshGeofence({
+          geofenceStatus: 'outside',
+          distanceMeters: null,
+          radiusMeters: 500,
+          geofenceSocietyName: locationName || null,
+          locationPermission: permission,
+        });
+        setItems([]);
+        setGeofenceBlockReason(GEOFENCE_MESSAGES.permissionRequired);
+        setLoading(false);
+        return;
+      }
+
+      const coords = await requestCurrentLocation();
+      setCoords(coords);
+
+      const access = await checkGeofenceAccess(user.id, coords);
+      setGeofenceContext({
+        distanceMeters: access.distance_meters,
+        radiusMeters: access.radius_meters || 500,
+        societyName: access.society_name || locationName || null,
+        permission: 'granted',
+      });
+      refreshGeofence({
+        geofenceStatus: access.allowed ? 'inside' : 'outside',
+        distanceMeters: access.distance_meters,
+        radiusMeters: access.radius_meters || 500,
+        geofenceSocietyName: access.society_name,
+        locationPermission: 'granted',
+      });
+
+      if (!access.allowed) {
+        setItems([]);
+        if (!access.society_id) {
+          setGeofenceBlockReason('Your profile is not linked to a valid society yet.');
+        } else if (access.distance_meters == null) {
+          setGeofenceBlockReason('Society geofence coordinates are not configured yet for this community.');
+        } else {
+          setGeofenceBlockReason(GEOFENCE_MESSAGES.outsideFence);
+        }
+        setLoading(false);
+        return;
+      }
+
+      setGeofenceBlockReason(null);
+      await loadItems(forceRefresh, coords);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : null;
+      setItems([]);
+      setGeofenceBlockReason(message || GEOFENCE_MESSAGES.permissionRequired);
+      setGeofenceContext((prev) => prev || {
+        distanceMeters: null,
+        radiusMeters: 500,
+        societyName: locationName || null,
+        permission: 'unknown',
+      });
+      setLoading(false);
+    }
+  };
+
+  const loadItems = async (forceRefresh = false, coords?: { latitude: number; longitude: number }) => {
+    if (!user?.id || !userSocietyId) return;
     const cacheKey = CACHE_KEYS.homeItems(userSocietyId);
 
     if (!forceRefresh) {
-      const { data: stale } = await cacheGetStale<any[]>(cacheKey);
+      const { data: stale } = await cacheGetStale<HomeItem[]>(cacheKey);
       if (stale && stale.length > 0) {
         setItems(stale);
         setLoading(false);
-        fetchFreshItems(cacheKey);
+        fetchFreshItems(cacheKey, coords);
         return;
       }
     }
 
     setLoading(true);
-    await fetchFreshItems(cacheKey);
+    await fetchFreshItems(cacheKey, coords);
   };
 
-  const fetchFreshItems = async (cacheKey: string) => {
+  const fetchFreshItems = async (cacheKey: string, coords?: { latitude: number; longitude: number }) => {
     try {
       await processCompletedRentals();
 
-      if (!userSocietyId) {
+      if (!userSocietyId || !user?.id || !coords) {
         setItems([]);
         return;
       }
 
-      const { data, error } = await supabase
-        .from('items')
-        .select('id, title, daily_rate, images, category, owner_id, status, created_at')
-        .eq('society_id', userSocietyId)
-        .neq('status', 'rented')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      const freshData = data || [];
+      const freshData = await fetchFeedItemsGeofenced(user.id, coords) as HomeItem[];
       setItems(freshData);
       cacheSet(cacheKey, freshData, TTL.SHORT);
     } catch (error) {
@@ -195,14 +291,56 @@ const HomeScreen = () => {
         avatarLabel={userName}
         onAvatarClick={() => setCurrentTab('Profile')}
         rightSlot={(
-          <button
-            className="header-button scale-pressable"
-            onClick={() => setCurrentStack('Notification')}
-            id="notification-bell"
-            aria-label="Notifications"
-          >
-            <Bell size={20} color="var(--text-primary)" />
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, position: 'relative' }}>
+            {locationName ? (
+              <button
+                className="scale-pressable"
+                onClick={handleLocationClick}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '7px 10px',
+                  borderRadius: 999,
+                  border: '1px solid var(--border-light)',
+                  background: 'var(--surface-alt)',
+                  color: 'var(--text-secondary)',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  maxWidth: 150,
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                }}
+              >
+                <MapPin size={12} color="var(--text-secondary)" />
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{locationName}</span>
+              </button>
+            ) : null}
+            <button
+              className="header-button scale-pressable"
+              onClick={() => setCurrentStack('Notification')}
+              id="notification-bell"
+              aria-label="Notifications"
+            >
+              <Bell size={20} color="var(--text-primary)" />
+            </button>
+            {showSocietyTooltip && societyItemCount !== null && (
+              <div style={{
+                position: 'absolute', top: '100%', right: 0, marginTop: 12, background: 'var(--accent-solid)',
+                padding: '12px 16px', borderRadius: 16, boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+                zIndex: 50, width: 220, animation: 'fadeIn 0.2s ease', cursor: 'default'
+              }}>
+                <div style={{
+                  position: 'absolute', top: -6, right: 44, width: 0, height: 0,
+                  borderLeft: '7px solid transparent', borderRight: '7px solid transparent', borderBottom: '7px solid var(--accent-solid)',
+                }} />
+                <span style={{ color: 'var(--accent-solid-text)', fontSize: 13, fontWeight: 500, lineHeight: 1.4, display: 'block' }}>
+                  <span style={{ fontWeight: 700, color: '#10B981', fontSize: 14 }}>{societyItemCount} items</span> available to rent in your society right now!
+                </span>
+              </div>
+            )}
+          </div>
         )}
       />
       <div style={{ padding: '0 20px' }}>
@@ -213,30 +351,6 @@ const HomeScreen = () => {
           <div className="home-name">
             <TypewriterText text={userName} typingSpeed={150} pauseDuration={3000} />
           </div>
-          {locationName && (
-            <div className="home-location-row scale-pressable" onClick={handleLocationClick} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, position: 'relative' }}>
-              <MapPin size={12} color="var(--text-secondary)" />
-              <span className="home-location">{locationName}</span>
-              
-              {/* Popover Bubble */}
-              {showSocietyTooltip && societyItemCount !== null && (
-                <div style={{
-                  position: 'absolute', top: '100%', left: -4, marginTop: 12, background: 'var(--accent-solid)',
-                  padding: '12px 16px', borderRadius: 16, boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
-                  zIndex: 50, width: 220, animation: 'fadeIn 0.2s ease', cursor: 'default'
-                }} onClick={(e) => e.stopPropagation()}>
-                  {/* Arrow */}
-                  <div style={{
-                    position: 'absolute', top: -6, left: 24, width: 0, height: 0,
-                    borderLeft: '7px solid transparent', borderRight: '7px solid transparent', borderBottom: '7px solid var(--accent-solid)',
-                  }} />
-                  <span style={{ color: 'var(--accent-solid-text)', fontSize: 13, fontWeight: 500, lineHeight: 1.4, display: 'block' }}>
-                    <span style={{ fontWeight: 700, color: '#10B981', fontSize: 14 }}>{societyItemCount} items</span> available to rent in your society right now!
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
         </div>
 
       </div>
@@ -288,7 +402,68 @@ const HomeScreen = () => {
       </div>
 
       {/* Feed */}
-      {loading && items.length === 0 ? (
+      {geofenceBlockReason ? (
+        <div style={{
+          border: '1px solid var(--border-light)',
+          background: 'linear-gradient(180deg, var(--surface), var(--surface-alt))',
+          borderRadius: 18,
+          padding: 16,
+          marginBottom: 18,
+          boxShadow: '0 6px 20px rgba(45,49,66,0.08)',
+        }}>
+          <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: 8, fontSize: 15 }}>
+            Secure neighborhood mode is active
+          </strong>
+          <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.55 }}>
+            {geofenceBlockReason}
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 10 }}>
+            <div style={{
+              border: '1px solid var(--border-light)',
+              borderRadius: 12,
+              padding: '8px 10px',
+              background: 'var(--surface)',
+            }}>
+              <div style={{ color: 'var(--text-light)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>Distance</div>
+              <div style={{ color: 'var(--text-primary)', fontSize: 13, fontWeight: 700 }}>
+                {geofenceContext?.distanceMeters != null ? `${Math.round(geofenceContext.distanceMeters)}m` : 'Unknown'}
+              </div>
+            </div>
+            <div style={{
+              border: '1px solid var(--border-light)',
+              borderRadius: 12,
+              padding: '8px 10px',
+              background: 'var(--surface)',
+            }}>
+              <div style={{ color: 'var(--text-light)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>Allowed Radius</div>
+              <div style={{ color: 'var(--text-primary)', fontSize: 13, fontWeight: 700 }}>
+                {Math.round(geofenceContext?.radiusMeters ?? 500)}m
+              </div>
+            </div>
+          </div>
+          {geofenceContext?.societyName && (
+            <p style={{ margin: '8px 0 0', color: 'var(--text-light)', fontSize: 12, lineHeight: 1.4 }}>
+              Society: <strong style={{ color: 'var(--text-secondary)' }}>{geofenceContext.societyName}</strong>
+            </p>
+          )}
+          <button
+            className="scale-pressable"
+            onClick={() => refreshGeofenceAndLoad(true)}
+            style={{
+              marginTop: 12,
+              borderRadius: 999,
+              border: '1px solid var(--border)',
+              background: 'var(--surface)',
+              padding: '9px 14px',
+              fontSize: 13,
+              fontWeight: 700,
+              color: 'var(--text-primary)',
+            }}
+          >
+            Re-check location
+          </button>
+        </div>
+      ) : loading && items.length === 0 ? (
         <HomeSkeletonGrid count={6} />
       ) : (
         <div className="item-feed">

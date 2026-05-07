@@ -10,11 +10,12 @@ import { cacheGetStale, cacheInvalidate, cacheSet, CACHE_KEYS, TTL } from '@/lib
 import { getSafeImageUrl } from '@/lib/imageUtils';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
+import { assertGeofenceAllowed } from '@/lib/geofence';
 
 type RentalsTab = 'listings' | 'offers' | 'bookings';
 
 const RentalsScreen = () => {
-  const { user, showAlert, navigateToDetail, setCurrentStack } = useStore();
+  const { user, showAlert, navigateToDetail, setCurrentStack, setPermission, setCoords, refreshGeofence } = useStore();
   const [activeTab, setActiveTab] = useState<RentalsTab>('listings');
   const [listings, setListings] = useState<any[]>([]);
   const [bookings, setBookings] = useState<any[]>([]);
@@ -119,6 +120,17 @@ const RentalsScreen = () => {
 
   const handleAcceptCounter = async (offer: any) => {
     try {
+      const { permission, coords, access } = await assertGeofenceAllowed(user.id);
+      setPermission(permission);
+      setCoords(coords);
+      refreshGeofence({
+        geofenceStatus: 'inside',
+        distanceMeters: access.distance_meters,
+        radiusMeters: access.radius_meters,
+        geofenceSocietyName: access.society_name,
+        locationPermission: permission,
+      });
+
       const { error } = await supabase.from('offers').update({ status: 'accepted' }).eq('id', offer.id);
       if (error) throw error;
       showAlert('Offer Accepted', 'You can now proceed to payment.', 'success');
@@ -175,6 +187,22 @@ const RentalsScreen = () => {
 
     if (handoverCode.toUpperCase() !== expectedCode) {
       showAlert('Invalid Code', 'The handover code does not match. Ask the owner for the correct code.', 'error');
+      return;
+    }
+
+    try {
+      const { permission, coords, access } = await assertGeofenceAllowed(user.id);
+      setPermission(permission);
+      setCoords(coords);
+      refreshGeofence({
+        geofenceStatus: 'inside',
+        distanceMeters: access.distance_meters,
+        radiusMeters: access.radius_meters,
+        geofenceSocietyName: access.society_name,
+        locationPermission: permission,
+      });
+    } catch (error: any) {
+      showAlert('Access blocked', error?.message || 'Location required for secure neighborhood access.', 'error');
       return;
     }
 

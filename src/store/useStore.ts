@@ -20,6 +20,13 @@ interface AlertState {
 type ThemeType = 'light' | 'dark';
 type TabType = 'Home' | 'Rentals' | 'Chat' | 'Profile';
 type StackType = 'AddItem' | 'ItemDetail' | 'EditProfile' | 'Wallet' | 'Notification' | 'ChatDetail' | 'HistoryDetail' | null;
+type LocationPermissionState = 'unknown' | 'granted' | 'denied' | 'prompt' | 'unavailable';
+type GeofenceStatus = 'unknown' | 'inside' | 'outside';
+
+interface GeofenceCoords {
+    latitude: number;
+    longitude: number;
+}
 
 interface AppState {
     theme: ThemeType;
@@ -55,6 +62,23 @@ interface AppState {
     // Refresh Trigger
     refreshTrigger: number;
     refreshApp: () => void;
+
+    // Geofence State
+    locationPermission: LocationPermissionState;
+    currentCoords: GeofenceCoords | null;
+    geofenceStatus: GeofenceStatus;
+    distanceMeters: number | null;
+    radiusMeters: number;
+    geofenceSocietyName: string | null;
+    setPermission: (permission: LocationPermissionState) => void;
+    setCoords: (coords: GeofenceCoords | null) => void;
+    refreshGeofence: (payload: {
+        geofenceStatus: GeofenceStatus;
+        distanceMeters: number | null;
+        radiusMeters?: number;
+        geofenceSocietyName?: string | null;
+        locationPermission?: LocationPermissionState;
+    }) => void;
 
     // Navigation helpers
     navigateToDetail: (item: any) => void;
@@ -107,6 +131,22 @@ export const useStore = create<AppState>((set) => ({
 
     refreshTrigger: 0,
     refreshApp: () => set((state) => ({ refreshTrigger: state.refreshTrigger + 1 })),
+
+    locationPermission: 'unknown',
+    currentCoords: null,
+    geofenceStatus: 'unknown',
+    distanceMeters: null,
+    radiusMeters: 500,
+    geofenceSocietyName: null,
+    setPermission: (locationPermission) => set({ locationPermission }),
+    setCoords: (currentCoords) => set({ currentCoords }),
+    refreshGeofence: (payload) => set((state) => ({
+        geofenceStatus: payload.geofenceStatus,
+        distanceMeters: payload.distanceMeters,
+        radiusMeters: payload.radiusMeters ?? state.radiusMeters,
+        geofenceSocietyName: payload.geofenceSocietyName ?? state.geofenceSocietyName,
+        locationPermission: payload.locationPermission ?? state.locationPermission,
+    })),
 
     navigateToDetail: (item) => set({ selectedItem: item, currentStack: 'ItemDetail' }),
     openChat: (targetUser) => set({ chatUser: targetUser, currentStack: 'ChatDetail' }),

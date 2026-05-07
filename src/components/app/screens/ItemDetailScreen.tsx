@@ -7,9 +7,10 @@ import { useStore } from '@/store/useStore';
 import { createNotification } from '@/lib/notificationManager';
 import UserProfileModal from '../modals/UserProfileModal';
 import { getSafeImageUrl } from '@/lib/imageUtils';
+import { assertGeofenceAllowed, createOfferGeofenced } from '@/lib/geofence';
 
 const ItemDetailScreen = () => {
-  const { user, selectedItem: item, closeStack, showAlert, openChat } = useStore();
+  const { user, selectedItem: item, closeStack, showAlert, openChat, setPermission, setCoords, refreshGeofence } = useStore();
   const [owner, setOwner] = useState<any>(null);
   const [loadingOwner, setLoadingOwner] = useState(true);
   const [requesting, setRequesting] = useState(false);
@@ -70,11 +71,25 @@ const ItemDetailScreen = () => {
     if (requesting || !offerPrice) return;
     setRequesting(true);
     try {
-      const { data, error } = await supabase.from('offers').insert({
-        item_id: item.id, sender_id: user.id, receiver_id: item.owner_id,
-        offered_price: Number(offerPrice), duration_hours: Number(offerHours), status: 'pending',
-      }).select().single();
-      if (error) throw error;
+      const { permission, coords, access } = await assertGeofenceAllowed(user.id);
+      setPermission(permission);
+      setCoords(coords);
+      refreshGeofence({
+        geofenceStatus: 'inside',
+        distanceMeters: access.distance_meters,
+        radiusMeters: access.radius_meters,
+        geofenceSocietyName: access.society_name,
+        locationPermission: permission,
+      });
+
+      const data = await createOfferGeofenced({
+        senderId: user.id,
+        receiverId: item.owner_id,
+        itemId: item.id,
+        offeredPrice: Number(offerPrice),
+        durationHours: Number(offerHours),
+        coords,
+      });
       if (data) {
         const userName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.raw_user_meta_data?.full_name || 'Someone';
         const finalName = userName === 'undefined' ? 'Someone' : userName;

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { X, MessageCircle, CreditCard, ShieldCheck, Calendar, User, CheckCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
+import { assertGeofenceAllowed } from '@/lib/geofence';
 
 interface BookingDetailModalProps {
   visible: boolean;
@@ -16,7 +17,7 @@ const BookingDetailModal = ({ visible, booking, onClose, onUpdate }: BookingDeta
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [owner, setOwner] = useState<any>(null);
-  const { showAlert, openChat } = useStore();
+  const { user, showAlert, openChat, setPermission, setCoords, refreshGeofence } = useStore();
 
   useEffect(() => {
     if (visible && booking?.owner_id) {
@@ -40,6 +41,28 @@ const BookingDetailModal = ({ visible, booking, onClose, onUpdate }: BookingDeta
   const isActive = booking.status === 'active';
 
   const handlePayment = async () => {
+    const geofenceUserId = user?.id || booking.renter_id;
+    if (!geofenceUserId) {
+      showAlert('Access blocked', 'Location required for secure neighborhood access.', 'error');
+      return;
+    }
+
+    try {
+      const { permission, coords, access } = await assertGeofenceAllowed(geofenceUserId);
+      setPermission(permission);
+      setCoords(coords);
+      refreshGeofence({
+        geofenceStatus: 'inside',
+        distanceMeters: access.distance_meters,
+        radiusMeters: access.radius_meters,
+        geofenceSocietyName: access.society_name,
+        locationPermission: permission,
+      });
+    } catch (error: any) {
+      showAlert('Access blocked', error?.message || 'Location required for secure neighborhood access.', 'error');
+      return;
+    }
+
     setLoading(true);
     setTimeout(async () => {
       try {

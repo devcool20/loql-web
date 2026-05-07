@@ -5,11 +5,12 @@ import { ChevronLeft, Camera, X } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { cacheInvalidate, CACHE_KEYS } from '@/lib/cache';
+import { assertGeofenceAllowed, createItemGeofenced } from '@/lib/geofence';
 
 const CATEGORIES = ['DIY Tools', 'Party', 'Gaming', 'Fitness', 'Electronics', 'Kitchen', 'Other'];
 
 const AddItemScreen = () => {
-  const { user, closeStack, showAlert, refreshApp } = useStore();
+  const { user, closeStack, showAlert, refreshApp, setPermission, setCoords, refreshGeofence } = useStore();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dailyRate, setDailyRate] = useState('');
@@ -64,6 +65,17 @@ const AddItemScreen = () => {
 
     setLoading(true);
     try {
+      const { permission, coords, access } = await assertGeofenceAllowed(user.id);
+      setPermission(permission);
+      setCoords(coords);
+      refreshGeofence({
+        geofenceStatus: 'inside',
+        distanceMeters: access.distance_meters,
+        radiusMeters: access.radius_meters,
+        geofenceSocietyName: access.society_name,
+        locationPermission: permission,
+      });
+
       const uploadedUrls: string[] = [];
       for (let i = 0; i < images.length; i++) {
         const img = images[i];
@@ -88,13 +100,16 @@ const AddItemScreen = () => {
         }
       }
 
-      const { error } = await supabase.from('items').insert({
-        title: title.trim(), description: description.trim(),
-        daily_rate: Number(dailyRate), market_price: marketPrice ? Number(marketPrice) : null,
-        category, images: uploadedUrls, owner_id: user.id, society_id: userSocietyId, status: 'available',
+      await createItemGeofenced({
+        userId: user.id,
+        title: title.trim(),
+        description: description.trim(),
+        dailyRate: Number(dailyRate),
+        marketPrice: marketPrice ? Number(marketPrice) : null,
+        category,
+        images: uploadedUrls,
+        coords,
       });
-
-      if (error) throw error;
       
       // Clear caches so the new item shows immediately
       cacheInvalidate(CACHE_KEYS.listings(user.id));

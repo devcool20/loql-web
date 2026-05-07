@@ -7,7 +7,7 @@ import { useStore } from '@/store/useStore';
 
 const CustomAlert = () => {
   const { alert, hideAlert } = useStore();
-  const { visible, title, message, onConfirm, showCancel, actions } = alert;
+  const { visible, title, message, onConfirm, showCancel, actions, type } = alert;
   const shouldReduceMotion = useReducedMotion();
 
   const handleConfirm = () => {
@@ -37,6 +37,9 @@ const CustomAlert = () => {
             variants={shouldReduceMotion ? undefined : modalCardVariants}
             transition={iosSpring}
           >
+            <div className={`alert-badge ${type || 'info'}`}>
+              {type === 'error' ? 'Action required' : type === 'success' ? 'Completed' : 'Notice'}
+            </div>
             <div className="alert-title">{title}</div>
             <div className="alert-message">{message}</div>
 
@@ -63,7 +66,7 @@ const CustomAlert = () => {
                   </button>
                 )}
                 <button className="alert-btn alert-btn-primary" onClick={handleConfirm}>
-                  Okay
+                  Continue
                 </button>
               </div>
             )}
