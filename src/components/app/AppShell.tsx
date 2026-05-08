@@ -34,6 +34,7 @@ const AppShell = () => {
     user, setUser,
     isLoading, setLoading,
     isProfileComplete, setProfileComplete,
+    currentTab, setCurrentTab,
     currentStack, chatUser, closeStack,
     theme,
   } = useStore();
@@ -68,31 +69,40 @@ const AppShell = () => {
 
   // Handle hardware / swipe back gesture integration
   useEffect(() => {
-    const handlePopState = () => {
+    const handlePopState = (event: PopStateEvent) => {
+      isBacking.current = true;
       if (currentStack) {
-        isBacking.current = true;
         closeStack();
-        // Give UI time to absorb state before resuming standard push operations
-        setTimeout(() => (isBacking.current = false), 150);
+      } else if (event.state?.tab) {
+        setCurrentTab(event.state.tab);
       }
+      // Give UI time to absorb state before resuming standard push operations
+      setTimeout(() => (isBacking.current = false), 150);
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [currentStack, closeStack]);
+  }, [currentStack, closeStack, setCurrentTab]);
+
+  // Initial history state to prevent backing out of app on first tab change
+  useEffect(() => {
+    if (user && isProfileComplete && !window.history.state?.tab) {
+      window.history.replaceState({ tab: 'Home' }, '');
+    }
+  }, [user, isProfileComplete]);
 
   useEffect(() => {
+    if (!user || !isProfileComplete || isBacking.current) return;
+
     if (currentStack) {
       // Whenever a screen is placed over the container, push a dummy URL state to intercept native back button
-      window.history.pushState({ stack: currentStack }, '');
+      window.history.pushState({ stack: currentStack, tab: currentTab }, '');
     } else {
-      // If stack was closed via App UI "X" button and NOT swipe back popstate
-      if (!isBacking.current && window.history.state?.stack) {
-        isBacking.current = true;
-        window.history.back();
-        setTimeout(() => (isBacking.current = false), 150);
+      // Whenever a tab is changed, push it to history
+      if (window.history.state?.tab !== currentTab) {
+        window.history.pushState({ tab: currentTab }, '');
       }
     }
-  }, [currentStack]);
+  }, [currentStack, currentTab, user, isProfileComplete]);
 
   const checkSessionInProgress = useRef(false);
 
@@ -224,7 +234,7 @@ const AppShell = () => {
   };
 
   const renderContent = () => {
-    if (isLoading && !user) return null;
+    if (isLoading) return null;
 
     if (!user) {
       if (showWelcome) return <WelcomeScreen onStart={() => setShowWelcome(false)} />;
@@ -258,21 +268,17 @@ const AppShell = () => {
       <div className="app-layer-content">
         {user && isProfileComplete && <RealtimeSyncProvider />}
         {renderContent()}
-        <CustomAlert />
-        <AnimatePresence mode="wait" initial={false}>
-          {currentStack && (
-            <AppStackTransition key={currentStack}>
-              {renderStackScreen()}
-            </AppStackTransition>
-          )}
-        </AnimatePresence>
       </div>
 
-      {showSplash && (
-        <div className={`splash-screen ${!isLoading ? 'fade-out' : ''}`}>
-          <img src="/logo.png" alt="loql" className="splash-logo" />
-        </div>
-      )}
+      <AnimatePresence mode="wait">
+        {currentStack && (
+          <AppStackTransition key={currentStack}>
+            {renderStackScreen()}
+          </AppStackTransition>
+        )}
+      </AnimatePresence>
+
+      <CustomAlert />
     </div>
   );
 };

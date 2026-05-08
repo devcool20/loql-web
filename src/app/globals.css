@@ -152,6 +152,7 @@ html {
 body {
   min-height: 100%;
   min-height: 100dvh;
+  overscroll-behavior-y: none; /* Prevent native pull-to-refresh */
 }
 
 body {
@@ -224,6 +225,7 @@ textarea {
   min-height: 100dvh;
   background: var(--background);
   overflow: hidden;
+  overscroll-behavior-y: none;
 }
 
 .app-shell h1,
@@ -273,6 +275,7 @@ textarea {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  touch-action: pan-x pan-y;
 }
 
 .pull-refresh-indicator {
@@ -324,6 +327,7 @@ textarea {
   -webkit-overflow-scrolling: touch;
   will-change: opacity, transform;
   padding-bottom: calc(96px + var(--safe-area-bottom));
+  overscroll-behavior-y: none;
 }
 
 .app-stack-screen {

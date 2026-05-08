@@ -8,6 +8,7 @@ import TypewriterText from '@/components/app/TypewriterText';
 import AppItemCard from '@/components/app/AppItemCard';
 import { HomeSkeletonGrid } from '@/components/app/Skeleton';
 import AppTopBar from '@/components/app/AppTopBar';
+import { LiveActivityPulse } from '@/components/app/LiveActivity';
 import { processCompletedRentals } from '@/lib/rentalCompletion';
 import { cacheGet, cacheSet, cacheGetStale, cacheInvalidate, dedupeRequest, CACHE_KEYS, TTL } from '@/lib/cache';
 import { getSafeImageUrl } from '@/lib/imageUtils';
@@ -68,12 +69,18 @@ const HomeScreen = () => {
 
   const categories = ['All', 'DIY Tools', 'Party', 'Gaming', 'Fitness', 'Electronics', 'Kitchen'];
 
-  const getGreeting = () => {
+  const getGreetings = () => {
     const hour = new Date().getHours();
-    if (hour >= 5 && hour < 12) return 'Good Morning';
-    if (hour >= 12 && hour < 17) return 'Good Afternoon';
-    if (hour >= 17 && hour < 21) return 'Good Evening';
-    return 'Good Night';
+    if (hour >= 5 && hour < 12) {
+      return ['Good Morning', 'सुप्रभात', 'शुभ प्रभात', 'ಶುಭೋದಯ', 'શુભ સવાર'];
+    }
+    if (hour >= 12 && hour < 17) {
+      return ['Good Afternoon', 'नमस्ते', 'नमस्कार', 'ನಮಸ್ಕಾರ', 'નમસ્તે'];
+    }
+    if (hour >= 17 && hour < 21) {
+      return ['Good Evening', 'शुभ संध्या', 'शुभ संध्या', 'ಶುಭ ಸಂಜೆ', 'શુભ સાંજ'];
+    }
+    return ['Good Night', 'शुभ रात्रि', 'शुभ रात्री', 'ಶುಭ ರಾತ್ರಿ', 'શુભ રાત્રિ'];
   };
 
   useEffect(() => {
@@ -414,13 +421,17 @@ const HomeScreen = () => {
       {/* Header */}
       <div className="home-header">
         <div className="home-header-left">
-          <div className="home-greeting">{getGreeting()},</div>
+          <div className="home-greeting">
+            <TypewriterText texts={getGreetings()} typingSpeed={100} pauseDuration={2500} />
+            ,
+          </div>
           <div className="home-name">
-            <TypewriterText text={userName} typingSpeed={150} pauseDuration={3000} />
+            {userName}
           </div>
         </div>
-
       </div>
+
+      <LiveActivityPulse />
 
       {/* Search Bar */}
       <div className="search-bar">

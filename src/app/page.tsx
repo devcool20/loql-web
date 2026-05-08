@@ -281,6 +281,13 @@ export default function LandingPage() {
               >
                 Community
               </button>
+              <Link
+                href="/live"
+                className="group relative flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold tracking-tight transition-all duration-200 ease-out hover:bg-white/70 lg:px-4 lg:text-[13px] text-[#2D3142] hover:text-[#f17350]"
+              >
+                <span className="flex h-2 w-2 rounded-full bg-[#10B981] animate-pulse"></span>
+                Live
+              </Link>
             </div>
           </div>
 
@@ -319,9 +326,10 @@ export default function LandingPage() {
 
         <div className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] gap-8 lg:gap-12 xl:gap-16 items-start">
           <div ref={heroRef} className="reveal-stagger z-10 min-w-0 max-w-full lg:max-w-[min(100%,36rem)] xl:max-w-xl">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-secondary-container text-on-secondary-container font-semibold text-sm mb-6">
-              Aas-Paas: Connected by Heart
-            </span>
+            <Link href="/live" className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary-container text-on-secondary-container font-semibold text-sm mb-6 hover:scale-105 transition-transform">
+              <span className="flex h-2 w-2 rounded-full bg-[#10B981] animate-pulse"></span>
+              Live: Aas-Paas is active now
+            </Link>
             <h1 className="font-headline text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl text-on-background leading-[1.12] mb-6 text-balance">
               Discover your neighborhood&apos;s <span className="text-primary italic">hidden treasures.</span>
             </h1>
