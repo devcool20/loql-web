@@ -24,11 +24,7 @@ export function MobileOnlyAppGate({ children }: MobileOnlyAppGateProps) {
   }, []);
 
   if (allow === null) {
-    return (
-      <div className="splash-screen" style={{ minHeight: '100vh', background: 'var(--background)' }}>
-        <img src="/logo.png" alt="" className="splash-logo" />
-      </div>
-    );
+    return <div style={{ minHeight: '100vh', background: 'var(--background)' }} />;
   }
 
   if (!allow) {

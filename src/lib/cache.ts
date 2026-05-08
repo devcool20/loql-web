@@ -1,4 +1,5 @@
 const CACHE_PREFIX = 'ss_cache_';
+const inFlightRequests = new Map<string, Promise<unknown>>();
 
 interface CacheEntry<T> {
     data: T;
@@ -75,6 +76,17 @@ export async function cacheInvalidatePrefix(prefix: string): Promise<void> {
     } catch (e) {
         console.warn('[Cache] Prefix invalidate failed:', prefix, e);
     }
+}
+
+export async function dedupeRequest<T>(key: string, factory: () => Promise<T>): Promise<T> {
+    const existing = inFlightRequests.get(key) as Promise<T> | undefined;
+    if (existing) return existing;
+
+    const request = factory().finally(() => {
+        inFlightRequests.delete(key);
+    });
+    inFlightRequests.set(key, request);
+    return request;
 }
 
 export const CACHE_KEYS = {

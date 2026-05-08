@@ -1,17 +1,23 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Search } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { formatRelativeTime } from '@/lib/dateUtils';
 import { getSafeImageUrl } from '@/lib/imageUtils';
+import { dedupeRequest } from '@/lib/cache';
 
 const ChatListScreen = () => {
   const { user, openChat } = useStore();
   const [conversations, setConversations] = useState<any[]>([]);
+  const conversationsRef = useRef<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    conversationsRef.current = conversations;
+  }, [conversations]);
 
   useEffect(() => {
     fetchConversations();
@@ -25,7 +31,7 @@ const ChatListScreen = () => {
         const oldItem = payload.old;
         const involved = (newItem && (newItem.sender_id === user?.id || newItem.receiver_id === user?.id)) ||
           (oldItem && (oldItem.sender_id === user?.id || oldItem.receiver_id === user?.id));
-        if (involved) fetchConversations();
+        if (involved && newItem) mergeMessageIntoList(newItem);
       })
       .subscribe();
 
@@ -35,17 +41,17 @@ const ChatListScreen = () => {
   const fetchConversations = async () => {
     if (!user) return;
     try {
-      const { data: messages, error } = await supabase
+      const { data: messages, error } = await dedupeRequest<any>(`chat-list:${user.id}`, async () => supabase
         .from('messages')
         .select('*')
         .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false }));
 
       if (error) throw error;
       if (!messages) { setLoading(false); return; }
 
       const partnersMap = new Map<string, any>();
-      messages.forEach(msg => {
+      messages.forEach((msg: any) => {
         const partnerId = msg.sender_id === user.id ? msg.receiver_id : msg.sender_id;
         if (!partnersMap.has(partnerId)) {
           partnersMap.set(partnerId, {
@@ -69,7 +75,7 @@ const ChatListScreen = () => {
 
       const formatted = partnerIds.map(pid => {
         const details = partnersMap.get(pid);
-        const profile = profiles?.find(p => p.id === pid);
+        const profile = profiles?.find((p: any) => p.id === pid);
         return {
           id: pid, name: profile?.full_name || 'Unknown User',
           avatar: profile?.avatar_url, ...details,
@@ -81,6 +87,48 @@ const ChatListScreen = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const mergeMessageIntoList = async (message: any) => {
+    if (!user?.id) return;
+    const partnerId = message.sender_id === user.id ? message.receiver_id : message.sender_id;
+    let profile: any = null;
+
+    setConversations((current) => {
+      const existing = current.find((item) => item.id === partnerId);
+      if (!existing) return current;
+      const next = {
+        ...existing,
+        lastMessage: message.content,
+        time: message.created_at,
+        unreadCount: message.receiver_id === user.id && !message.is_read
+          ? existing.unreadCount + 1
+          : existing.unreadCount,
+      };
+      return [next, ...current.filter((item) => item.id !== partnerId)];
+    });
+
+    const known = conversationsRef.current.some((item) => item.id === partnerId);
+    if (known) return;
+
+    const { data } = await supabase
+      .from('profiles')
+      .select('id, full_name, avatar_url')
+      .eq('id', partnerId)
+      .single();
+    profile = data;
+    setConversations((current) => {
+      if (current.some((item) => item.id === partnerId)) return current;
+      return [{
+        id: partnerId,
+        name: profile?.full_name || 'Unknown User',
+        avatar: profile?.avatar_url,
+        partnerId,
+        lastMessage: message.content,
+        time: message.created_at,
+        unreadCount: message.receiver_id === user.id && !message.is_read ? 1 : 0,
+      }, ...current];
+    });
   };
 
   const filtered = conversations.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()));

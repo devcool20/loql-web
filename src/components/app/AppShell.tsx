@@ -20,10 +20,13 @@ import AddItemScreen from './screens/AddItemScreen';
 import EditProfileScreen from './screens/EditProfileScreen';
 import WalletScreen from './screens/WalletScreen';
 import HistoryDetailScreen from './screens/HistoryDetailScreen';
+import { hasSeenSessionSplash, markSessionSplashSeen } from '@/lib/sessionSplash';
+import PullToRefresh from './PullToRefresh';
+import RealtimeSyncProvider from './RealtimeSyncProvider';
 
 const AppShell = () => {
   const [showWelcome, setShowWelcome] = useState(true);
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(() => !hasSeenSessionSplash());
   const loadingStartTime = useRef<number | null>(null);
   const isBacking = useRef(false);
 
@@ -57,11 +60,11 @@ const AppShell = () => {
   }, [user, isProfileComplete]);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && showSplash) {
       const timer = setTimeout(() => setShowSplash(false), 400);
       return () => clearTimeout(timer);
     }
-  }, [isLoading]);
+  }, [isLoading, showSplash]);
 
   // Handle hardware / swipe back gesture integration
   useEffect(() => {
@@ -155,12 +158,9 @@ const AppShell = () => {
   };
 
   const finishLoading = () => {
-    const elapsed = Date.now() - (loadingStartTime.current || Date.now());
-    const remaining = Math.max(0, 2000 - elapsed);
-    setTimeout(() => {
-      setLoading(false);
-      loadingStartTime.current = null;
-    }, remaining);
+    setLoading(false);
+    loadingStartTime.current = null;
+    markSessionSplashSeen();
   };
 
   const checkProfile = async (currentUser: User) => {
@@ -244,7 +244,9 @@ const AppShell = () => {
 
     return (
       <div className="tab-container">
-        <AnimatedTabNavigator />
+        <PullToRefresh>
+          <AnimatedTabNavigator />
+        </PullToRefresh>
         <BottomTabBar />
       </div>
     );
@@ -254,6 +256,7 @@ const AppShell = () => {
     <div className="app-shell" data-theme={theme}>
       <div className="mitti-noise-layer" aria-hidden="true" />
       <div className="app-layer-content">
+        {user && isProfileComplete && <RealtimeSyncProvider />}
         {renderContent()}
         <CustomAlert />
         <AnimatePresence mode="wait" initial={false}>

@@ -9,7 +9,7 @@ import AppItemCard from '@/components/app/AppItemCard';
 import { HomeSkeletonGrid } from '@/components/app/Skeleton';
 import AppTopBar from '@/components/app/AppTopBar';
 import { processCompletedRentals } from '@/lib/rentalCompletion';
-import { cacheGet, cacheSet, cacheGetStale, cacheInvalidate, CACHE_KEYS, TTL } from '@/lib/cache';
+import { cacheGet, cacheSet, cacheGetStale, cacheInvalidate, dedupeRequest, CACHE_KEYS, TTL } from '@/lib/cache';
 import { getSafeImageUrl } from '@/lib/imageUtils';
 import {
   GEOFENCE_MESSAGES,
@@ -30,9 +30,12 @@ interface HomeItem {
   [key: string]: unknown;
 }
 
+let lastRentalCompletionCheck = 0;
+const RENTAL_COMPLETION_CHECK_INTERVAL = 5 * 60 * 1000;
+
 const HomeScreen = () => {
-  const [items, setItems] = useState<HomeItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [items, setItems] = useState<HomeItem[]>(() => useStore.getState().homeItems || []);
+  const [loading, setLoading] = useState(() => !useStore.getState().homeIsHydrated);
   const [locationName, setLocationName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -56,8 +59,12 @@ const HomeScreen = () => {
     setPermission,
     setCoords,
     refreshGeofence,
+    setHomeItems,
   } = useStore();
-  const refreshTrigger = useStore(state => state.refreshTrigger);
+  const homeItems = useStore(state => state.homeItems);
+  const homeIsHydrated = useStore(state => state.homeIsHydrated);
+  const homeLastFetchedAt = useStore(state => state.homeLastFetchedAt);
+  const homeRefreshRequest = useStore(state => state.refreshRequests.home);
 
   const categories = ['All', 'DIY Tools', 'Party', 'Gaming', 'Fitness', 'Electronics', 'Kitchen'];
 
@@ -76,9 +83,26 @@ const HomeScreen = () => {
   useEffect(() => {
     if (userSocietyId) {
       setupLocation();
+      if (homeIsHydrated && Date.now() - homeLastFetchedAt < TTL.SHORT) {
+        setItems(homeItems as HomeItem[]);
+        setLoading(false);
+        return;
+      }
+      refreshGeofenceAndLoad(false);
+    }
+  }, [userSocietyId]);
+
+  useEffect(() => {
+    if (homeIsHydrated) {
+      setItems(homeItems as HomeItem[]);
+    }
+  }, [homeItems, homeIsHydrated]);
+
+  useEffect(() => {
+    if (userSocietyId && homeRefreshRequest > 0) {
       refreshGeofenceAndLoad(true);
     }
-  }, [userSocietyId, refreshTrigger]);
+  }, [homeRefreshRequest]);
 
   const fetchUserSociety = async () => {
     if (!user?.id) return;
@@ -224,15 +248,20 @@ const HomeScreen = () => {
 
   const fetchFreshItems = async (cacheKey: string, coords?: GeofenceCoords) => {
     try {
-      await processCompletedRentals();
-
       if (!userSocietyId || !user?.id || !coords) {
         setItems([]);
         return;
       }
 
-      const freshData = await fetchFeedItemsGeofenced(user.id, coords) as HomeItem[];
+      const now = Date.now();
+      if (now - lastRentalCompletionCheck > RENTAL_COMPLETION_CHECK_INTERVAL) {
+        lastRentalCompletionCheck = now;
+        await processCompletedRentals();
+      }
+
+      const freshData = await dedupeRequest(`${cacheKey}:fresh`, () => fetchFeedItemsGeofenced(user.id, coords)) as HomeItem[];
       setItems(freshData);
+      setHomeItems(freshData);
       cacheSet(cacheKey, freshData, TTL.SHORT);
     } catch (error) {
       console.error('Error fetching items:', error);

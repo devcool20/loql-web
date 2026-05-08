@@ -23,6 +23,7 @@ type StackType = 'AddItem' | 'ItemDetail' | 'EditProfile' | 'Wallet' | 'Notifica
 type RentalsModeType = 'owned' | 'borrowing';
 type LocationPermissionState = 'unknown' | 'granted' | 'denied' | 'prompt' | 'unavailable';
 type GeofenceStatus = 'unknown' | 'inside' | 'outside';
+type RefreshTarget = 'home' | 'rentals' | 'chat' | 'profile' | 'notifications';
 
 interface GeofenceCoords {
     latitude: number;
@@ -66,6 +67,26 @@ interface AppState {
     // Refresh Trigger
     refreshTrigger: number;
     refreshApp: () => void;
+    refreshRequests: Record<RefreshTarget, number>;
+    refreshScreen: (target: RefreshTarget) => void;
+
+    // Screen data cache
+    homeItems: any[];
+    homeLastFetchedAt: number;
+    homeIsHydrated: boolean;
+    setHomeItems: (items: any[], fetchedAt?: number) => void;
+    upsertHomeItem: (item: any) => void;
+    removeHomeItem: (id: string) => void;
+
+    rentalsData: {
+        listings: any[];
+        bookings: any[];
+        offers: any[];
+    };
+    rentalsLastFetchedAt: number;
+    rentalsIsHydrated: boolean;
+    setRentalsData: (data: Partial<AppState['rentalsData']>, fetchedAt?: number) => void;
+    markScreenStale: (target: RefreshTarget) => void;
 
     // Geofence State
     locationPermission: LocationPermissionState;
@@ -137,6 +158,56 @@ export const useStore = create<AppState>((set) => ({
 
     refreshTrigger: 0,
     refreshApp: () => set((state) => ({ refreshTrigger: state.refreshTrigger + 1 })),
+    refreshRequests: { home: 0, rentals: 0, chat: 0, profile: 0, notifications: 0 },
+    refreshScreen: (target) => set((state) => ({
+        refreshRequests: {
+            ...state.refreshRequests,
+            [target]: state.refreshRequests[target] + 1,
+        },
+    })),
+
+    homeItems: [],
+    homeLastFetchedAt: 0,
+    homeIsHydrated: false,
+    setHomeItems: (homeItems, fetchedAt = Date.now()) => set({
+        homeItems,
+        homeLastFetchedAt: fetchedAt,
+        homeIsHydrated: true,
+    }),
+    upsertHomeItem: (item) => set((state) => {
+        if (!item?.id) return state;
+        const exists = state.homeItems.some((current) => current.id === item.id);
+        return {
+            homeItems: exists
+                ? state.homeItems.map((current) => current.id === item.id ? { ...current, ...item } : current)
+                : [item, ...state.homeItems],
+            homeIsHydrated: true,
+        };
+    }),
+    removeHomeItem: (id) => set((state) => ({
+        homeItems: state.homeItems.filter((item) => item.id !== id),
+    })),
+
+    rentalsData: {
+        listings: [],
+        bookings: [],
+        offers: [],
+    },
+    rentalsLastFetchedAt: 0,
+    rentalsIsHydrated: false,
+    setRentalsData: (data, fetchedAt = Date.now()) => set((state) => ({
+        rentalsData: {
+            ...state.rentalsData,
+            ...data,
+        },
+        rentalsLastFetchedAt: fetchedAt,
+        rentalsIsHydrated: true,
+    })),
+    markScreenStale: (target) => set((state) => {
+        if (target === 'home') return { homeLastFetchedAt: 0 };
+        if (target === 'rentals') return { rentalsLastFetchedAt: 0 };
+        return state;
+    }),
 
     locationPermission: 'unknown',
     currentCoords: null,

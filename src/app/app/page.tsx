@@ -2,14 +2,11 @@
 
 import dynamic from 'next/dynamic';
 import { MobileOnlyAppGate } from '@/components/app/MobileOnlyAppGate';
+import AppLoaderFallback from '@/components/app/AppLoaderFallback';
 
 const AppShell = dynamic(() => import('@/components/app/AppShell'), {
   ssr: false,
-  loading: () => (
-    <div className="splash-screen">
-      <img src="/logo.png" alt="loql" className="splash-logo" />
-    </div>
-  ),
+  loading: () => <AppLoaderFallback />,
 });
 
 export default function AppPage() {

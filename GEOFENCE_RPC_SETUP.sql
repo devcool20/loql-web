@@ -1,7 +1,8 @@
 -- Geofencing primitives + strict 500m enforcement RPCs
 -- Run in Supabase SQL editor
--- GPS readings can drift by tens of meters. The fence remains 500m, but checks
--- allow a capped accuracy buffer up to 100m to prevent false blocks during testing.
+-- GPS readings can drift and society centers can be approximate on real phones.
+-- The fence remains 500m, but checks allow a bounded device buffer so phones
+-- do not falsely fail while DevTools/manual GPS passes.
 
 alter table public.societies
   add column if not exists latitude numeric,
@@ -55,7 +56,7 @@ declare
   v_lng double precision;
   v_radius integer;
   v_distance double precision;
-  v_accuracy_allowance double precision;
+  v_device_allowance double precision;
 begin
   select p.society_id into v_society_id
   from public.profiles p
@@ -77,8 +78,8 @@ begin
   end if;
 
   v_distance := public.haversine_distance_meters(p_lat, p_lng, v_lat, v_lng);
-  v_accuracy_allowance := least(greatest(coalesce(p_accuracy_meters, 0), 0), 100);
-  return query select (v_distance <= (v_radius + v_accuracy_allowance)), v_distance, v_radius, v_society_id, v_society_name;
+  v_device_allowance := least(greatest(coalesce(p_accuracy_meters, 0), 150), 250);
+  return query select (v_distance <= (v_radius + v_device_allowance)), v_distance, v_radius, v_society_id, v_society_name;
 end;
 $$;
 
@@ -126,8 +127,13 @@ begin
   where id = v_society_id;
 
   return query
-  select *
-  from public.check_geofence_access(p_user_id, p_lat, p_lng, 0);
+  select
+    gf.allowed,
+    gf.distance_meters,
+    gf.radius_meters,
+    gf.society_id,
+    gf.society_name
+  from public.check_geofence_access(p_user_id, p_lat, p_lng, 0) gf;
 end;
 $$;
 
@@ -254,7 +260,9 @@ begin
     raise exception 'Item is not available for rent';
   end if;
 
-  select society_id into v_sender_society from public.profiles where id = p_sender_id;
+  select p.society_id into v_sender_society
+  from public.profiles p
+  where p.id = p_sender_id;
   if v_sender_society is distinct from v_item.society_id then
     raise exception 'Item is outside your society scope';
   end if;

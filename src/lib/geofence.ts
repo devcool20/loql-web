@@ -59,6 +59,14 @@ const isRpcSignatureMismatch = (error: { code?: string; message?: string } | nul
   return error.code === 'PGRST202' || message.includes('could not find the function') || message.includes('schema cache');
 };
 
+const getGeofenceRpcErrorMessage = (error: { message?: string } | null, fallback: string) => {
+  const message = error?.message || '';
+  if (message.toLowerCase().includes('society_id') && message.toLowerCase().includes('ambiguous')) {
+    return 'Geofence setup needs the latest phone-access SQL fix. Please run FIX_GEOFENCE_PHONE_ACCESS.sql once in Supabase.';
+  }
+  return message || fallback;
+};
+
 export const getLocationPermissionState = async (): Promise<LocationPermissionState> => {
   if (typeof window === 'undefined' || !navigator.geolocation) return 'unavailable';
 
@@ -81,15 +89,26 @@ export const requestCurrentLocation = (): Promise<GeofenceCoords> => {
       return;
     }
 
+    const resolvePosition = (position: GeolocationPosition) =>
+      resolve({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        accuracyMeters: Number.isFinite(position.coords.accuracy) ? position.coords.accuracy : null,
+      });
+
+    const fallbackToNetworkLocation = () => {
+      navigator.geolocation.getCurrentPosition(
+        resolvePosition,
+        () => reject(new Error(LOCATION_ERROR_MESSAGE)),
+        { enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 },
+      );
+    };
+
     navigator.geolocation.getCurrentPosition(
       (position) =>
-        resolve({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          accuracyMeters: Number.isFinite(position.coords.accuracy) ? position.coords.accuracy : null,
-        }),
-      () => reject(new Error(LOCATION_ERROR_MESSAGE)),
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 },
+        resolvePosition(position),
+      fallbackToNetworkLocation,
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 45000 },
     );
   });
 };
@@ -111,7 +130,7 @@ export const checkGeofenceAccess = async (userId: string, coords: GeofenceCoords
   }
 
   if (result.error) {
-    throw new Error(result.error.message || 'Unable to verify society geofence.');
+    throw new Error(getGeofenceRpcErrorMessage(result.error, 'Unable to verify society geofence.'));
   }
 
   const row = getSingleRow<GeofenceAccessResult>(result.data);
@@ -192,7 +211,7 @@ export const fetchFeedItemsGeofenced = async (userId: string, coords: GeofenceCo
     });
   }
 
-  if (result.error) throw new Error(result.error.message || 'Unable to load geofenced feed.');
+  if (result.error) throw new Error(getGeofenceRpcErrorMessage(result.error, 'Unable to load geofenced feed.'));
   return (result.data || []) as unknown[];
 };
 
@@ -233,7 +252,7 @@ export const createItemGeofenced = async (params: {
     });
   }
 
-  if (result.error) throw new Error(result.error.message || 'Unable to create item inside geofence.');
+  if (result.error) throw new Error(getGeofenceRpcErrorMessage(result.error, 'Unable to create item inside geofence.'));
   return getSingleRow<GeofencedItemResult>(result.data);
 };
 
@@ -268,7 +287,7 @@ export const createOfferGeofenced = async (params: {
     });
   }
 
-  if (result.error) throw new Error(result.error.message || 'Unable to create offer outside geofence.');
+  if (result.error) throw new Error(getGeofenceRpcErrorMessage(result.error, 'Unable to create offer outside geofence.'));
   return getSingleRow<GeofencedOfferResult>(result.data);
 };
 

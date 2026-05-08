@@ -13,7 +13,7 @@ import {
   X,
 } from 'lucide-react';
 import { ListSkeleton } from '@/components/app/Skeleton';
-import { cacheGetStale, cacheInvalidate, cacheSet, CACHE_KEYS, TTL } from '@/lib/cache';
+import { cacheGetStale, cacheInvalidate, cacheSet, dedupeRequest, CACHE_KEYS, TTL } from '@/lib/cache';
 import { getSafeImageUrl } from '@/lib/imageUtils';
 import SmartImage from '@/components/app/SmartImage';
 import { supabase } from '@/lib/supabase';
@@ -31,12 +31,18 @@ const RentalsScreen = () => {
     refreshGeofence,
     rentalsMode,
     setRentalsMode,
+    setRentalsData,
   } = useStore();
 
-  const [listings, setListings] = useState<any[]>([]);
-  const [bookings, setBookings] = useState<any[]>([]);
-  const [offers, setOffers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const storeRentalsData = useStore((state) => state.rentalsData);
+  const rentalsIsHydrated = useStore((state) => state.rentalsIsHydrated);
+  const rentalsLastFetchedAt = useStore((state) => state.rentalsLastFetchedAt);
+  const rentalsRefreshRequest = useStore((state) => state.refreshRequests.rentals);
+
+  const [listings, setListings] = useState<any[]>(() => useStore.getState().rentalsData.listings);
+  const [bookings, setBookings] = useState<any[]>(() => useStore.getState().rentalsData.bookings);
+  const [offers, setOffers] = useState<any[]>(() => useStore.getState().rentalsData.offers);
+  const [loading, setLoading] = useState(() => !useStore.getState().rentalsIsHydrated);
   const [userSocietyId, setUserSocietyId] = useState<string | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedOfferForPayment, setSelectedOfferForPayment] = useState<any>(null);
@@ -45,7 +51,30 @@ const RentalsScreen = () => {
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   useEffect(() => { fetchUserSociety(); }, [user?.id]);
-  useEffect(() => { if (userSocietyId) loadData(); }, [userSocietyId]);
+  useEffect(() => {
+    if (!userSocietyId) return;
+    if (rentalsIsHydrated && Date.now() - rentalsLastFetchedAt < TTL.SHORT) {
+      setListings(storeRentalsData.listings);
+      setBookings(storeRentalsData.bookings);
+      setOffers(storeRentalsData.offers);
+      setLoading(false);
+      return;
+    }
+    loadData();
+  }, [userSocietyId]);
+
+  useEffect(() => {
+    if (!rentalsIsHydrated) return;
+    setListings(storeRentalsData.listings);
+    setBookings(storeRentalsData.bookings);
+    setOffers(storeRentalsData.offers);
+  }, [storeRentalsData, rentalsIsHydrated]);
+
+  useEffect(() => {
+    if (userSocietyId && rentalsRefreshRequest > 0) {
+      loadData(true);
+    }
+  }, [rentalsRefreshRequest]);
 
   const fetchUserSociety = async () => {
     if (!user?.id) return;
@@ -86,7 +115,7 @@ const RentalsScreen = () => {
     if (!user?.id || !userSocietyId) return;
 
     try {
-      const [listingsRes, bookingsRes, offersRes] = await Promise.all([
+      const [listingsRes, bookingsRes, offersRes] = await dedupeRequest(`rentals:${user.id}:${userSocietyId}:fresh`, () => Promise.all([
         supabase.from('items')
           .select('id, title, daily_rate, images, category, status, created_at, owner_id, society_id')
           .eq('owner_id', user.id)
@@ -101,7 +130,7 @@ const RentalsScreen = () => {
           .eq('sender_id', user.id)
           .neq('status', 'completed')
           .order('created_at', { ascending: false }),
-      ]);
+      ]));
 
       if (listingsRes.error) throw listingsRes.error;
       if (bookingsRes.error) throw bookingsRes.error;
@@ -114,6 +143,7 @@ const RentalsScreen = () => {
       setListings(nextListings);
       setBookings(nextBookings);
       setOffers(nextOffers);
+      setRentalsData({ listings: nextListings, bookings: nextBookings, offers: nextOffers });
 
       cacheSet(CACHE_KEYS.listings(user.id), nextListings, TTL.SHORT);
       cacheSet(CACHE_KEYS.bookings(user.id), nextBookings, TTL.SHORT);
