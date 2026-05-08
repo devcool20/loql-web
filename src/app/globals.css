@@ -398,16 +398,17 @@ textarea {
 }
 
 .tab-button {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   height: 48px;
-  padding: 0 16px;
+  min-width: 48px;
+  padding: 0 13px;
   margin: 0;
   border-radius: 24px;
-  gap: 8px;
-  transition: all 0.2s ease;
+  gap: 7px;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   outline: none;
@@ -415,22 +416,36 @@ textarea {
   appearance: none;
   -webkit-appearance: none;
   border: none;
+  background: transparent;
+  color: var(--text-light);
+  overflow: hidden;
+  isolation: isolate;
 }
 
-.tab-button:active {
-  transform: scale(0.88);
-}
-
-.tab-button.active {
-  background: var(--muted);
-  box-shadow: inset 0 0 0 1px var(--border-light);
+.tab-button svg,
+.tab-label {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
 }
 
 .tab-label {
-  font-size: 14px;
-  font-weight: 600;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 700;
   color: var(--primary);
   line-height: 1;
+}
+
+.tab-active-pill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--primary) 17%, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 10%, transparent);
 }
 
 /* ─── Scale Pressable (for buttons / cards) ─── */

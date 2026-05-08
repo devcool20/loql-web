@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 
 function useScrollReveal() {
   const ref = useRef<HTMLDivElement>(null);
@@ -86,8 +87,8 @@ const bazaarApplianceImg =
 const bazaarBooksImg =
   'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRIOLW-FLxyKy9r31_5bNscfkA8qfKVhHKuvI68ZGwPJdwvq4uQvYQqXISHiZyFPiKlC7bkCklL5SRB31JfK1DvQNQ7Y5gTScslzTk8pExorS7Dd3rmFuFkHTkr9Au_ZVyCvBYmTmRt99s&usqp=CAc?w=800&q=80&auto=format&fit=crop';
 
-const avatarImg =
-  'https://img.freepik.com/premium-vector/portrait-indian-traditional-style-beautiful-girl-face-avatar-vector-illustration_55610-7375.jpg?w=128&h=128&fit=crop&q=80';
+const ananyaAvatarImg = '/avatar-icons/adult-woman.png';
+const priyaAvatarImg = '/avatar-icons/girl.png';
 
 const kathaKitchenImg =
   'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=900&q=80&auto=format&fit=crop';
@@ -109,9 +110,14 @@ function FloatingCardTop() {
       id="hero-float-top"
     >
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-tertiary/20 flex items-center justify-center text-tertiary">
-          <span className="material-symbols-outlined">volunteer_activism</span>
-        </div>
+        <Image
+          className="rounded-full border border-tertiary/30 bg-tertiary/10 object-cover"
+          src={priyaAvatarImg}
+          alt=""
+          width={40}
+          height={40}
+          sizes="40px"
+        />
         <div>
           <p className="text-sm font-bold text-on-surface">Priya is lending</p>
           <p className="text-xs text-on-surface-variant">Prestige Svachh 5L pressure cooker &bull; 200m away</p>
@@ -136,7 +142,7 @@ function FloatingCardBottom() {
       <div className="flex items-center gap-4">
         <Image
           className="rounded-full border-2 border-primary object-cover"
-          src={avatarImg}
+          src={ananyaAvatarImg}
           alt=""
           width={48}
           height={48}
@@ -190,9 +196,32 @@ function DesktopAppDialog({ open, onClose }: { open: boolean; onClose: () => voi
 
 export default function LandingPage() {
   const router = useRouter();
+  const [authChecked, setAuthChecked] = useState(false);
   const isMobile = useIsMobile();
   const activeNav = useActiveNavSection();
   const [desktopAppOpen, setDesktopAppOpen] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const routeSignedInUsers = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!mounted) return;
+
+      if (data.session) {
+        router.replace('/app');
+        return;
+      }
+
+      setAuthChecked(true);
+    };
+
+    routeSignedInUsers();
+
+    return () => {
+      mounted = false;
+    };
+  }, [router]);
 
   const goStepIntoNeighbourhood = useCallback(() => {
     if (isMobile) {
@@ -216,6 +245,10 @@ export default function LandingPage() {
   const samvaadCardsRef = useScrollReveal();
   const samvaadCtaRef = useScrollReveal();
   const trustRef = useScrollReveal();
+
+  if (!authChecked) {
+    return <div style={{ minHeight: '100vh', background: 'var(--background)' }} />;
+  }
 
   return (
     <main className="bg-background text-on-background font-body selection:bg-primary/30 relative overflow-x-hidden">
