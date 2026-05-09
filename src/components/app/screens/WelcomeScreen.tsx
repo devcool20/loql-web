@@ -21,15 +21,12 @@ const WelcomeScreen = ({ onStart }: WelcomeScreenProps) => {
       <section style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '16px 28px 34px' }}>
         <div>
           <div style={{ width: 48, height: 4, borderRadius: 999, background: 'rgba(241, 115, 80, 0.24)', margin: '0 auto 18px' }} />
+          <div className="font-serif" style={{ textAlign: 'center', fontSize: 34, lineHeight: 1, fontWeight: 700, color: 'var(--primary)', marginBottom: 16 }}>
+            Loql
+          </div>
           <h1 className="font-serif" style={{ fontSize: 34, lineHeight: 1.15, color: 'var(--text-primary)', textAlign: 'center', marginBottom: 10 }}>
             Discover your neighborhood&apos;s hidden treasures.
           </h1>
-          <p style={{ fontSize: 17, lineHeight: 1.5, color: 'var(--text-secondary)', textAlign: 'center' }}>
-            Connecting your block, one shared story at a time.
-          </p>
-          <div className="font-serif" style={{ marginTop: 18, textAlign: 'center', fontSize: 34, lineHeight: 1, fontWeight: 700, color: 'var(--primary)' }}>
-            Loql
-          </div>
         </div>
 
         <button

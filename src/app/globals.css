@@ -972,10 +972,12 @@ textarea {
 .auth-scroll {
   position: relative;
   max-width: 430px;
-  margin: 120px auto 0;
-  min-height: 100vh;
-  min-height: 100dvh;
-  padding: 104px 20px 110px;
+  margin: 24px auto 0;
+  min-height: calc(100vh / 0.82);
+  min-height: calc(100dvh / 0.82);
+  padding: 72px 20px 76px;
+  transform: scale(0.82);
+  transform-origin: top center;
 }
 
 .auth-brand-row {
@@ -1241,9 +1243,9 @@ textarea {
 .auth-diya-accent {
   position: absolute;
   left: 50%;
-  top: -65px;
+  top: -30px;
   z-index: 1;
-  width: 116px;
+  width: 96px;
   height: auto;
   opacity: 0.9;
   pointer-events: none;
@@ -1260,10 +1262,12 @@ textarea {
 .profile-setup-screen {
   position: relative;
   max-width: 430px;
-  margin: 0 auto;
-  min-height: 100vh;
-  min-height: 100dvh;
-  padding: 104px 20px 110px;
+  margin: 24px auto 0;
+  min-height: calc(100vh / 0.82);
+  min-height: calc(100dvh / 0.82);
+  padding: 72px 20px 76px;
+  transform: scale(0.82);
+  transform-origin: top center;
 }
 
 .profile-setup-hero {
