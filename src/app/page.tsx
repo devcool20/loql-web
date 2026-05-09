@@ -203,10 +203,21 @@ export default function LandingPage() {
 
   useEffect(() => {
     let mounted = true;
+    let resolved = false;
+    const fallbackTimer = window.setTimeout(() => {
+      if (mounted && !resolved) setAuthChecked(true);
+    }, 650);
 
     const routeSignedInUsers = async () => {
+      if (window.location.pathname !== '/') {
+        resolved = true;
+        setAuthChecked(true);
+        return;
+      }
+
       const { data } = await supabase.auth.getSession();
       if (!mounted) return;
+      resolved = true;
 
       if (data.session) {
         router.replace('/app');
@@ -220,6 +231,7 @@ export default function LandingPage() {
 
     return () => {
       mounted = false;
+      window.clearTimeout(fallbackTimer);
     };
   }, [router]);
 

@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Camera, User } from 'lucide-react';
+import Image from 'next/image';
+import React, { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowRight, Camera, ChevronDown, Loader2, MapPin, Phone, User } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { resizeImageFile } from '@/lib/clientImage';
@@ -11,13 +13,23 @@ interface ProfileCreationScreenProps {
   onComplete: () => void;
 }
 
+interface Society {
+  id: string;
+  name: string;
+}
+
+const getErrorMessage = (error: unknown) => {
+  return error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+};
+
 const ProfileCreationScreen = ({ onComplete }: ProfileCreationScreenProps) => {
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [selectedSociety, setSelectedSociety] = useState<string | null>(null);
-  const [societies, setSocieties] = useState<any[]>([]);
+  const [societies, setSocieties] = useState<Society[]>([]);
   const [showSocietyDropdown, setShowSocietyDropdown] = useState(false);
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { user, setUser, showAlert } = useStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -69,7 +81,6 @@ const ProfileCreationScreen = ({ onComplete }: ProfileCreationScreenProps) => {
 
       let publicUrl = avatarUri;
 
-      // Upload avatar if one was selected
       if (avatarUri && avatarUri.startsWith('data:')) {
         const base64Data = avatarUri.split(',')[1];
         const mimeType = avatarUri.split(';')[0].split(':')[1];
@@ -121,46 +132,55 @@ const ProfileCreationScreen = ({ onComplete }: ProfileCreationScreenProps) => {
       }
 
       showAlert('Welcome!', 'Your profile has been created.', 'success', onComplete);
-    } catch (error: any) {
-      showAlert('Error', error.message, 'error');
+    } catch (error: unknown) {
+      showAlert('Error', getErrorMessage(error), 'error');
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="profile-creation-screen animate-fade-in">
-      <h1 className="profile-creation-title">Create Profile</h1>
-      <p className="profile-creation-subtitle">Let&apos;s get to know you better</p>
+  const selectedSocietyName = selectedSociety
+    ? societies.find((society) => society.id === selectedSociety)?.name
+    : null;
 
-      <div className="profile-creation-form">
-        {/* Avatar */}
+  return (
+    <div className="profile-creation-screen auth-screen profile-setup-screen">
+      <motion.div
+        className="profile-setup-hero"
+        initial={{ opacity: 0, y: 18, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <div className="profile-setup-copy">
+          <h1 className="profile-creation-title font-serif">Set up your profile.</h1>
+          <p className="profile-creation-subtitle">
+            Add your name, photo, and society so neighbors know who they are renting with.
+          </p>
+        </div>
+
         <div className="avatar-picker">
-          <div
-            className="avatar-circle scale-pressable"
+          <motion.button
+            type="button"
+            className="avatar-circle profile-avatar-circle"
             onClick={handleSelectImage}
-            style={{ position: 'relative' }}
+            whileTap={{ scale: 0.96 }}
+            whileHover={{ scale: 1.02 }}
           >
             {avatarUri ? (
-              <SmartImage src={avatarUri} alt="Avatar" fallbackLabel={fullName || 'Profile'} rounded="50%" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+              <SmartImage
+                src={avatarUri}
+                alt="Avatar"
+                fallbackLabel={fullName || 'Profile'}
+                rounded="50%"
+                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+              />
             ) : (
-              <User size={40} color="#9CA3AF" />
+              <User size={34} color="var(--text-secondary)" />
             )}
-            <div style={{
-              position: 'absolute',
-              bottom: 0,
-              right: 0,
-              background: 'var(--accent-solid)',
-              padding: 8,
-              borderRadius: 20,
-              border: '2px solid var(--surface)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <Camera size={16} color="#FFFFFF" />
-            </div>
-          </div>
+            <span className="profile-camera-badge">
+              <Camera size={15} />
+            </span>
+          </motion.button>
           <input
             ref={fileInputRef}
             type="file"
@@ -169,105 +189,109 @@ const ProfileCreationScreen = ({ onComplete }: ProfileCreationScreenProps) => {
             onChange={handleFileChange}
           />
         </div>
-        <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14, fontWeight: 500, marginBottom: 32 }}>
-          Add Profile Photo (Optional)
-        </p>
+      </motion.div>
 
-        {/* Full Name */}
+      <div className="profile-setup-steps" aria-label="Profile setup progress">
+        <span className={avatarUri ? 'done' : ''}>Photo</span>
+        <span className={fullName.trim() ? 'done' : ''}>Name</span>
+        <span className={selectedSociety ? 'done' : ''}>Society</span>
+      </div>
+
+      <div className="profile-creation-form auth-form profile-setup-form">
         <div className="input-group">
           <label className="input-label">Full Name</label>
-          <div className="icon-input">
+          <div className={`icon-input auth-input-shell ${focusedField === 'name' ? 'is-focused' : ''}`}>
+            <span className="auth-input-icon"><User size={18} /></span>
             <input
               className="text-input"
               placeholder="Alex Johnson"
               value={fullName}
+              onFocus={() => setFocusedField('name')}
+              onBlur={() => setFocusedField(null)}
               onChange={(e) => setFullName(e.target.value)}
             />
           </div>
         </div>
 
-        {/* Phone */}
         <div className="input-group">
           <label className="input-label">Phone Number {user?.phone ? '' : '(Optional)'}</label>
-          <div className="icon-input">
+          <div className={`icon-input auth-input-shell ${focusedField === 'phone' ? 'is-focused' : ''}`}>
+            <span className="auth-input-icon"><Phone size={18} /></span>
             <input
               className="text-input"
               placeholder={user?.phone || 'Add phone number'}
               value={user?.phone || phoneNumber}
+              onFocus={() => setFocusedField('phone')}
+              onBlur={() => setFocusedField(null)}
               onChange={(e) => !user?.phone && setPhoneNumber(e.target.value)}
               disabled={!!user?.phone}
               type="tel"
-              style={user?.phone ? { color: 'var(--text-light)', background: 'var(--muted)' } : {}}
             />
           </div>
         </div>
 
-        {/* Society Selection */}
-        <div className="input-group" style={{ position: 'relative' }}>
+        <div className="input-group profile-society-field">
           <label className="input-label">Society *</label>
-          <button
-            className="icon-input"
+          <motion.button
+            type="button"
+            className={`profile-society-trigger auth-input-shell ${showSocietyDropdown ? 'is-focused' : ''}`}
             onClick={() => setShowSocietyDropdown(!showSocietyDropdown)}
-            style={{
-              width: '100%',
-              padding: '14px 16px',
-              textAlign: 'left',
-              cursor: 'pointer',
-              color: selectedSociety ? 'var(--text-primary)' : 'var(--text-light)',
-              fontSize: 16,
-            }}
+            whileTap={{ scale: 0.985 }}
           >
-            {selectedSociety
-              ? societies.find((s) => s.id === selectedSociety)?.name
-              : 'Select your society'}
-          </button>
+            <span className="auth-input-icon"><MapPin size={18} /></span>
+            <span className={selectedSocietyName ? 'has-value' : ''}>
+              {selectedSocietyName || 'Select your society'}
+            </span>
+            <ChevronDown size={18} className={showSocietyDropdown ? 'open' : ''} />
+          </motion.button>
 
-          {showSocietyDropdown && (
-            <div style={{
-              position: 'absolute',
-              top: 78,
-              left: 0,
-              right: 0,
-              background: 'var(--surface)',
-              border: '1px solid var(--border)',
-              borderRadius: 12,
-              zIndex: 1000,
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-              maxHeight: 200,
-              overflowY: 'auto',
-            }}>
-              {societies.map((society) => (
-                <div
-                  key={society.id}
-                  style={{
-                    padding: 16,
-                    borderBottom: '1px solid var(--muted)',
-                    cursor: 'pointer',
-                    fontSize: 16,
-                    color: 'var(--text-primary)',
-                  }}
-                  onClick={() => {
-                    setSelectedSociety(society.id);
-                    setShowSocietyDropdown(false);
-                  }}
-                >
-                  {society.name}
-                </div>
-              ))}
-            </div>
-          )}
+          <AnimatePresence>
+            {showSocietyDropdown && (
+              <motion.div
+                className="profile-society-dropdown"
+                initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                transition={{ duration: 0.18 }}
+              >
+                {societies.map((society) => (
+                  <button
+                    type="button"
+                    key={society.id}
+                    className="profile-society-option"
+                    onClick={() => {
+                      setSelectedSociety(society.id);
+                      setShowSocietyDropdown(false);
+                    }}
+                  >
+                    <span>{society.name}</span>
+                    {selectedSociety === society.id && <span className="profile-society-dot" />}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        {/* Submit */}
-        <button
-          className="login-btn scale-pressable"
+        <motion.button
+          type="button"
+          className="login-btn auth-primary-btn profile-submit-btn"
           onClick={handleSubmit}
           disabled={loading}
-          style={{ marginTop: 32, borderRadius: 16 }}
+          whileTap={{ scale: 0.97 }}
         >
-          {loading ? <div className="spinner" /> : 'Complete Setup'}
-        </button>
+          {loading ? (
+            <Loader2 size={18} className="auth-spin" />
+          ) : (
+            <>
+              Complete setup
+          <ArrowRight size={18} />
+            </>
+          )}
+        </motion.button>
       </div>
+
+      <Image className="auth-diya-accent" src="/diya-removebg-preview.png" alt="" width={116} height={116} aria-hidden="true" />
     </div>
   );
 };

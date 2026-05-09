@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, Camera, X } from 'lucide-react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import { ArrowRight, Camera, Check, ChevronLeft, FileText, ImagePlus, Loader2, Package, Tag, X } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { cacheInvalidate, CACHE_KEYS } from '@/lib/cache';
@@ -10,6 +11,10 @@ import { resizeImageFile } from '@/lib/clientImage';
 import SmartImage from '@/components/app/SmartImage';
 
 const CATEGORIES = ['DIY Tools', 'Party', 'Gaming', 'Fitness', 'Electronics', 'Kitchen', 'Other'];
+
+const getErrorMessage = (error: unknown) => {
+  return error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+};
 
 const AddItemScreen = () => {
   const { user, closeStack, showAlert, refreshApp, setPermission, setCoords, refreshGeofence } = useStore();
@@ -20,18 +25,19 @@ const AddItemScreen = () => {
   const [category, setCategory] = useState('');
   const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
   const [userSocietyId, setUserSocietyId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => { fetchUserSociety(); }, []);
-
-  const fetchUserSociety = async () => {
+  const fetchUserSociety = useCallback(async () => {
     if (!user?.id) return;
     try {
       const { data } = await supabase.from('profiles').select('society_id').eq('id', user.id).single();
       if (data?.society_id) setUserSocietyId(data.society_id);
     } catch (e) { console.error(e); }
-  };
+  }, [user?.id]);
+
+  useEffect(() => { fetchUserSociety(); }, [fetchUserSociety]);
 
   const handleSelectImages = () => { fileInputRef.current?.click(); };
 
@@ -109,111 +115,200 @@ const AddItemScreen = () => {
         images: uploadedUrls,
         coords,
       });
-      
-      // Clear caches so the new item shows immediately
+
       cacheInvalidate(CACHE_KEYS.listings(user.id));
       if (userSocietyId) {
         cacheInvalidate(CACHE_KEYS.homeItems(userSocietyId));
       }
 
-      refreshApp(); // force reload on home feed
-      // Close the modal and let the UI refresh cleanly
+      refreshApp();
       showAlert('Success!', 'Your item has been listed.', 'success', closeStack);
-    } catch (e: any) {
-      showAlert('Error', e.message, 'error');
+    } catch (e: unknown) {
+      showAlert('Error', getErrorMessage(e), 'error');
     } finally {
       setLoading(false);
     }
   };
 
+  const estimatedRateLabel = dailyRate ? `Rs ${dailyRate}/day` : 'Auto-calculates from market price';
+
   return (
-    <div style={{
-      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      background: 'var(--surface)', zIndex: 200, overflowY: 'auto',
-    }}>
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', borderBottom: '1px solid var(--border-light)', gap: 12 }}>
-        <button className="scale-pressable" onClick={closeStack}
-          style={{ padding: 8, borderRadius: 20, background: 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-          <ChevronLeft size={24} color="var(--text-primary)" />
-        </button>
-        <span style={{ flex: 1, fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>Add Item</span>
+    <motion.div
+      className="add-item-screen"
+      initial={{ y: 24, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: 20, opacity: 0 }}
+      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div className="add-item-topbar">
+        <motion.button
+          type="button"
+          className="add-item-back"
+          onClick={closeStack}
+          whileTap={{ scale: 0.92 }}
+          aria-label="Go back"
+        >
+          <ChevronLeft size={22} />
+        </motion.button>
+        <div className="add-item-heading">
+          <h1 className="font-serif">Naya Samaan</h1>
+          <p>List something useful for neighbors to borrow.</p>
+        </div>
       </div>
 
-      <div style={{ padding: 24, paddingBottom: 100 }}>
-        {/* Images */}
-        <div style={{ display: 'flex', gap: 12, overflowX: 'auto', marginBottom: 24, paddingBottom: 4 }}>
-          <button className="scale-pressable" onClick={handleSelectImages}
-            style={{
-              width: 100, height: 100, borderRadius: 16, border: '2px dashed var(--border)', background: 'var(--surface-alt)',
-              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, flexShrink: 0,
-            }}>
-            <Camera size={24} color="var(--text-light)" />
-            <span style={{ fontSize: 11, color: 'var(--text-light)', fontWeight: 500 }}>Add Photo</span>
-          </button>
-          {images.map((img, idx) => (
-            <div key={idx} style={{ position: 'relative', flexShrink: 0 }}>
-              <SmartImage src={img} alt="" fallbackLabel={title || 'Item'} rounded={16} style={{ width: 100, height: 100, borderRadius: 16, objectFit: 'cover' }} />
-              <button onClick={() => removeImage(idx)}
-                style={{ position: 'absolute', top: -8, right: -8, width: 24, height: 24, borderRadius: 12, background: '#EF4444', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <X size={14} color="white" />
-              </button>
-            </div>
-          ))}
-        </div>
-        <input ref={fileInputRef} type="file" accept="image/*" multiple style={{ display: 'none' }} onChange={handleFileChange} />
+      <div className="add-item-content">
+        <section className="add-item-card add-item-photo-card">
+          <div className="add-item-section-title">
+            <span><ImagePlus size={16} /> Photos</span>
+            <small>{images.length}/6</small>
+          </div>
 
-        {/* Title */}
-        <div className="input-group" style={{ marginBottom: 20 }}>
-          <label className="input-label">Title *</label>
-          <input className="text-input" placeholder="What are you listing?" value={title}
-            onChange={(e) => setTitle(e.target.value)} style={{ border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', width: '100%', background: 'var(--surface-alt)' }} />
-        </div>
+          <div className="add-item-image-row">
+            <motion.button
+              type="button"
+              className="add-item-photo-drop"
+              onClick={handleSelectImages}
+              whileTap={{ scale: 0.97 }}
+            >
+              <span className="add-item-photo-icon"><Camera size={22} /></span>
+              <strong>Add photo</strong>
+              <small>Tap to upload</small>
+            </motion.button>
 
-        {/* Description */}
-        <div className="input-group" style={{ marginBottom: 20 }}>
-          <label className="input-label">Description</label>
-          <textarea placeholder="Add a description..." value={description} onChange={(e) => setDescription(e.target.value)}
-            style={{ width: '100%', border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', background: 'var(--surface-alt)', fontSize: 16, fontFamily: 'inherit', minHeight: 100, resize: 'vertical', outline: 'none', color: 'var(--text-primary)' }} />
-        </div>
-
-        {/* Market Price → Auto Daily Rate */}
-        <div className="input-group" style={{ marginBottom: 20 }}>
-          <label className="input-label">Market Price (₹)</label>
-          <input className="text-input" type="number" placeholder="Enter original price" value={marketPrice}
-            onChange={(e) => handleMarketPriceChange(e.target.value)}
-            style={{ border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', width: '100%', background: 'var(--surface-alt)' }} />
-        </div>
-
-        <div className="input-group" style={{ marginBottom: 20 }}>
-          <label className="input-label">Daily Rate (₹) *</label>
-          <input className="text-input" type="number" placeholder="Auto-calculated" value={dailyRate}
-            onChange={(e) => setDailyRate(e.target.value)}
-            style={{ border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', width: '100%', background: 'var(--surface-alt)' }} />
-        </div>
-
-        {/* Category */}
-        <div className="input-group" style={{ marginBottom: 32 }}>
-          <label className="input-label">Category *</label>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-            {CATEGORIES.map((cat) => (
-              <button key={cat} className="scale-pressable" onClick={() => setCategory(cat)}
-                style={{
-                  padding: '8px 16px', borderRadius: 20, border: `1.5px solid ${category === cat ? 'var(--accent-solid)' : 'var(--border)'}`,
-                  background: category === cat ? 'var(--accent-solid)' : 'var(--surface)', color: category === cat ? 'var(--accent-solid-text)' : 'var(--text-secondary)',
-                  fontSize: 13, fontWeight: 500,
-                }}>{cat}</button>
+            {images.map((img, idx) => (
+              <motion.div
+                key={`${img}-${idx}`}
+                className="add-item-image-preview"
+                initial={{ opacity: 0, scale: 0.92 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.22 }}
+              >
+                <SmartImage
+                  src={img}
+                  alt=""
+                  fallbackLabel={title || 'Item'}
+                  rounded={18}
+                  style={{ width: '100%', height: '100%', borderRadius: 18, objectFit: 'cover' }}
+                />
+                <motion.button
+                  type="button"
+                  onClick={() => removeImage(idx)}
+                  className="add-item-remove-image"
+                  whileTap={{ scale: 0.9 }}
+                  aria-label="Remove image"
+                >
+                  <X size={13} />
+                </motion.button>
+              </motion.div>
             ))}
           </div>
-        </div>
 
-        {/* Submit */}
-        <button className="login-btn scale-pressable" onClick={handleSubmit} disabled={loading}
-          style={{ borderRadius: 16 }}>
-          {loading ? <div className="spinner" /> : 'List Item'}
-        </button>
+          <input ref={fileInputRef} type="file" accept="image/*" multiple style={{ display: 'none' }} onChange={handleFileChange} />
+        </section>
+
+        <section className="add-item-card add-item-form-card">
+          <label className="add-item-field">
+            <span className="add-item-label"><Package size={14} /> Item name *</span>
+            <input
+              className={`add-item-input ${focusedField === 'title' ? 'is-focused' : ''}`}
+              placeholder="What are you listing?"
+              value={title}
+              onFocus={() => setFocusedField('title')}
+              onBlur={() => setFocusedField(null)}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </label>
+
+          <label className="add-item-field">
+            <span className="add-item-label"><FileText size={14} /> Description</span>
+            <textarea
+              className={`add-item-textarea ${focusedField === 'description' ? 'is-focused' : ''}`}
+              placeholder="Condition, pickup notes, accessories included..."
+              value={description}
+              onFocus={() => setFocusedField('description')}
+              onBlur={() => setFocusedField(null)}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </label>
+        </section>
+
+        <section className="add-item-card add-item-price-card">
+          <div className="add-item-section-title">
+            <span><Tag size={16} /> Pricing</span>
+            <small>{estimatedRateLabel}</small>
+          </div>
+
+          <div className="add-item-price-grid">
+            <label className="add-item-field">
+              <span className="add-item-label">Market price</span>
+              <input
+                className={`add-item-input ${focusedField === 'marketPrice' ? 'is-focused' : ''}`}
+                type="number"
+                placeholder="Original price"
+                value={marketPrice}
+                onFocus={() => setFocusedField('marketPrice')}
+                onBlur={() => setFocusedField(null)}
+                onChange={(e) => handleMarketPriceChange(e.target.value)}
+              />
+            </label>
+
+            <label className="add-item-field">
+              <span className="add-item-label">Daily rate *</span>
+              <input
+                className={`add-item-input ${focusedField === 'dailyRate' ? 'is-focused' : ''}`}
+                type="number"
+                placeholder="Auto rate"
+                value={dailyRate}
+                onFocus={() => setFocusedField('dailyRate')}
+                onBlur={() => setFocusedField(null)}
+                onChange={(e) => setDailyRate(e.target.value)}
+              />
+            </label>
+          </div>
+        </section>
+
+        <section className="add-item-card">
+          <div className="add-item-section-title">
+            <span>Category *</span>
+          </div>
+          <div className="add-item-category-grid">
+            {CATEGORIES.map((cat) => {
+              const active = category === cat;
+              return (
+                <motion.button
+                  type="button"
+                  key={cat}
+                  className={`add-item-category ${active ? 'active' : ''}`}
+                  onClick={() => setCategory(cat)}
+                  whileTap={{ scale: 0.95 }}
+                  layout
+                >
+                  {active && <Check size={13} />}
+                  {cat}
+                </motion.button>
+              );
+            })}
+          </div>
+        </section>
+
+        <motion.button
+          type="button"
+          className="login-btn add-item-submit"
+          onClick={handleSubmit}
+          disabled={loading}
+          whileTap={{ scale: 0.97 }}
+        >
+          {loading ? (
+            <Loader2 size={18} className="auth-spin" />
+          ) : (
+            <>
+              List item
+              <ArrowRight size={18} />
+            </>
+          )}
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

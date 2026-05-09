@@ -16,9 +16,6 @@ const WelcomeScreen = ({ onStart }: WelcomeScreenProps) => {
           style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
         />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 35%, var(--background) 100%)' }} />
-        <div style={{ position: 'absolute', top: 28, width: '100%', textAlign: 'center' }}>
-          <span className="font-serif" style={{ fontSize: 34, fontWeight: 700, color: 'var(--primary)' }}>Loql</span>
-        </div>
       </section>
 
       <section style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '16px 28px 34px' }}>
@@ -30,6 +27,9 @@ const WelcomeScreen = ({ onStart }: WelcomeScreenProps) => {
           <p style={{ fontSize: 17, lineHeight: 1.5, color: 'var(--text-secondary)', textAlign: 'center' }}>
             Connecting your block, one shared story at a time.
           </p>
+          <div className="font-serif" style={{ marginTop: 18, textAlign: 'center', fontSize: 34, lineHeight: 1, fontWeight: 700, color: 'var(--primary)' }}>
+            Loql
+          </div>
         </div>
 
         <button
