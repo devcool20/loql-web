@@ -226,12 +226,12 @@ const ItemDetailScreen = () => {
   const isRented = !!activeRental;
 
   return (
-    <div style={{
+    <div className="item-detail-screen" style={{
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
       background: 'var(--surface)', zIndex: 200, overflowY: 'auto',
     }}>
       {/* Floating Header */}
-      <div style={{
+      <div className="item-detail-floating-header" style={{
         position: 'fixed', top: 16, left: 16, right: 16, zIndex: 20,
         display: 'flex', justifyContent: 'space-between',
       }}>
@@ -249,7 +249,7 @@ const ItemDetailScreen = () => {
       </div>
 
       {/* Image Carousel */}
-      <div style={{ width: '100%', height: 400, position: 'relative', overflow: 'hidden', background: 'var(--img-placeholder)' }}>
+      <div className="item-detail-image-stage" style={{ width: '100%', height: 400, position: 'relative', overflow: 'hidden', background: 'var(--img-placeholder)' }}>
         {images.length > 0 ? (
           <div style={{ display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', width: '100%', height: '100%' }}
             onScroll={(e) => {
@@ -283,20 +283,20 @@ const ItemDetailScreen = () => {
       </div>
 
       {/* Content Card */}
-      <div style={{
+      <div className="item-detail-content-card" style={{
         background: 'var(--surface)', borderRadius: '32px 32px 0 0', padding: 24,
         marginTop: -40, position: 'relative', minHeight: 400,
         boxShadow: '0 -3px 8px rgba(0,0,0,0.1)', paddingBottom: 100,
       }}>
         <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 20px' }} />
-        <h1 className="font-serif" style={{ fontSize: 30, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4, lineHeight: 1.2 }}>{item.title}</h1>
-        <p style={{ fontSize: 18, fontWeight: 600, color: 'var(--secondary)', marginBottom: 24 }}>₹{item.daily_rate}/day</p>
+        <h1 className="item-detail-title font-serif" style={{ fontSize: 30, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4, lineHeight: 1.2 }}>{item.title}</h1>
+        <p className="item-detail-rate" style={{ fontSize: 18, fontWeight: 600, color: 'var(--secondary)', marginBottom: 24 }}>₹{item.daily_rate}/day</p>
 
         <div style={{ height: 1, background: 'var(--border-light)', margin: '0 0 24px' }} />
 
         {/* Availability */}
-        <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 12 }}>AVAILABILITY</h3>
-        <div style={{
+        <h3 className="item-detail-section-title" style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 12 }}>AVAILABILITY</h3>
+        <div className="item-detail-info-card" style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: 16, background: 'var(--surface-alt)', borderRadius: 16, border: '1px solid var(--border-light)', marginBottom: 24,
         }}>
@@ -327,15 +327,15 @@ const ItemDetailScreen = () => {
           }}>{isRented ? 'Busy' : 'Available'}</span>
         </div>
 
-        <div style={{ background: '#FFF9E6', borderRadius: 16, padding: '14px 16px', marginBottom: 20, border: '1px solid rgba(141,153,174,0.2)' }}>
+        <div className="item-detail-quote" style={{ background: '#FFF9E6', borderRadius: 16, padding: '14px 16px', marginBottom: 20, border: '1px solid rgba(141,153,174,0.2)' }}>
           <span className="font-serif" style={{ fontStyle: 'italic', fontSize: 20, lineHeight: 1.5, color: 'var(--text-primary)', opacity: 0.9 }}>
             "{item.description?.trim() || `This ${item.category?.toLowerCase() || 'item'} has helped many neighbors and is ready for its next story.`}"
           </span>
         </div>
 
         {/* Description */}
-        <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 12 }}>Katha</h3>
-        <p style={{ fontSize: 15, color: 'var(--text-subtle)', lineHeight: 1.6, marginBottom: 24 }}>
+        <h3 className="item-detail-section-title" style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 12 }}>Katha</h3>
+        <p className="item-detail-body" style={{ fontSize: 15, color: 'var(--text-subtle)', lineHeight: 1.6, marginBottom: 24 }}>
           Professional grade {item.category?.toLowerCase() || 'item'} suitable for your daily needs. Well maintained and ready for use.
         </p>
 
@@ -404,7 +404,7 @@ const ItemDetailScreen = () => {
         ) : (
           <>
             {/* Owner Card */}
-            <div className="scale-pressable" onClick={() => !loadingOwner && owner && setShowOwnerProfile(true)} style={{
+            <div className="item-detail-info-card item-detail-owner-card scale-pressable" onClick={() => !loadingOwner && owner && setShowOwnerProfile(true)} style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               padding: 16, background: 'var(--surface-alt)', borderRadius: 16, border: '1px solid var(--border-light)', cursor: 'pointer',
             }}>
@@ -426,15 +426,15 @@ const ItemDetailScreen = () => {
             </div>
 
             {/* Footer */}
-            <div style={{
+            <div className="item-detail-borrow-footer" style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               marginTop: 24, paddingTop: 24, borderTop: '1px solid var(--border-light)',
             }}>
               <div>
                 <span style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'block' }}>Total for 1 day</span>
-                <span style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)' }}>₹{item.daily_rate}</span>
+                <span className="item-detail-total" style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)' }}>₹{item.daily_rate}</span>
               </div>
-              <button className="scale-pressable" onClick={openOfferSheet} disabled={requesting}
+              <button className="item-detail-borrow-button scale-pressable" onClick={openOfferSheet} disabled={requesting}
                 style={{ background: 'var(--primary)', padding: '16px 32px', borderRadius: 999, color: 'white', fontWeight: 700, fontSize: 16, boxShadow: 'var(--warm-glow)' }}>
                 Borrow with Love
               </button>

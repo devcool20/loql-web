@@ -75,11 +75,11 @@ const ProfileScreen = () => {
   ];
 
   return (
-    <div style={{ background: 'var(--background)', minHeight: '100%', padding: '24px 0 120px' }}>
-      <div style={{ padding: '0 24px' }}>
+    <div className="profile-screen" style={{ background: 'var(--background)', minHeight: '100%', padding: '24px 0 120px' }}>
+      <div className="profile-content" style={{ padding: '0 24px' }}>
         {/* User Info */}
-        <div style={{ display: 'flex', alignItems: 'center', marginTop: 14, marginBottom: 24 }}>
-          <div style={{ marginRight: 18, borderRadius: 20, boxShadow: 'var(--shadow-md)', transform: 'rotate(-3deg)', border: '4px solid var(--surface-container-lowest)' }}>
+        <div className="profile-user-row" style={{ display: 'flex', alignItems: 'center', marginTop: 14, marginBottom: 24 }}>
+          <div className="profile-avatar-wrap" style={{ marginRight: 18, borderRadius: 20, boxShadow: 'var(--shadow-md)', transform: 'rotate(-3deg)', border: '4px solid var(--surface-container-lowest)' }}>
             {avatarUrl ? (
               <SmartImage
                 src={getSafeImageUrl(avatarUrl)}
@@ -88,10 +88,11 @@ const ProfileScreen = () => {
                 loading="eager"
                 fetchPriority="high"
                 rounded={18}
+                className="profile-avatar-media"
                 style={{ width: 92, height: 92, borderRadius: 18, objectFit: 'cover' }}
               />
             ) : (
-              <div style={{
+              <div className="profile-avatar-media" style={{
                 width: 92, height: 92, borderRadius: 18, background: 'var(--accent-solid)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 color: 'var(--accent-solid-text)', fontSize: 26, fontWeight: 700,
@@ -99,19 +100,19 @@ const ProfileScreen = () => {
             )}
           </div>
           <div>
-            <h2 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4, letterSpacing: -0.4 }}>{displayName}</h2>
-            <span style={{ fontSize: 14, color: 'var(--text-light)' }}>{phoneNumber}</span>
+            <h2 className="profile-name" style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4, letterSpacing: -0.4 }}>{displayName}</h2>
+            <span className="profile-phone" style={{ fontSize: 14, color: 'var(--text-light)' }}>{phoneNumber}</span>
           </div>
         </div>
 
         {/* Wallet Card */}
-        <div className="scale-pressable"
+        <div className="profile-wallet-card scale-pressable"
           onClick={() => setCurrentStack('Wallet')}
           style={{
             display: 'flex', alignItems: 'center', background: 'var(--accent-solid)', padding: 20, borderRadius: 24, marginBottom: 26,
             boxShadow: 'var(--warm-glow)', cursor: 'pointer',
           }}>
-          <div style={{
+          <div className="profile-wallet-icon" style={{
             width: 48, height: 48, borderRadius: 24, background: 'var(--accent-solid-muted)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 16,
           }}>
@@ -125,24 +126,24 @@ const ProfileScreen = () => {
         </div>
 
         {/* History */}
-        <h3 className="font-serif" style={{ fontSize: 28, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 14, letterSpacing: -0.3 }}>Pehchan</h3>
-        <div style={{ display: 'flex', gap: 12, marginBottom: 8 }}>
+        <h3 className="profile-section-title font-serif" style={{ fontSize: 28, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 14, letterSpacing: -0.3 }}>Pehchan</h3>
+        <div className="profile-stat-grid" style={{ display: 'flex', gap: 12, marginBottom: 8 }}>
           {[
             { icon: <ShoppingBag size={20} color="var(--accent-solid-text)" />, label: 'Rented', count: rentedCount, type: 'rented' as const },
             { icon: <Package size={20} color="var(--accent-solid-text)" />, label: 'For Rent', count: listedCount, type: 'for_rent' as const },
           ].map((card) => (
-            <div key={card.label} className="scale-pressable"
+            <div key={card.label} className="profile-stat-card scale-pressable"
               onClick={() => { setHistoryType(card.type); setCurrentStack('HistoryDetail'); }}
               style={{
               flex: 1, background: 'var(--surface)', borderRadius: 20, padding: '18px 16px',
               textAlign: 'center', border: '1.5px solid var(--border-light)', boxShadow: '0 2px 6px rgba(0,0,0,0.04)', cursor: 'pointer', position: 'relative',
             }}>
-              <div style={{
+              <div className="profile-stat-icon" style={{
                 width: 44, height: 44, borderRadius: 22, background: 'var(--accent-solid)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px',
               }}>{card.icon}</div>
-              <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)', display: 'block', marginBottom: 2 }}>{card.label}</span>
-              <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>{card.count}</span>
+              <span className="profile-stat-label" style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)', display: 'block', marginBottom: 2 }}>{card.label}</span>
+              <span className="profile-stat-count" style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>{card.count}</span>
               <ChevronRight size={16} color="var(--text-muted-icon)" style={{ position: 'absolute', top: 18, right: 14 }} />
             </div>
           ))}
@@ -152,16 +153,16 @@ const ProfileScreen = () => {
         <div style={{ height: 1, background: 'var(--border-light)', margin: '20px 0' }} />
 
         {/* Menu */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <div className="profile-menu-list" style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
           {menuItems.map((item, index) => (
-            <div key={index} className="scale-pressable"
+            <div key={index} className="profile-menu-row scale-pressable"
               onClick={item.onPress}
               style={{ display: 'flex', alignItems: 'center', padding: '14px 4px', cursor: 'pointer' }}>
-              <div style={{
+              <div className="profile-menu-icon" style={{
                 width: 40, height: 40, borderRadius: 12, background: 'var(--muted)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 14,
               }}>{item.icon}</div>
-              <span style={{
+              <span className="profile-menu-label" style={{
                 flex: 1, fontSize: 15, fontWeight: 500,
                 color: item.destructive ? '#EF4444' : 'var(--text-primary)',
               }}>{item.label}</span>

@@ -39,6 +39,13 @@
   --app-tabbar-bg: rgba(255, 255, 255, 0.84);
   --app-tabbar-border: rgba(141, 153, 174, 0.15);
   --app-chrome-shadow: 0 10px 30px rgba(45, 49, 66, 0.08);
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --app-page-x: clamp(14px, 5.2vw, 20px);
+  --app-bottom-nav-h: 64px;
+  --app-bottom-nav-gap: 12px;
+  --compact-title: clamp(25px, 8vw, 32px);
+  --compact-body: clamp(13px, 3.6vw, 15px);
+  --compact-caption: clamp(11px, 3.1vw, 13px);
 
   /* Material Design token aliases for landing page */
   --onBackground: #2D3142;
@@ -65,6 +72,26 @@
   --shadow-xl: 0 10px 30px -10px rgba(45, 49, 66, 0.12);
   --shadow-float: 0 4px 12px rgba(45, 49, 66, 0.08);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (max-width: 360px), (max-height: 700px) {
+  :root {
+    --app-page-x: clamp(10px, 4.2vw, 15px);
+    --app-bottom-nav-h: 52px;
+    --app-bottom-nav-gap: 8px;
+    --compact-title: clamp(21px, 6.6vw, 25px);
+    --compact-body: clamp(11.5px, 3.2vw, 13px);
+    --compact-caption: clamp(9.5px, 2.8vw, 11px);
+  }
+}
+
+@media (max-width: 320px), (max-height: 640px) {
+  :root {
+    --app-page-x: 10px;
+    --app-bottom-nav-h: 50px;
+    --app-bottom-nav-gap: 7px;
+    --compact-title: clamp(20px, 6.8vw, 23px);
+  }
 }
 
 [data-theme="dark"] {
@@ -217,6 +244,18 @@ textarea {
   outline: none;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-primary);
+  caret-color: var(--text-primary);
+  box-shadow: 0 0 0 1000px var(--surface) inset;
+  transition: background-color 9999s ease-out, color 9999s ease-out;
+}
+
 /* ─── App Shell ─── */
 .app-shell {
   position: relative;
@@ -326,7 +365,7 @@ textarea {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   will-change: opacity, transform;
-  padding-bottom: calc(96px + var(--safe-area-bottom));
+  padding-bottom: calc(var(--app-bottom-nav-h) + 36px + var(--safe-area-bottom));
   overscroll-behavior-y: none;
 }
 
@@ -366,12 +405,69 @@ textarea {
 }
 
 /* ─── Bottom Tab Bar ─── */
+.app-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: calc(64px + var(--safe-area-top));
+  padding: calc(14px + var(--safe-area-top)) var(--app-page-x) 14px;
+  background: var(--app-topbar-bg);
+  border-bottom: 1px solid var(--app-tabbar-border);
+  box-shadow: var(--shadow-xs);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.app-topbar-brand-wrap {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 0 0 auto;
+}
+
+.app-topbar-brand-wrap span {
+  font-size: clamp(25px, 7.4vw, 28px);
+}
+
+.app-topbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(6px, 2.4vw, 10px);
+  min-width: 0;
+  flex: 1;
+}
+
+.app-topbar-actions > .scale-pressable:last-child {
+  width: clamp(34px, 10.5vw, 40px);
+  height: clamp(34px, 10.5vw, 40px);
+  flex: 0 0 auto;
+}
+
+@media (max-width: 340px), (max-height: 640px) {
+  .app-topbar {
+    min-height: calc(56px + var(--safe-area-top));
+    padding-top: calc(10px + var(--safe-area-top));
+    padding-bottom: 10px;
+    gap: 6px;
+  }
+
+  .app-topbar-actions {
+    gap: 6px;
+  }
+}
+
 .bottom-tab-bar {
   position: fixed;
-  bottom: calc(12px + var(--safe-area-bottom));
-  left: 20px;
-  right: 20px;
-  height: 64px;
+  bottom: calc(var(--app-bottom-nav-gap) + var(--safe-area-bottom));
+  left: 50%;
+  right: auto;
+  width: min(calc(100vw - 28px), 398px);
+  height: var(--app-bottom-nav-h);
   background: var(--surface);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -379,21 +475,19 @@ textarea {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 clamp(8px, 3.8vw, 16px);
   border: 1px solid var(--app-tabbar-border);
   box-shadow: var(--app-chrome-shadow);
   z-index: 260;
   box-sizing: border-box;
   overflow: hidden;
   isolation: isolate;
+  transform: translateX(-50%);
 }
 
 @media (min-width: 769px) {
   .bottom-tab-bar {
-    max-width: 398px;
-    left: 50%;
-    transform: translateX(-50%);
-    right: auto;
+    width: 398px;
   }
 }
 
@@ -403,9 +497,9 @@ textarea {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  height: 48px;
-  min-width: 48px;
-  padding: 0 13px;
+  height: calc(var(--app-bottom-nav-h) - 16px);
+  min-width: calc(var(--app-bottom-nav-h) - 16px);
+  padding: 0 clamp(9px, 3vw, 13px);
   margin: 0;
   border-radius: 24px;
   gap: 7px;
@@ -433,10 +527,56 @@ textarea {
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
-  font-size: 13px;
+  max-width: 82px;
+  text-overflow: ellipsis;
+  font-size: clamp(11px, 3.2vw, 13px);
   font-weight: 700;
   color: var(--primary);
   line-height: 1;
+}
+
+@media (max-width: 340px), (max-height: 640px) {
+  .bottom-tab-bar {
+    width: min(calc(100vw - 18px), 398px);
+    padding: 0 6px;
+  }
+
+  .tab-button {
+    gap: 4px;
+    padding: 0 8px;
+  }
+
+  .tab-button svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .tab-label {
+    max-width: 52px;
+    font-size: 10.5px;
+  }
+}
+
+@media (max-width: 300px) {
+  .bottom-tab-bar {
+    width: min(calc(100vw - 14px), 398px);
+  }
+
+  .tab-button {
+    min-width: 42px;
+    padding: 0 7px;
+  }
+
+  .tab-button svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .tab-label {
+    max-width: 0;
+    margin-left: 0 !important;
+    opacity: 0;
+  }
 }
 
 .tab-active-pill {
@@ -660,6 +800,109 @@ textarea {
 }
 
 /* ─── Welcome Screen ─── */
+.welcome-experience {
+  min-height: 100vh;
+  min-height: 100svh;
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.welcome-media {
+  height: clamp(220px, 42svh, 360px);
+  position: relative;
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.welcome-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.welcome-media-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 34%, var(--background) 100%);
+}
+
+.welcome-copy-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(16px, 4svh, 26px);
+  padding: clamp(12px, 2.8svh, 18px) var(--app-page-x) calc(24px + var(--safe-area-bottom));
+}
+
+.welcome-copy {
+  text-align: center;
+}
+
+.welcome-handle {
+  width: 48px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(241, 115, 80, 0.24);
+  margin: 0 auto clamp(10px, 2svh, 18px);
+}
+
+.welcome-brand {
+  font-size: clamp(28px, 8.5vw, 34px);
+  line-height: 1;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: clamp(8px, 2svh, 16px);
+}
+
+.welcome-headline {
+  margin: 0 auto;
+  max-width: 340px;
+  font-size: clamp(28px, 9.3vw, 34px);
+  line-height: 1.13;
+  color: var(--text-primary);
+  letter-spacing: -0.035em;
+}
+
+.welcome-cta {
+  width: 100%;
+  min-height: clamp(50px, 8svh, 56px);
+  border-radius: 999px;
+  border: none;
+  background: var(--primary);
+  color: var(--accent-solid-text);
+  font-size: clamp(14px, 4.2vw, 16px);
+  font-weight: 800;
+  padding: 14px 20px;
+  box-shadow: var(--warm-glow);
+  flex: 0 0 auto;
+}
+
+@media (max-height: 640px), (max-width: 320px) {
+  .welcome-media {
+    height: clamp(195px, 38svh, 300px);
+  }
+
+  .welcome-copy-panel {
+    gap: 14px;
+    padding-top: 8px;
+  }
+
+  .welcome-brand {
+    font-size: 27px;
+  }
+
+  .welcome-headline {
+    font-size: clamp(25px, 8.5vw, 30px);
+    line-height: 1.11;
+  }
+}
+
 .welcome-screen {
   display: flex;
   flex-direction: column;
@@ -972,12 +1215,10 @@ textarea {
 .auth-scroll {
   position: relative;
   max-width: 430px;
-  margin: 24px auto 0;
-  min-height: calc(100vh / 0.82);
-  min-height: calc(100dvh / 0.82);
-  padding: 72px 20px 76px;
-  transform: scale(0.82);
-  transform-origin: top center;
+  margin: 0 auto;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: clamp(72px, 9svh, 84px) var(--app-page-x) calc(30px + var(--safe-area-bottom));
 }
 
 .auth-brand-row {
@@ -1015,8 +1256,8 @@ textarea {
   position: relative;
   z-index: 1;
   overflow: hidden;
-  padding: 22px 20px;
-  margin: 2px 0 18px;
+  padding: clamp(18px, 4.8vw, 22px) clamp(16px, 4.6vw, 20px);
+  margin: 0 0 clamp(14px, 3svh, 18px);
   border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
   border-radius: 24px;
   background:
@@ -1051,7 +1292,7 @@ textarea {
 .auth-title {
   margin: 0 0 8px;
   color: var(--text-primary);
-  font-size: 31px;
+  font-size: clamp(25px, 7.8vw, 31px);
   line-height: 1.05;
   letter-spacing: -0.035em;
 }
@@ -1060,7 +1301,7 @@ textarea {
   max-width: 320px;
   margin: 0;
   color: var(--text-secondary);
-  font-size: 13.5px;
+  font-size: var(--compact-caption);
   line-height: 1.5;
   font-weight: 500;
 }
@@ -1068,7 +1309,7 @@ textarea {
 .auth-method-switch {
   position: relative;
   padding: 5px;
-  margin-bottom: 20px;
+  margin-bottom: clamp(14px, 3svh, 20px);
   border: 1px solid color-mix(in srgb, var(--primary) 14%, transparent);
   border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--primary) 10%, var(--surface));
@@ -1077,7 +1318,7 @@ textarea {
 .auth-method-tab {
   position: relative;
   isolation: isolate;
-  min-height: 42px;
+  min-height: clamp(38px, 6.5svh, 42px);
   color: var(--text-secondary);
 }
 
@@ -1108,13 +1349,13 @@ textarea {
 }
 
 .auth-form {
-  gap: 18px;
+  gap: clamp(13px, 2.7svh, 18px);
 }
 
 .auth-input-shell,
 .auth-phone-row,
 .otp-input {
-  min-height: 56px;
+  min-height: clamp(48px, 8svh, 56px);
   background: rgba(255, 255, 255, 0.82);
   border: 1px solid color-mix(in srgb, var(--border) 86%, transparent);
   border-radius: 18px;
@@ -1136,8 +1377,8 @@ textarea {
 }
 
 .auth-input-icon {
-  width: 34px;
-  height: 34px;
+  width: clamp(30px, 8.5vw, 34px);
+  height: clamp(30px, 8.5vw, 34px);
   margin-left: 10px;
   border-radius: 14px;
   background: color-mix(in srgb, var(--primary) 10%, transparent);
@@ -1154,9 +1395,26 @@ textarea {
 
 .auth-screen .text-input {
   min-width: 0;
-  padding: 15px 12px;
-  font-size: 15px;
+  padding: clamp(12px, 3.5vw, 15px) 10px;
+  font-size: clamp(13px, 3.7vw, 15px);
   font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.auth-screen .text-input:-webkit-autofill,
+.auth-screen .text-input:-webkit-autofill:hover,
+.auth-screen .text-input:-webkit-autofill:focus,
+.auth-screen .phone-input:-webkit-autofill,
+.auth-screen .phone-input:-webkit-autofill:hover,
+.auth-screen .phone-input:-webkit-autofill:focus,
+.auth-screen .otp-input:-webkit-autofill,
+.auth-screen .otp-input:-webkit-autofill:hover,
+.auth-screen .otp-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-primary);
+  caret-color: var(--text-primary);
+  box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.86) inset;
+  border-radius: inherit;
 }
 
 .auth-screen .input-label {
@@ -1193,7 +1451,7 @@ textarea {
 
 .auth-primary-btn {
   gap: 8px;
-  min-height: 56px;
+  min-height: clamp(50px, 8svh, 56px);
   margin-top: 8px;
   border-radius: 18px;
   background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 88%, #ff9b6b));
@@ -1224,13 +1482,13 @@ textarea {
 }
 
 .auth-divider {
-  margin: 20px 0 16px;
+  margin: clamp(14px, 3.2svh, 20px) 0 clamp(12px, 2.8svh, 16px);
 }
 
 .auth-google-btn {
   position: relative;
   z-index: 1;
-  min-height: 54px;
+  min-height: clamp(48px, 7.8svh, 54px);
   border-radius: var(--radius-pill);
   background: rgba(255, 255, 255, 0.86);
   box-shadow: 0 12px 28px rgba(42, 37, 35, 0.07);
@@ -1243,11 +1501,11 @@ textarea {
 .auth-diya-accent {
   position: absolute;
   left: 50%;
-  top: -30px;
+  top: clamp(10px, 1.8svh, 14px);
   z-index: 1;
-  width: 96px;
+  width: clamp(46px, 15vw, 58px);
   height: auto;
-  opacity: 0.9;
+  opacity: 0.92;
   pointer-events: none;
   user-select: none;
   transform: translateX(-50%);
@@ -1262,12 +1520,10 @@ textarea {
 .profile-setup-screen {
   position: relative;
   max-width: 430px;
-  margin: 24px auto 0;
-  min-height: calc(100vh / 0.82);
-  min-height: calc(100dvh / 0.82);
-  padding: 72px 20px 76px;
-  transform: scale(0.82);
-  transform-origin: top center;
+  margin: 0 auto;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: clamp(72px, 9svh, 84px) var(--app-page-x) calc(30px + var(--safe-area-bottom));
 }
 
 .profile-setup-hero {
@@ -1284,7 +1540,7 @@ textarea {
 .profile-setup-screen .profile-creation-title {
   margin: 0 0 8px;
   color: var(--text-primary);
-  font-size: 31px;
+  font-size: clamp(25px, 7.8vw, 31px);
   line-height: 1.05;
   letter-spacing: -0.035em;
 }
@@ -1423,6 +1679,56 @@ textarea {
 
 .profile-submit-btn {
   margin-top: 12px;
+}
+
+@media (max-width: 360px), (max-height: 700px) {
+  .auth-scroll,
+  .profile-setup-screen {
+    padding-top: clamp(64px, 11svh, 76px);
+    padding-bottom: calc(22px + var(--safe-area-bottom));
+  }
+
+  .auth-diya-accent {
+    top: 8px;
+    width: clamp(42px, 14vw, 52px);
+  }
+
+  .auth-hero-card,
+  .profile-setup-hero {
+    border-radius: 22px;
+  }
+
+  .auth-primary-btn {
+    margin-top: 4px;
+  }
+
+  .forgot-password-btn,
+  .switch-btn {
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+}
+
+@media (max-width: 320px), (max-height: 640px) {
+  .auth-scroll,
+  .profile-setup-screen {
+    padding-top: 62px;
+  }
+
+  .auth-diya-accent {
+    top: 8px;
+    width: 40px;
+  }
+
+  .auth-hero-card,
+  .profile-setup-hero {
+    padding: 16px;
+  }
+
+  .auth-title,
+  .profile-setup-screen .profile-creation-title {
+    font-size: 24px;
+  }
 }
 
 /* ─── Home Screen ─── */
@@ -1732,15 +2038,19 @@ textarea {
 }
 
 .home-screen {
-  padding-bottom: 100px;
+  padding-bottom: calc(var(--app-bottom-nav-h) + 36px + var(--safe-area-bottom));
+}
+
+.home-page-content {
+  padding: 0 var(--app-page-x);
 }
 
 .home-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 18px;
-  margin-bottom: 24px;
+  margin-top: clamp(12px, 2.4svh, 18px);
+  margin-bottom: clamp(14px, 3svh, 24px);
 }
 
 .home-header-left {
@@ -1749,7 +2059,7 @@ textarea {
 
 .home-greeting {
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: var(--compact-caption);
   font-weight: 500;
   letter-spacing: 0.5px;
   margin-bottom: 4px;
@@ -1757,10 +2067,11 @@ textarea {
 
 .home-name {
   color: var(--primary);
-  font-size: 26px;
+  font-size: clamp(22px, 7vw, 26px);
   font-weight: 700;
   letter-spacing: -0.5px;
-  height: 36px;
+  min-height: 30px;
+  height: auto;
   overflow: hidden;
 }
 
@@ -1778,8 +2089,8 @@ textarea {
 }
 
 .header-button {
-  width: 44px;
-  height: 44px;
+  width: clamp(36px, 11vw, 44px);
+  height: clamp(36px, 11vw, 44px);
   border-radius: 22px;
   background: var(--surface);
   display: flex;
@@ -1789,14 +2100,29 @@ textarea {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+.society-header-pill {
+  min-width: 0;
+  max-width: min(40vw, 150px) !important;
+  min-height: 34px;
+}
+
+.society-header-pill span {
+  min-width: 0;
+}
+
+.live-pulse-container {
+  height: clamp(76px, 13svh, 100px) !important;
+  padding: clamp(8px, 1.8svh, 12px) 0 !important;
+}
+
 /* Search */
 .search-bar {
   display: flex;
   align-items: center;
   background: var(--surface);
   border-radius: var(--radius-lg);
-  padding: 12px 16px;
-  margin-bottom: 24px;
+  padding: clamp(10px, 2.8vw, 12px) clamp(13px, 4vw, 16px);
+  margin-bottom: clamp(14px, 3svh, 24px);
   border: 1px solid var(--muted);
   box-shadow: var(--shadow-sm);
 }
@@ -1804,11 +2130,32 @@ textarea {
 .search-input {
   flex: 1;
   margin-left: 10px;
-  font-size: 15px;
+  font-size: var(--compact-body);
   color: var(--primary);
   font-weight: 500;
   border: none;
   background: transparent;
+}
+
+.home-hero-card {
+  padding: clamp(15px, 4.5vw, 18px) !important;
+  margin-bottom: clamp(14px, 3svh, 18px) !important;
+  border-radius: clamp(20px, 6vw, 24px) !important;
+}
+
+.home-hero-kicker {
+  font-size: clamp(10.5px, 3vw, 12px) !important;
+}
+
+.home-hero-title {
+  font-size: clamp(22px, 7vw, 26px) !important;
+  line-height: 1.18 !important;
+  margin-top: clamp(6px, 1.4svh, 8px) !important;
+}
+
+.home-hero-copy {
+  font-size: var(--compact-caption) !important;
+  line-height: 1.45 !important;
 }
 
 .search-input::placeholder {
@@ -1818,8 +2165,8 @@ textarea {
 /* Categories */
 .categories-container {
   display: flex;
-  gap: 10px;
-  margin-bottom: 24px;
+  gap: clamp(7px, 2.4vw, 10px);
+  margin-bottom: clamp(14px, 3svh, 24px);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -1834,11 +2181,11 @@ textarea {
 .category-chip {
   background: var(--surface);
   border-radius: var(--radius-lg);
-  padding: 7px 14px;
+  padding: clamp(6px, 1.7svh, 7px) clamp(11px, 3.8vw, 14px);
   border: 1px solid var(--muted);
   white-space: nowrap;
   flex-shrink: 0;
-  font-size: 12px;
+  font-size: clamp(10.5px, 3vw, 12px);
   font-weight: 600;
   color: var(--secondary);
   transition: all 0.2s ease;
@@ -1868,7 +2215,7 @@ textarea {
 .item-feed {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: clamp(10px, 3vw, 12px);
 }
 
 .empty-state {
@@ -1887,10 +2234,10 @@ textarea {
 
 /* ─── Item Card ─── */
 .item-card {
-  width: calc(50% - 6px);
+  width: calc(50% - clamp(5px, 1.5vw, 6px));
   background: var(--surface);
-  border-radius: var(--radius-xl);
-  margin-bottom: 16px;
+  border-radius: clamp(18px, 5.8vw, 24px);
+  margin-bottom: clamp(10px, 2.6svh, 16px);
   border: 1px solid var(--muted);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
@@ -1974,25 +2321,25 @@ textarea {
 
 .item-card-price-tag {
   position: absolute;
-  bottom: 12px;
+  bottom: clamp(8px, 2.6vw, 12px);
   left: 50%;
   transform: translateX(-50%);
   background: var(--surface);
-  padding: 8px 16px;
+  padding: 7px clamp(10px, 3.8vw, 16px);
   border-radius: var(--radius-lg);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  font-size: 12px;
+  font-size: clamp(10.5px, 3vw, 12px);
   font-weight: 600;
   color: var(--primary);
   white-space: nowrap;
 }
 
 .item-card-content {
-  padding: 12px;
+  padding: clamp(10px, 3.3vw, 12px);
 }
 
 .item-card-title {
-  font-size: 14px;
+  font-size: clamp(12px, 3.7vw, 14px);
   font-weight: 600;
   color: var(--primary);
   margin-bottom: 4px;
@@ -2002,9 +2349,693 @@ textarea {
 }
 
 .item-card-distance {
-  font-size: 12px;
+  font-size: var(--compact-caption);
   color: var(--text-secondary);
   font-weight: 400;
+}
+
+/* Item detail compact layout */
+.item-detail-screen {
+  background: var(--surface);
+  overflow-x: hidden !important;
+}
+
+.item-detail-floating-header {
+  top: calc(12px + var(--safe-area-top)) !important;
+  left: var(--app-page-x) !important;
+  right: var(--app-page-x) !important;
+}
+
+.item-detail-image-stage {
+  height: clamp(220px, 42svh, 360px) !important;
+}
+
+.item-detail-image-stage img {
+  object-fit: contain !important;
+  background: var(--surface);
+}
+
+.item-detail-content-card {
+  margin-top: clamp(-34px, -5svh, -24px) !important;
+  padding: clamp(18px, 5vw, 24px) var(--app-page-x) calc(var(--app-bottom-nav-h) + 36px + var(--safe-area-bottom)) !important;
+  min-height: auto !important;
+  border-radius: clamp(24px, 8vw, 32px) clamp(24px, 8vw, 32px) 0 0 !important;
+}
+
+.item-detail-title {
+  font-size: clamp(25px, 8.2vw, 30px) !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
+}
+
+.item-detail-rate {
+  font-size: clamp(15px, 4.6vw, 18px) !important;
+  margin-bottom: clamp(16px, 3.4svh, 24px) !important;
+}
+
+.item-detail-section-title {
+  font-size: clamp(14px, 4.2vw, 18px) !important;
+  letter-spacing: 0.02em;
+}
+
+.item-detail-info-card {
+  padding: clamp(12px, 3.8vw, 16px) !important;
+  margin-bottom: clamp(16px, 3.4svh, 24px) !important;
+  border-radius: clamp(14px, 4.8vw, 16px) !important;
+}
+
+.item-detail-info-card > div {
+  min-width: 0;
+}
+
+.item-detail-quote {
+  padding: clamp(12px, 3.8vw, 16px) !important;
+  margin-bottom: clamp(15px, 3svh, 20px) !important;
+}
+
+.item-detail-quote span {
+  font-size: clamp(16px, 5.3vw, 20px) !important;
+  line-height: 1.4 !important;
+}
+
+.item-detail-body {
+  font-size: var(--compact-body) !important;
+  line-height: 1.55 !important;
+  margin-bottom: clamp(18px, 3.6svh, 24px) !important;
+}
+
+.item-detail-owner-card {
+  gap: 12px;
+}
+
+.item-detail-borrow-footer {
+  gap: 14px;
+  margin-top: clamp(18px, 3.6svh, 24px) !important;
+  padding-top: clamp(16px, 3.2svh, 24px) !important;
+}
+
+.item-detail-total {
+  font-size: clamp(20px, 6.4vw, 24px) !important;
+}
+
+.item-detail-borrow-button {
+  min-width: min(54vw, 192px);
+  padding: clamp(13px, 3.8vw, 16px) clamp(20px, 6.5vw, 32px) !important;
+  font-size: clamp(13px, 4vw, 16px) !important;
+  line-height: 1.2;
+}
+
+@media (max-width: 340px), (max-height: 640px) {
+  .item-detail-image-stage {
+    height: clamp(205px, 38svh, 300px) !important;
+  }
+
+  .item-detail-borrow-footer {
+    align-items: stretch !important;
+  }
+
+  .item-detail-borrow-footer > div {
+    flex: 1;
+    min-width: 0;
+  }
+
+.item-detail-borrow-button {
+    min-width: 0;
+    max-width: 56%;
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+}
+
+/* Samvaad compact layout */
+.chat-list-screen {
+  padding-top: clamp(18px, 4svh, 24px) !important;
+  padding-bottom: calc(var(--app-bottom-nav-h) + 36px + var(--safe-area-bottom)) !important;
+}
+
+.chat-list-content {
+  padding: 0 var(--app-page-x) !important;
+}
+
+.chat-list-title {
+  font-size: var(--compact-title) !important;
+  line-height: 1.12 !important;
+}
+
+.chat-list-subtitle {
+  font-size: var(--compact-caption) !important;
+  margin-bottom: clamp(12px, 2.8svh, 16px) !important;
+}
+
+.chat-row {
+  padding: clamp(13px, 4vw, 16px) !important;
+  border-radius: clamp(20px, 6vw, 24px) !important;
+  margin-bottom: clamp(10px, 2.8svh, 12px) !important;
+}
+
+.chat-row .smart-image-shell,
+.chat-avatar-fallback {
+  width: clamp(46px, 14.5vw, 56px) !important;
+  height: clamp(46px, 14.5vw, 56px) !important;
+  border-radius: 50% !important;
+  flex: 0 0 auto;
+}
+
+.chat-row .smart-image-shell + div,
+.chat-avatar-fallback + div {
+  min-width: 0;
+  margin-left: clamp(12px, 4vw, 16px) !important;
+}
+
+@media (max-width: 340px), (max-height: 640px) {
+  .chat-row {
+    padding: 12px !important;
+  }
+
+  .chat-row .smart-image-shell,
+  .chat-avatar-fallback {
+    width: 44px !important;
+    height: 44px !important;
+  }
+}
+
+@media (max-width: 340px), (max-height: 640px) {
+  .society-header-pill {
+    max-width: min(38vw, 128px) !important;
+    padding: 6px 8px !important;
+    font-size: 10.5px !important;
+  }
+
+  .header-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .header-button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .home-header {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .live-pulse-container {
+    height: 74px !important;
+  }
+
+  .home-hero-title {
+    font-size: clamp(20px, 7vw, 24px) !important;
+  }
+
+  .item-card-image {
+    object-fit: contain;
+  }
+}
+
+/* Extra optical scale for real narrow mobile browsers */
+@media (max-width: 360px), (max-height: 700px) {
+  .welcome-media {
+    height: clamp(190px, 36svh, 285px);
+  }
+
+  .welcome-copy-panel {
+    gap: 12px;
+    padding-top: 8px;
+    padding-bottom: calc(18px + var(--safe-area-bottom));
+  }
+
+  .welcome-brand {
+    font-size: clamp(24px, 7.5vw, 28px);
+    margin-bottom: 7px;
+  }
+
+  .welcome-headline {
+    font-size: clamp(24px, 8.4vw, 29px);
+    line-height: 1.1;
+  }
+
+  .welcome-cta {
+    min-height: 48px;
+    font-size: 13px;
+    padding: 12px 18px;
+  }
+
+  .auth-title,
+  .profile-setup-screen .profile-creation-title {
+    font-size: 23px;
+  }
+
+  .auth-subtitle,
+  .profile-setup-screen .profile-creation-subtitle {
+    font-size: 11.5px;
+  }
+
+  .auth-input-shell,
+  .auth-phone-row,
+  .otp-input,
+  .auth-google-btn {
+    min-height: 46px;
+  }
+
+  .auth-primary-btn {
+    min-height: 48px;
+    font-size: 13px;
+  }
+
+  .home-name {
+    font-size: 21px;
+  }
+
+  .home-hero-card {
+    padding: 14px !important;
+  }
+
+  .home-hero-title {
+    font-size: clamp(19px, 6.3vw, 23px) !important;
+  }
+
+  .category-chip {
+    padding: 5px 10px;
+    font-size: 10px;
+  }
+
+  .item-card-content {
+    padding: 9px;
+  }
+
+  .item-card-title {
+    font-size: 11.5px;
+  }
+
+  .item-card-price-tag {
+    padding: 6px 9px;
+    font-size: 10px;
+  }
+
+  .profile-screen,
+  .rentals-screen,
+  .chat-list-screen {
+    padding-top: 16px !important;
+    padding-bottom: calc(var(--app-bottom-nav-h) + 26px + var(--safe-area-bottom)) !important;
+  }
+
+  .profile-content,
+  .chat-list-content,
+  .rentals-list {
+    padding-left: var(--app-page-x) !important;
+    padding-right: var(--app-page-x) !important;
+  }
+
+  .profile-user-row {
+    margin-top: 8px !important;
+    margin-bottom: 18px !important;
+  }
+
+  .profile-avatar-wrap {
+    margin-right: 14px !important;
+    border-radius: 17px !important;
+  }
+
+  .profile-avatar-media,
+  .profile-avatar-wrap .smart-image-shell {
+    width: 74px !important;
+    height: 74px !important;
+    border-radius: 15px !important;
+  }
+
+  .profile-name {
+    font-size: 20px !important;
+    line-height: 1.12 !important;
+  }
+
+  .profile-phone {
+    font-size: 12px !important;
+  }
+
+  .profile-wallet-card {
+    padding: 14px !important;
+    border-radius: 20px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .profile-wallet-icon {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 19px !important;
+    margin-right: 12px !important;
+  }
+
+  .profile-wallet-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .profile-wallet-card span:first-child {
+    font-size: 10.5px !important;
+  }
+
+  .profile-wallet-card span:nth-child(2) {
+    font-size: 18px !important;
+  }
+
+  .profile-section-title {
+    font-size: 22px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .profile-stat-grid {
+    gap: 10px !important;
+  }
+
+  .profile-stat-card {
+    padding: 13px 10px !important;
+    border-radius: 17px !important;
+  }
+
+  .profile-stat-icon {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 17px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .profile-stat-icon svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .profile-stat-label {
+    font-size: 11.5px !important;
+  }
+
+  .profile-stat-count {
+    font-size: 15px !important;
+  }
+
+  .profile-menu-row {
+    padding: 10px 2px !important;
+  }
+
+  .profile-menu-icon {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 11px !important;
+    margin-right: 11px !important;
+  }
+
+  .profile-menu-icon svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .profile-menu-label {
+    font-size: 13px !important;
+  }
+
+  .rentals-screen {
+    padding-top: 18px !important;
+  }
+
+  .rentals-header {
+    padding: 0 var(--app-page-x) 12px !important;
+  }
+
+  .rentals-eyebrow {
+    font-size: 9.5px !important;
+    letter-spacing: 0.1em !important;
+  }
+
+  .rentals-title {
+    font-size: 24px !important;
+    line-height: 27px !important;
+    margin-top: 2px !important;
+  }
+
+  .rentals-add-button {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 19px !important;
+  }
+
+  .rentals-add-button svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .rentals-mode-switch {
+    margin: 0 var(--app-page-x) 14px !important;
+    padding: 4px !important;
+  }
+
+  .rentals-mode-button {
+    min-height: 34px !important;
+    gap: 5px !important;
+    font-size: 11px !important;
+  }
+
+  .rentals-mode-button svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .rentals-card {
+    gap: 10px !important;
+    padding: 10px !important;
+    border-radius: 18px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .rentals-image-container {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 16px !important;
+  }
+
+  .rentals-card-content {
+    gap: 4px !important;
+  }
+
+  .rentals-card-topline {
+    gap: 7px !important;
+  }
+
+  .rentals-card-title {
+    font-size: 13px !important;
+    line-height: 1.18 !important;
+    font-weight: 650 !important;
+  }
+
+  .rentals-card-price {
+    font-size: 11.5px !important;
+  }
+
+  .rentals-card-meta {
+    font-size: 10.5px !important;
+    line-height: 1.2 !important;
+  }
+
+  .rentals-badge {
+    padding: 4px 8px !important;
+    font-size: 9px !important;
+  }
+
+  .chat-list-screen {
+    padding-top: 18px !important;
+  }
+
+  .chat-list-title {
+    font-size: 23px !important;
+    line-height: 26px !important;
+  }
+
+  .chat-list-subtitle {
+    font-size: 11.5px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .chat-list-content > div[style*="border-radius: 999"] {
+    padding: 10px 13px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .chat-list-content input {
+    font-size: 13px !important;
+  }
+
+  .chat-list-content > div[style*="overflow-x: auto"] {
+    gap: 7px !important;
+    padding-bottom: 12px !important;
+  }
+
+  .chat-list-content > div[style*="overflow-x: auto"] span {
+    padding: 6px 11px !important;
+    font-size: 10.5px !important;
+  }
+
+  .chat-row {
+    padding: 11px !important;
+    border-radius: 18px !important;
+    margin-bottom: 9px !important;
+  }
+
+  .chat-row .smart-image-shell,
+  .chat-avatar-fallback {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .chat-row .smart-image-shell + div,
+  .chat-avatar-fallback + div {
+    margin-left: 10px !important;
+  }
+
+  .chat-row span[style*="font-size: 16"] {
+    font-size: 13.5px !important;
+  }
+
+  .chat-row p {
+    font-size: 12px !important;
+  }
+
+  .item-detail-image-stage {
+    height: clamp(180px, 34svh, 250px) !important;
+  }
+
+  .item-detail-floating-header button {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 18px !important;
+  }
+
+  .item-detail-content-card {
+    margin-top: -22px !important;
+    padding-top: 16px !important;
+    padding-bottom: calc(var(--app-bottom-nav-h) + 28px + var(--safe-area-bottom)) !important;
+  }
+
+  .item-detail-content-card > div:first-child {
+    width: 34px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .item-detail-title {
+    font-size: 23px !important;
+    line-height: 1.08 !important;
+  }
+
+  .item-detail-rate {
+    font-size: 14px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .item-detail-section-title {
+    font-size: 13px !important;
+    margin-bottom: 9px !important;
+  }
+
+  .item-detail-info-card {
+    padding: 12px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .item-detail-info-card .smart-image-shell,
+  .item-detail-info-card img,
+  .item-detail-info-card div[style*="width: 48"] {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 20px !important;
+  }
+
+  .item-detail-info-card span[style*="font-size: 15"] {
+    font-size: 13px !important;
+  }
+
+  .item-detail-info-card span[style*="font-size: 13"] {
+    font-size: 11px !important;
+  }
+
+  .item-detail-quote {
+    padding: 11px 12px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .item-detail-quote span {
+    font-size: 15px !important;
+    line-height: 1.35 !important;
+  }
+
+  .item-detail-body {
+    font-size: 12.5px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .item-detail-borrow-footer {
+    gap: 10px !important;
+    padding-top: 14px !important;
+    margin-top: 16px !important;
+  }
+
+  .item-detail-total {
+    font-size: 18px !important;
+  }
+
+  .item-detail-borrow-button {
+    min-width: 0 !important;
+    padding: 12px 17px !important;
+    font-size: 12.5px !important;
+  }
+}
+
+@media (max-width: 300px) {
+  .profile-avatar-media,
+  .profile-avatar-wrap .smart-image-shell {
+    width: 66px !important;
+    height: 66px !important;
+  }
+
+  .profile-name {
+    font-size: 18px !important;
+  }
+
+  .profile-wallet-card {
+    padding: 12px !important;
+  }
+
+  .rentals-card {
+    gap: 8px !important;
+    padding: 9px !important;
+  }
+
+  .rentals-image-container {
+    width: 54px !important;
+    height: 54px !important;
+  }
+
+  .rentals-card-title {
+    font-size: 12px !important;
+  }
+
+  .rentals-card-price {
+    font-size: 10.5px !important;
+  }
+
+  .chat-list-title,
+  .rentals-title,
+  .profile-section-title {
+    font-size: 21px !important;
+    line-height: 24px !important;
+  }
+
+  .item-detail-image-stage {
+    height: clamp(165px, 32svh, 220px) !important;
+  }
+
+  .item-detail-title {
+    font-size: 21px !important;
+  }
 }
 
 /* ─── Typewriter ─── */

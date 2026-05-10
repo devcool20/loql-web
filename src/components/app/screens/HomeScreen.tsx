@@ -368,7 +368,7 @@ const HomeScreen = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, position: 'relative' }}>
             {locationName ? (
               <button
-                className="scale-pressable"
+                className="society-header-pill scale-pressable"
                 onClick={handleLocationClick}
                 style={{
                   display: 'flex',
@@ -417,7 +417,7 @@ const HomeScreen = () => {
           </div>
         )}
       />
-      <div style={{ padding: '0 20px' }}>
+      <div className="home-page-content">
       {/* Header */}
       <div className="home-header">
         <div className="home-header-left">
@@ -445,7 +445,7 @@ const HomeScreen = () => {
       </div>
 
       <div
-        className="scale-pressable-up"
+        className="home-hero-card scale-pressable-up"
         style={{
           borderRadius: 24,
           padding: 18,
@@ -455,13 +455,13 @@ const HomeScreen = () => {
           boxShadow: 'var(--shadow-sm)',
         }}
       >
-        <span style={{ fontSize: 12, color: 'var(--secondary)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+        <span className="home-hero-kicker" style={{ fontSize: 12, color: 'var(--secondary)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
           The Loql Hero
         </span>
-        <h3 className="font-serif" style={{ fontSize: 26, lineHeight: 1.2, color: 'var(--text-primary)', marginTop: 8 }}>
+        <h3 className="home-hero-title font-serif" style={{ fontSize: 26, lineHeight: 1.2, color: 'var(--text-primary)', marginTop: 8 }}>
           Borrow what you need from trusted neighbors.
         </h3>
-        <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 6 }}>
+        <p className="home-hero-copy" style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 6 }}>
           Curated picks from your society, updated all day.
         </p>
       </div>

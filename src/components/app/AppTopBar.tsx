@@ -16,31 +16,18 @@ const AppTopBar = ({ avatarUrl, avatarLabel, showAvatar = false, onAvatarClick, 
 
   return (
     <header
-      style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 40,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '16px 20px',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        background: 'var(--app-topbar-bg)',
-        borderBottom: '1px solid var(--app-tabbar-border)',
-        boxShadow: 'var(--shadow-xs)',
-      }}
+      className="app-topbar"
     >
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div className="app-topbar-brand-wrap">
         <span
           className="font-serif"
-          style={{ fontSize: 28, color: 'var(--primary)', fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1 }}
+          style={{ color: 'var(--primary)', fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1 }}
         >
           Loql
         </span>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div className="app-topbar-actions">
         {rightSlot}
         {showAvatar && (
           <button
@@ -48,8 +35,6 @@ const AppTopBar = ({ avatarUrl, avatarLabel, showAvatar = false, onAvatarClick, 
             onClick={onAvatarClick}
             aria-label="Open profile"
             style={{
-              width: 40,
-              height: 40,
               borderRadius: 9999,
               border: '2px solid var(--app-tabbar-border)',
               background: 'var(--surface-container-high)',

@@ -7,6 +7,7 @@ import { useStore } from '@/store/useStore';
 import { formatRelativeTime } from '@/lib/dateUtils';
 import { getSafeImageUrl } from '@/lib/imageUtils';
 import { dedupeRequest } from '@/lib/cache';
+import SmartImage from '@/components/app/SmartImage';
 
 const ChatListScreen = () => {
   const { user, openChat } = useStore();
@@ -142,12 +143,12 @@ const ChatListScreen = () => {
   }
 
   return (
-    <div style={{ background: 'var(--background)', minHeight: '100%', padding: '24px 0 100px' }}>
-      <div style={{ padding: '0 20px' }}>
-      <h1 className="font-serif" style={{ fontSize: 28, lineHeight: '32px', fontWeight: 650, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: '-0.03em' }}>
+    <div className="chat-list-screen" style={{ background: 'var(--background)', minHeight: '100%', padding: '24px 0 100px' }}>
+      <div className="chat-list-content" style={{ padding: '0 20px' }}>
+      <h1 className="chat-list-title font-serif" style={{ fontSize: 28, lineHeight: '32px', fontWeight: 650, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: '-0.03em' }}>
         Samvaad
       </h1>
-      <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 16, fontWeight: 550 }}>Apne padosiyon se baat-cheet.</p>
+      <p className="chat-list-subtitle" style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 16, fontWeight: 550 }}>Apne padosiyon se baat-cheet.</p>
 
       {/* Search Bar */}
       <div style={{
@@ -189,7 +190,7 @@ const ChatListScreen = () => {
           <p style={{ textAlign: 'center', color: 'var(--text-light)', marginTop: 60, fontSize: 15, fontWeight: 500 }}>No messages yet.</p>
         ) : (
           filtered.map((item) => (
-            <div key={item.id} className="scale-pressable"
+            <div key={item.id} className="chat-row scale-pressable"
               onClick={() => openChat({ id: item.id, full_name: item.name, avatar_url: item.avatar })}
               style={{
                 display: 'flex', alignItems: 'center', background: 'var(--surface-container-lowest)', padding: 16, borderRadius: 24,
@@ -197,9 +198,15 @@ const ChatListScreen = () => {
               }}>
               {/* Avatar */}
               {item.avatar ? (
-                <img src={getSafeImageUrl(item.avatar)} alt="" style={{ width: 56, height: 56, borderRadius: 28, background: 'var(--muted)', objectFit: 'cover' }} />
+                <SmartImage
+                  src={getSafeImageUrl(item.avatar)}
+                  alt=""
+                  fallbackLabel={item.name}
+                  rounded="50%"
+                  style={{ width: 56, height: 56, borderRadius: 28, background: 'var(--muted)', objectFit: 'cover' }}
+                />
               ) : (
-                <div style={{
+                <div className="chat-avatar-fallback" style={{
                   width: 56, height: 56, borderRadius: 28, background: 'var(--accent-solid)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   color: 'var(--accent-solid-text)', fontSize: 20, fontWeight: 600, flexShrink: 0,

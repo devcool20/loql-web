@@ -323,14 +323,14 @@ const RentalsScreen = () => {
   const StatusPill = ({ status }: { status?: string }) => {
     const tone = toneForStatus(status);
     return (
-      <span style={{ ...styles.badge, background: tone.bg, color: tone.text, borderColor: tone.border }}>
+      <span className="rentals-badge" style={{ ...styles.badge, background: tone.bg, color: tone.text, borderColor: tone.border }}>
         {tone.label}
       </span>
     );
   };
 
   const Media = ({ src, title }: { src?: string; title?: string }) => (
-    <div style={styles.imageContainer}>
+    <div className="rentals-image-container" style={styles.imageContainer}>
       <SmartImage
         src={src ? getSafeImageUrl(src) : null}
         alt={title || 'Item'}
@@ -360,17 +360,17 @@ const RentalsScreen = () => {
     onClick?: () => void;
     children?: React.ReactNode;
   }) => (
-    <article key={keyValue} className="scale-pressable-up" style={styles.card} onClick={onClick}>
+    <article key={keyValue} className="rentals-card scale-pressable-up" style={styles.card} onClick={onClick}>
       <Media src={image} title={title} />
-      <div style={styles.cardContent}>
-        <div style={styles.cardTopLine}>
-          <h3 style={styles.cardTitle}>{title}</h3>
+      <div className="rentals-card-content" style={styles.cardContent}>
+        <div className="rentals-card-topline" style={styles.cardTopLine}>
+          <h3 className="rentals-card-title" style={styles.cardTitle}>{title}</h3>
           {price !== undefined && price !== null && (
-            <span style={styles.price}>{formatCurrency(price)}<span style={styles.priceUnit}>/day</span></span>
+            <span className="rentals-card-price" style={styles.price}>{formatCurrency(price)}<span style={styles.priceUnit}>/day</span></span>
           )}
         </div>
-        {meta && <p style={styles.cardMeta}>{meta}</p>}
-        <div style={styles.cardFooter}>
+        {meta && <p className="rentals-card-meta" style={styles.cardMeta}>{meta}</p>}
+        <div className="rentals-card-footer" style={styles.cardFooter}>
           <StatusPill status={status} />
           {children}
         </div>
@@ -438,20 +438,20 @@ const RentalsScreen = () => {
   const isBorrowingEmpty = offers.length === 0 && bookings.length === 0;
 
   return (
-    <div style={styles.screen}>
-      <div style={styles.header}>
+    <div className="rentals-screen" style={styles.screen}>
+      <div className="rentals-header" style={styles.header}>
         <div>
-          <span style={styles.eyebrow}>Loql Kiraya</span>
-          <h1 className="font-serif" style={styles.title}>Kiraya</h1>
+          <span className="rentals-eyebrow" style={styles.eyebrow}>Loql Kiraya</span>
+          <h1 className="rentals-title font-serif" style={styles.title}>Kiraya</h1>
         </div>
         {rentalsMode === 'owned' && (
-          <button className="scale-pressable" onClick={() => setCurrentStack('AddItem')} style={styles.addButton} aria-label="Add item">
+          <button className="rentals-add-button scale-pressable" onClick={() => setCurrentStack('AddItem')} style={styles.addButton} aria-label="Add item">
             <Plus size={22} color="var(--accent-solid-text)" />
           </button>
         )}
       </div>
 
-      <div style={styles.modeSwitch} role="tablist" aria-label="Kiraya view">
+      <div className="rentals-mode-switch" style={styles.modeSwitch} role="tablist" aria-label="Kiraya view">
         {[
           { id: 'owned', label: 'Mera Samaan', icon: PackageOpen },
           { id: 'borrowing', label: 'Kiraye Par', icon: Clock3 },
@@ -463,7 +463,7 @@ const RentalsScreen = () => {
               key={mode.id}
               role="tab"
               aria-selected={active}
-              className="scale-pressable"
+              className="rentals-mode-button scale-pressable"
               onClick={() => setRentalsMode(mode.id as 'owned' | 'borrowing')}
               style={{ ...styles.modeButton, ...(active ? styles.modeButtonActive : {}) }}
             >
@@ -475,17 +475,17 @@ const RentalsScreen = () => {
       </div>
 
       {loading ? (
-        <div style={{ padding: '8px 20px' }}><ListSkeleton count={4} /></div>
+        <div className="rentals-loading" style={{ padding: '8px 20px' }}><ListSkeleton count={4} /></div>
       ) : rentalsMode === 'owned' ? (
         listings.length === 0 ? (
           <EmptyState title="No items listed yet" copy="Add something useful from your room and let your society borrow it safely." />
         ) : (
-          <div style={styles.list}>{listings.map(renderListingCard)}</div>
+          <div className="rentals-list" style={styles.list}>{listings.map(renderListingCard)}</div>
         )
       ) : isBorrowingEmpty ? (
         <EmptyState title="Nothing on kiraya yet" copy="Send an offer on any item and it will show up here." />
       ) : (
-        <div style={styles.list}>
+        <div className="rentals-list" style={styles.list}>
           {offers.length > 0 && (
             <section style={styles.section}>
               <SectionTitle title="Offers" count={offers.length} />
