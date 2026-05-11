@@ -126,7 +126,11 @@ const ProfileScreen = () => {
         </div>
 
         {/* History */}
-        <h3 className="profile-section-title" style={{ fontSize: 28, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 14, letterSpacing: -0.3 }}>Pehchan</h3>
+        <h3 className="profile-section-title" style={{ color: 'var(--primary)',
+    fontSize: 20,
+    fontWeight: 800,
+    letterSpacing: '0.12em',
+    textTransform: 'uppercase' }}>Pehchan</h3>
         <div className="profile-stat-grid" style={{ display: 'flex', gap: 12, marginBottom: 8 }}>
           {[
             { icon: <ShoppingBag size={20} color="var(--accent-solid-text)" />, label: 'Rented', count: rentedCount, type: 'rented' as const },

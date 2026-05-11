@@ -456,9 +456,8 @@ const HomeScreen = () => {
         }}
       >
         <span className="home-hero-kicker" style={{ fontSize: 12, color: 'var(--secondary)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-          The Loql Hero
         </span>
-        <h3 className="home-hero-title font-serif" style={{ fontSize: 26, lineHeight: 1.2, color: 'var(--text-primary)', marginTop: 8 }}>
+        <h3 className="home-hero-title font-serif" style={{ fontSize: 26, lineHeight: 1.2, color: 'var(--text-primary)', marginTop: 4 }}>
           Borrow what you need from trusted neighbors.
         </h3>
         <p className="home-hero-copy" style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 6 }}>

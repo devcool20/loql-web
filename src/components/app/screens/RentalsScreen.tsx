@@ -442,7 +442,6 @@ const RentalsScreen = () => {
       <div className="rentals-header" style={styles.header}>
         <div>
           <span className="rentals-eyebrow" style={styles.eyebrow}>Loql Kiraya</span>
-          <h1 className="rentals-title" style={styles.title}>Kiraya</h1>
         </div>
         {rentalsMode === 'owned' && (
           <button className="rentals-add-button scale-pressable" onClick={() => setCurrentStack('AddItem')} style={styles.addButton} aria-label="Add item">
@@ -640,7 +639,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   eyebrow: {
     color: 'var(--primary)',
-    fontSize: 11,
+    fontSize: 20,
     fontWeight: 800,
     letterSpacing: '0.12em',
     textTransform: 'uppercase',
