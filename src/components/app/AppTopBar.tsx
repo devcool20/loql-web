@@ -1,7 +1,9 @@
 'use client';
 
 import React from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import SmartImage from '@/components/app/SmartImage';
+import { iosSpring } from '@/components/motion/motionPrimitives';
 
 type AppTopBarProps = {
   avatarUrl?: string | null;
@@ -12,6 +14,7 @@ type AppTopBarProps = {
 };
 
 const AppTopBar = ({ avatarUrl, avatarLabel, showAvatar = false, onAvatarClick, rightSlot }: AppTopBarProps) => {
+  const shouldReduceMotion = useReducedMotion();
   const avatarInitial = (avatarLabel || 'N').trim().charAt(0).toUpperCase();
 
   return (
@@ -30,10 +33,14 @@ const AppTopBar = ({ avatarUrl, avatarLabel, showAvatar = false, onAvatarClick, 
       <div className="app-topbar-actions">
         {rightSlot}
         {showAvatar && (
-          <button
-            className="scale-pressable"
+          <motion.button
+            type="button"
+            className="home-avatar-button"
             onClick={onAvatarClick}
             aria-label="Open profile"
+            whileHover={shouldReduceMotion ? undefined : { y: -2, scale: 1.02 }}
+            whileTap={shouldReduceMotion ? undefined : { scale: 0.96 }}
+            transition={iosSpring}
             style={{
               borderRadius: 9999,
               border: '2px solid var(--app-tabbar-border)',
@@ -57,7 +64,7 @@ const AppTopBar = ({ avatarUrl, avatarLabel, showAvatar = false, onAvatarClick, 
             ) : (
               <span style={{ color: 'var(--text-secondary)', fontSize: 16, fontWeight: 700 }}>{avatarInitial}</span>
             )}
-          </button>
+          </motion.button>
         )}
       </div>
     </header>

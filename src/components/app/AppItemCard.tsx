@@ -1,20 +1,41 @@
 'use client';
 
 import React from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { getSafeImageUrl } from '@/lib/imageUtils';
 import SmartImage from '@/components/app/SmartImage';
+import { iosEase, iosSpring } from '@/components/motion/motionPrimitives';
 
 interface ItemCardProps {
   item: any;
+  index?: number;
   onPress: (item: any) => void;
 }
 
-const AppItemCard = ({ item, onPress }: ItemCardProps) => {
+const AppItemCard = ({ item, index = 0, onPress }: ItemCardProps) => {
+  const shouldReduceMotion = useReducedMotion();
+  const hoverRotate = index % 2 === 0 ? -1.15 : 1.15;
+
   return (
-    <div
-      className="item-card scale-pressable"
+    <motion.button
+      type="button"
+      layout
+      className="item-card"
       onClick={() => onPress(item)}
       id={`item-card-${item.id}`}
+      aria-label={`Open ${item.title || 'item'} details`}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 22, scale: 0.95, rotate: hoverRotate * 0.45 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0, scale: 1, rotate: 0 }}
+      exit={shouldReduceMotion ? undefined : { opacity: 0, y: 16, scale: 0.96 }}
+      whileHover={shouldReduceMotion ? undefined : { y: -8, rotate: hoverRotate, scale: 1.012 }}
+      whileTap={shouldReduceMotion ? undefined : { scale: 0.984, y: -2 }}
+      transition={shouldReduceMotion ? undefined : {
+        layout: iosSpring,
+        rotate: { duration: 0.28, ease: iosEase },
+        scale: iosSpring,
+        y: iosSpring,
+        opacity: { duration: 0.24, delay: Math.min(index, 7) * 0.035, ease: iosEase },
+      }}
       style={{ cursor: 'pointer' }}
     >
       <div className="item-card-image-container">
@@ -36,7 +57,7 @@ const AppItemCard = ({ item, onPress }: ItemCardProps) => {
         <div className="item-card-title">{item.title}</div>
         <div className="item-card-distance">{item.distance || '2 mins away'}</div>
       </div>
-    </div>
+    </motion.button>
   );
 };
 

@@ -126,7 +126,7 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
         display: 'flex', alignItems: 'center', padding: '14px 16px',
         background: 'var(--surface)', borderBottom: '1px solid var(--border-light)', gap: 12,
       }}>
-        <button className="scale-pressable" onClick={closeStack}
+        <button className="scale-pressable app-icon-button" onClick={closeStack}
           style={{ padding: 8, borderRadius: 20, background: 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
           <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
@@ -140,7 +140,7 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
           }}>{targetUser.full_name.charAt(0)}</div>
         )}
         <span style={{ flex: 1, fontSize: 17, fontWeight: 600, color: 'var(--text-primary)' }}>{targetUser.full_name}</span>
-        <button className="scale-pressable" onClick={handleDeleteChat}
+        <button className="scale-pressable app-icon-button" onClick={handleDeleteChat}
           style={{ padding: 8, borderRadius: 20, background: 'var(--muted)' }}>
           <Trash2 size={18} color="var(--text-primary)" />
         </button>
@@ -161,7 +161,7 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
               <div key={msg.id} style={{
                 display: 'flex', justifyContent: isMine ? 'flex-end' : 'flex-start', marginBottom: 8,
               }}>
-                <div style={{
+                <div className={`chat-message-bubble ${isMine ? 'mine' : 'theirs'}`} style={{
                   maxWidth: '75%', padding: '10px 16px', borderRadius: 20,
                   background: isMine ? 'var(--accent-solid)' : 'var(--surface)',
                   color: isMine ? 'var(--accent-solid-text)' : 'var(--text-primary)',
@@ -201,7 +201,7 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={handleKeyDown}
         />
-        <button className="scale-pressable"
+        <button className="scale-pressable app-icon-button"
           onClick={sendMessage}
           disabled={!newMessage.trim() || sending}
           style={{

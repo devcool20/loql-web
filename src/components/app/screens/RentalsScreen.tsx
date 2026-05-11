@@ -360,7 +360,7 @@ const RentalsScreen = () => {
     onClick?: () => void;
     children?: React.ReactNode;
   }) => (
-    <article key={keyValue} className="rentals-card scale-pressable-up" style={styles.card} onClick={onClick}>
+    <article key={keyValue} className="rentals-card scale-pressable-up app-clickable-card app-reveal-card" style={styles.card} onClick={onClick}>
       <Media src={image} title={title} />
       <div className="rentals-card-content" style={styles.cardContent}>
         <div className="rentals-card-topline" style={styles.cardTopLine}>
@@ -415,17 +415,17 @@ const RentalsScreen = () => {
       children: (
         <>
           {offer.status === 'accepted' && (
-            <button className="scale-pressable" onClick={(event) => { event.stopPropagation(); openPaymentModal(offer); }} style={styles.payButton}>
+            <button className="scale-pressable app-small-action" onClick={(event) => { event.stopPropagation(); openPaymentModal(offer); }} style={styles.payButton}>
               <CreditCard size={14} color="var(--accent-solid-text)" />
               <span>Pay {formatCurrency(totalCost)}</span>
             </button>
           )}
           {offer.status === 'countered' && (
             <div style={styles.actionRow}>
-              <button className="scale-pressable" style={styles.primarySmallButton} onClick={(event) => { event.stopPropagation(); handleAcceptCounter(offer); }}>
+              <button className="scale-pressable app-small-action" style={styles.primarySmallButton} onClick={(event) => { event.stopPropagation(); handleAcceptCounter(offer); }}>
                 Accept
               </button>
-              <button className="scale-pressable" style={styles.secondarySmallButton} onClick={(event) => { event.stopPropagation(); handleDeclineCounter(offer); }}>
+              <button className="scale-pressable app-small-action" style={styles.secondarySmallButton} onClick={(event) => { event.stopPropagation(); handleDeclineCounter(offer); }}>
                 Decline
               </button>
             </div>
@@ -444,7 +444,7 @@ const RentalsScreen = () => {
           <span className="rentals-eyebrow" style={styles.eyebrow}>Loql Kiraya</span>
         </div>
         {rentalsMode === 'owned' && (
-          <button className="rentals-add-button scale-pressable" onClick={() => setCurrentStack('AddItem')} style={styles.addButton} aria-label="Add item">
+          <button className="rentals-add-button scale-pressable app-icon-button" onClick={() => setCurrentStack('AddItem')} style={styles.addButton} aria-label="Add item">
             <Plus size={22} color="var(--accent-solid-text)" />
           </button>
         )}
@@ -462,7 +462,7 @@ const RentalsScreen = () => {
               key={mode.id}
               role="tab"
               aria-selected={active}
-              className="rentals-mode-button scale-pressable"
+              className="rentals-mode-button scale-pressable app-segment-button"
               onClick={() => setRentalsMode(mode.id as 'owned' | 'borrowing')}
               style={{ ...styles.modeButton, ...(active ? styles.modeButtonActive : {}) }}
             >
@@ -570,7 +570,7 @@ const PaymentSheet = ({
                 <span style={styles.sheetEyebrow}>Handover payment</span>
                 <h3 style={styles.sheetTitle}>Start rental</h3>
               </div>
-              <button className="scale-pressable" onClick={onClose} style={styles.closeButton} aria-label="Close payment">
+              <button className="scale-pressable app-icon-button" onClick={onClose} style={styles.closeButton} aria-label="Close payment">
                 <X size={20} color="var(--text-primary)" />
               </button>
             </div>
@@ -612,7 +612,7 @@ const PaymentSheet = ({
               <p style={styles.handoverHelp}>Ask the owner for the 6-character code shown on their request card.</p>
             </div>
 
-            <button className="login-btn scale-pressable" onClick={onPay} disabled={paying || handoverCode.length !== 6} style={{
+            <button className="login-btn scale-pressable app-primary-action" onClick={onPay} disabled={paying || handoverCode.length !== 6} style={{
               borderRadius: 18,
               opacity: handoverCode.length !== 6 ? 0.5 : 1,
             }}>

@@ -106,12 +106,12 @@ const NotificationScreen = () => {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '14px 20px', background: 'var(--background)',
       }}>
-        <button className="scale-pressable" onClick={closeStack}
+        <button className="scale-pressable app-icon-button" onClick={closeStack}
           style={{ padding: 8, borderRadius: 20, background: 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
           <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
         <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>Notifications</span>
-        <button className="scale-pressable" onClick={() => {
+        <button className="scale-pressable app-icon-button" onClick={() => {
           if (selectionMode && selectedIds.size > 0) handleDeleteSelected();
           else setSelectionMode(!selectionMode);
         }} style={{ padding: 8, borderRadius: 20, background: selectionMode ? 'var(--border)' : 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
@@ -128,7 +128,7 @@ const NotificationScreen = () => {
           <p style={{ textAlign: 'center', color: 'var(--text-light)', marginTop: 60, fontSize: 15, fontWeight: 500 }}>No notifications yet.</p>
         ) : (
           notifications.map((notif) => (
-            <div key={notif.id} className="scale-pressable"
+            <div key={notif.id} className="notification-card scale-pressable app-clickable-card app-reveal-card"
               onClick={() => {
                 if (selectionMode) {
                   const newSet = new Set(selectedIds);
@@ -154,7 +154,7 @@ const NotificationScreen = () => {
                   {notif.message?.startsWith('undefined ') ? notif.message.replace('undefined ', 'Someone ') : notif.message}
                 </p>
                 {notif.relatedUser && (
-                  <button className="scale-pressable" onClick={(e) => {
+                  <button className="scale-pressable app-small-action" onClick={(e) => {
                     e.stopPropagation();
                     openChat({ id: notif.relatedUser.id, full_name: notif.relatedUser.full_name || 'Someone', avatar_url: notif.relatedUser.avatar_url });
                   }}

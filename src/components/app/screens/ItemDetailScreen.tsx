@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Ban, Check, ChevronLeft, MessageCircle, Share2, Trash2, X } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { createNotification } from '@/lib/notificationManager';
@@ -12,6 +13,7 @@ import { assertGeofenceAllowed, createOfferGeofenced } from '@/lib/geofence';
 import { cacheInvalidate, CACHE_KEYS } from '@/lib/cache';
 
 const ItemDetailScreen = () => {
+  const shouldReduceMotion = useReducedMotion();
   const {
     user,
     selectedItem: item,
@@ -224,9 +226,15 @@ const ItemDetailScreen = () => {
 
   const images = item.images || [];
   const isRented = !!activeRental;
+  const itemStory = item.description?.trim() || `Ready to borrow from your society. ${item.category || 'Item'} details, pickup notes, and condition are confirmed with the owner in chat.`;
 
   return (
-    <div className="item-detail-screen" style={{
+    <motion.div
+      className="item-detail-screen item-detail-redesign"
+      initial={shouldReduceMotion ? false : { opacity: 0 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1 }}
+      transition={{ duration: 0.22 }}
+      style={{
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
       background: 'var(--surface)', zIndex: 200, overflowY: 'auto',
     }}>
@@ -235,12 +243,12 @@ const ItemDetailScreen = () => {
         position: 'fixed', top: 16, left: 16, right: 16, zIndex: 20,
         display: 'flex', justifyContent: 'space-between',
       }}>
-        <button className="scale-pressable" onClick={closeStack}
+        <button className="scale-pressable app-icon-button" onClick={closeStack}
           style={{ width: 40, height: 40, borderRadius: 20, background: 'var(--overlay-btn-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
           <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
         <button
-          className="scale-pressable"
+          className="scale-pressable app-icon-button"
           onClick={isOwner ? handleDeleteOwnedItem : undefined}
           aria-label={isOwner ? 'Delete item' : 'Share item'}
           style={{ width: 40, height: 40, borderRadius: 20, background: 'var(--overlay-btn-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
@@ -249,9 +257,15 @@ const ItemDetailScreen = () => {
       </div>
 
       {/* Image Carousel */}
-      <div className="item-detail-image-stage" style={{ width: '100%', height: 400, position: 'relative', overflow: 'hidden', background: 'var(--img-placeholder)' }}>
+      <motion.div
+        className="item-detail-image-stage item-detail-hero-stage"
+        initial={shouldReduceMotion ? false : { opacity: 0, scale: 1.02 }}
+        animate={shouldReduceMotion ? undefined : { opacity: 1, scale: 1 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        style={{ width: '100%', height: 400, position: 'relative', overflow: 'hidden', background: 'var(--img-placeholder)' }}
+      >
         {images.length > 0 ? (
-          <div style={{ display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', width: '100%', height: '100%' }}
+          <div className="item-detail-image-rail" style={{ display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', width: '100%', height: '100%' }}
             onScroll={(e) => {
               const el = e.target as HTMLDivElement;
               setActiveIndex(Math.round(el.scrollLeft / el.offsetWidth));
@@ -266,7 +280,8 @@ const ItemDetailScreen = () => {
                 fetchPriority={idx === 0 ? 'high' : 'auto'}
                 onClick={() => setFullScreenImage(imgUri)}
                 containerStyle={{ width: '100%', height: '100%', flexShrink: 0, scrollSnapAlign: 'start', cursor: 'pointer' }}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                className="item-detail-hero-image"
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               />
             ))}
           </div>
@@ -280,23 +295,33 @@ const ItemDetailScreen = () => {
             ))}
           </div>
         )}
-      </div>
+      </motion.div>
 
       {/* Content Card */}
-      <div className="item-detail-content-card" style={{
+      <motion.div
+        className="item-detail-content-card item-detail-sheet app-reveal-card"
+        initial={shouldReduceMotion ? false : { y: 28, opacity: 0 }}
+        animate={shouldReduceMotion ? undefined : { y: 0, opacity: 1 }}
+        transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1], delay: 0.04 }}
+        style={{
         background: 'var(--surface)', borderRadius: '32px 32px 0 0', padding: 24,
         marginTop: -40, position: 'relative', minHeight: 400,
         boxShadow: '0 -3px 8px rgba(0,0,0,0.1)', paddingBottom: 100,
       }}>
         <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 20px' }} />
-        <h1 className="item-detail-title" style={{ fontSize: 30, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4, lineHeight: 1.2 }}>{item.title}</h1>
-        <p className="item-detail-rate" style={{ fontSize: 18, fontWeight: 600, color: 'var(--secondary)', marginBottom: 24 }}>₹{item.daily_rate}/day</p>
+        <div className="item-detail-title-row">
+          <div>
+            <span className="item-detail-category-pill">{item.category || 'Community item'}</span>
+            <h1 className="item-detail-title" style={{ fontSize: 30, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4, lineHeight: 1.2 }}>{item.title}</h1>
+          </div>
+          <p className="item-detail-rate" style={{ fontSize: 18, fontWeight: 600, color: 'var(--secondary)', marginBottom: 24 }}>₹{item.daily_rate}<span>/day</span></p>
+        </div>
 
         <div style={{ height: 1, background: 'var(--border-light)', margin: '0 0 24px' }} />
 
         {/* Availability */}
-        <h3 className="item-detail-section-title" style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 12 }}>AVAILABILITY</h3>
-        <div className="item-detail-info-card" style={{
+        <h3 className="item-detail-section-title" style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 12 }}>Availability</h3>
+        <div className="item-detail-info-card item-detail-availability-card app-reveal-card" style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: 16, background: 'var(--surface-alt)', borderRadius: 16, border: '1px solid var(--border-light)', marginBottom: 24,
         }}>
@@ -308,7 +333,7 @@ const ItemDetailScreen = () => {
                 <div style={{ width: 48, height: 48, borderRadius: 24, background: 'var(--accent-solid)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-solid-text)', fontSize: 18, fontWeight: 700 }}>{activeRental.renter?.full_name?.[0] || 'N'}</div>
               )
             ) : (
-              <div style={{ width: 48, height: 48, borderRadius: 24, background: '#D1FAE5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div className="item-detail-availability-marker" style={{ width: 48, height: 48, borderRadius: 24, background: 'rgba(16,185,129,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ width: 12, height: 12, borderRadius: 6, background: '#10B981' }} />
               </div>
             )}
@@ -327,16 +352,16 @@ const ItemDetailScreen = () => {
           }}>{isRented ? 'Busy' : 'Available'}</span>
         </div>
 
-        <div className="item-detail-quote" style={{ background: '#FFF9E6', borderRadius: 16, padding: '14px 16px', marginBottom: 20, border: '1px solid rgba(141,153,174,0.2)' }}>
+        <div className="item-detail-quote app-reveal-card" style={{ background: 'var(--surface-alt)', borderRadius: 16, padding: '14px 16px', marginBottom: 20, border: '1px solid var(--border-light)' }}>
           <span style={{ fontStyle: 'normal', fontSize: 20, lineHeight: 1.5, color: 'var(--text-primary)', opacity: 0.9 }}>
-            "{item.description?.trim() || `This ${item.category?.toLowerCase() || 'item'} has helped many neighbors and is ready for its next story.`}"
+            {item.description?.trim() ? `"${item.description.trim()}"` : 'Owner has not added a katha yet.'}
           </span>
         </div>
 
         {/* Description */}
         <h3 className="item-detail-section-title" style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 12 }}>Katha</h3>
         <p className="item-detail-body" style={{ fontSize: 15, color: 'var(--text-subtle)', lineHeight: 1.6, marginBottom: 24 }}>
-          Professional grade {item.category?.toLowerCase() || 'item'} suitable for your daily needs. Well maintained and ready for use.
+          {itemStory}
         </p>
 
         {/* Owner/Renter Split View */}
@@ -349,7 +374,7 @@ const ItemDetailScreen = () => {
               <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginTop: 20 }}>No requests yet.</p>
             )}
             {requests.map((req) => (
-              <div key={req.id} style={{
+              <div key={req.id} className="item-detail-request-card app-clickable-card app-reveal-card" style={{
                 display: 'grid', gap: 12,
                 padding: 14, background: 'var(--surface-alt)', borderRadius: 18, marginBottom: 12, border: '1px solid var(--border-light)',
               }}>
@@ -366,7 +391,7 @@ const ItemDetailScreen = () => {
                     </span>
                   </div>
                 </div>
-                <button className="scale-pressable" onClick={() => openChat({ ...req.renter, id: req.sender_id })}
+                <button className="scale-pressable app-small-action" onClick={() => openChat({ ...req.renter, id: req.sender_id })}
                   style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'var(--muted)', padding: '6px 12px', borderRadius: 20 }}>
                   <MessageCircle size={16} color="var(--text-primary)" />
                   <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)' }}>Chat</span>
@@ -379,7 +404,7 @@ const ItemDetailScreen = () => {
                 {req.status === 'pending' && (
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                     <button
-                      className="scale-pressable"
+                      className="scale-pressable app-small-action"
                       onClick={() => handleOwnerRequestDecision(req, 'accepted')}
                       disabled={requesting}
                       style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, background: 'var(--accent-solid)', color: 'var(--accent-solid-text)', padding: '10px 12px', borderRadius: 14, fontSize: 12, fontWeight: 750 }}
@@ -388,7 +413,7 @@ const ItemDetailScreen = () => {
                       Accept
                     </button>
                     <button
-                      className="scale-pressable"
+                      className="scale-pressable app-small-action"
                       onClick={() => handleOwnerRequestDecision(req, 'declined')}
                       disabled={requesting}
                       style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, background: 'var(--surface)', border: '1px solid var(--border-light)', color: '#DC2626', padding: '10px 12px', borderRadius: 14, fontSize: 12, fontWeight: 750 }}
@@ -404,7 +429,7 @@ const ItemDetailScreen = () => {
         ) : (
           <>
             {/* Owner Card */}
-            <div className="item-detail-info-card item-detail-owner-card scale-pressable" onClick={() => !loadingOwner && owner && setShowOwnerProfile(true)} style={{
+            <div className="item-detail-info-card item-detail-owner-card scale-pressable app-clickable-card app-reveal-card" onClick={() => !loadingOwner && owner && setShowOwnerProfile(true)} style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               padding: 16, background: 'var(--surface-alt)', borderRadius: 16, border: '1px solid var(--border-light)', cursor: 'pointer',
             }}>
@@ -421,7 +446,7 @@ const ItemDetailScreen = () => {
                   <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>★ 4.8</span>
                 </div>
               </div>
-              <button className="scale-pressable" onClick={(e) => { e.stopPropagation(); if (owner) openChat(owner); }}
+              <button className="scale-pressable app-small-action" onClick={(e) => { e.stopPropagation(); if (owner) openChat(owner); }}
                 style={{ padding: '8px 16px', background: 'var(--muted)', borderRadius: 20, fontWeight: 600, color: 'var(--text-primary)', fontSize: 14 }}>Chat</button>
             </div>
 
@@ -434,21 +459,46 @@ const ItemDetailScreen = () => {
                 <span style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'block' }}>Total for 1 day</span>
                 <span className="item-detail-total" style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)' }}>₹{item.daily_rate}</span>
               </div>
-              <button className="item-detail-borrow-button scale-pressable" onClick={openOfferSheet} disabled={requesting}
-                style={{ background: 'var(--primary)', padding: '16px 32px', borderRadius: 999, color: 'white', fontWeight: 700, fontSize: 16, boxShadow: 'var(--warm-glow)' }}>
+              <button className="item-detail-borrow-button scale-pressable app-primary-action" onClick={openOfferSheet} disabled={requesting}
+                style={{ background: 'var(--primary)', padding: '16px 32px', borderRadius: 999, color: 'var(--accent-solid-text)', fontWeight: 700, fontSize: 16, boxShadow: 'var(--warm-glow)' }}>
                 Borrow with Love
               </button>
             </div>
           </>
         )}
-      </div>
+      </motion.div>
 
       {/* Offer Modal */}
+      <AnimatePresence>
       {showOfferModal && (
-        <div className="alert-overlay" onClick={() => setShowOfferModal(false)}>
-          <div className="alert-card" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'left', maxWidth: 400 }}>
-            <h3 style={{ fontSize: 22, fontWeight: 650, marginBottom: 6, color: 'var(--text-primary)' }}>Samvaad for {item.title}</h3>
-            <p style={{ margin: '0 0 18px', color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.45 }}>Send a clear offer. The owner will accept or decline from Mera Samaan.</p>
+        <motion.div
+          className="alert-overlay item-offer-overlay"
+          onClick={() => setShowOfferModal(false)}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="alert-card item-offer-sheet"
+            onClick={(e) => e.stopPropagation()}
+            initial={shouldReduceMotion ? false : { y: 36, opacity: 0, scale: 0.97 }}
+            animate={shouldReduceMotion ? undefined : { y: 0, opacity: 1, scale: 1 }}
+            exit={shouldReduceMotion ? undefined : { y: 24, opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+            style={{ textAlign: 'left', maxWidth: 400 }}
+          >
+            <div className="item-offer-head">
+              <span>Borrow request</span>
+              <button className="scale-pressable app-icon-button" onClick={() => setShowOfferModal(false)} aria-label="Close offer">
+                <X size={18} />
+              </button>
+            </div>
+            <h3 style={{ fontSize: 22, fontWeight: 650, marginBottom: 6, color: 'var(--text-primary)' }}>Send offer for {item.title}</h3>
+            <p style={{ margin: '0 0 18px', color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.45 }}>Confirm the price and duration before the owner accepts it in Mera Samaan.</p>
+            <div className="item-offer-summary">
+              <span>{item.category || 'Item'}</span>
+              <strong>₹{item.daily_rate}/day</strong>
+            </div>
             <div className="input-group" style={{ marginBottom: 16 }}>
               <label className="input-label">Price per day (₹)</label>
               <input className="text-input" type="number" placeholder={`${item.daily_rate}`} value={offerPrice}
@@ -461,13 +511,14 @@ const ItemDetailScreen = () => {
             </div>
             <div style={{ display: 'flex', gap: 12 }}>
               <button className="alert-btn alert-btn-cancel" onClick={() => setShowOfferModal(false)}>Cancel</button>
-              <button className="alert-btn alert-btn-primary" onClick={handleSendOffer} disabled={requesting}>
+              <button className="alert-btn alert-btn-primary app-primary-action" onClick={handleSendOffer} disabled={requesting}>
                 {requesting ? <div className="spinner" /> : 'Send Offer'}
               </button>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
+      </AnimatePresence>
 
       {/* Full Screen Image */}
       {fullScreenImage && (
@@ -488,7 +539,7 @@ const ItemDetailScreen = () => {
           onClose={() => setShowOwnerProfile(false)}
         />
       )}
-    </div>
+    </motion.div>
   );
 };
 

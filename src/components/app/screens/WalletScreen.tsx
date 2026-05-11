@@ -40,7 +40,7 @@ const WalletScreen = () => {
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--background)', zIndex: 200, overflowY: 'auto' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px' }}>
-        <button className="scale-pressable" onClick={closeStack} style={{ padding: 8 }}>
+        <button className="scale-pressable app-icon-button" onClick={closeStack} style={{ padding: 8 }}>
           <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
         <span style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)' }}>Wallet</span>
@@ -67,7 +67,7 @@ const WalletScreen = () => {
         <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 16 }}>Methods for both cash in and cash out</p>
 
         <div style={{ background: 'var(--surface)', borderRadius: 16, border: '1px solid var(--border)', padding: 8, marginBottom: 16 }}>
-          <div className="scale-pressable" style={{ display: 'flex', alignItems: 'center', padding: 12, cursor: 'pointer' }}>
+          <div className="scale-pressable app-clickable-row app-reveal-card" style={{ display: 'flex', alignItems: 'center', padding: 12, cursor: 'pointer' }}>
             <div style={{ width: 40, height: 40, borderRadius: 20, background: 'var(--muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
               <CreditCard size={20} color="var(--text-label)" />
             </div>
@@ -78,7 +78,7 @@ const WalletScreen = () => {
             <ChevronRight size={20} color="var(--text-light)" />
           </div>
           <div style={{ height: 1, background: 'var(--border-light)', margin: '0 12px' }} />
-          <div className="scale-pressable" style={{ display: 'flex', alignItems: 'center', padding: 12, cursor: 'pointer' }}>
+          <div className="scale-pressable app-clickable-row app-reveal-card" style={{ display: 'flex', alignItems: 'center', padding: 12, cursor: 'pointer' }}>
             <div style={{ width: 40, height: 40, borderRadius: 20, background: 'var(--muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
               <span style={{ fontSize: 16, fontWeight: 700 }}>G</span>
             </div>
@@ -90,7 +90,7 @@ const WalletScreen = () => {
           </div>
         </div>
 
-        <button className="scale-pressable" style={{
+        <button className="scale-pressable app-small-action" style={{
           width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
           padding: 16, borderRadius: 16, border: '1px dashed var(--border)', marginBottom: 40, background: 'transparent',
         }}>
@@ -112,7 +112,7 @@ const WalletScreen = () => {
           transactions.map((tx) => {
             const isEarning = tx.owner_id === user.id;
             return (
-              <div key={tx.id} style={{
+              <div key={tx.id} className="wallet-transaction-row app-reveal-card" style={{
                 display: 'flex', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid var(--border-light)',
               }}>
                 <div style={{

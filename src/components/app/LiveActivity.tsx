@@ -315,9 +315,10 @@ export const LiveActivityPulse = () => {
             key={activity.id}
             layout
             initial={{ opacity: 0, y: -12, scale: 0.98 }}
-            animate={{ opacity: 1 - i * 0.3, y: i * 32, scale: 1 - i * 0.05 }}
+            animate={{ opacity: 1 - i * 0.18, y: i * 32, scale: 1 - i * 0.045 }}
             exit={{ opacity: 0, y: 18, scale: 0.96 }}
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            className="live-pulse-card"
             style={{
               position: 'absolute',
               top: 0,
@@ -327,10 +328,10 @@ export const LiveActivityPulse = () => {
               alignItems: 'center',
               gap: 12,
               padding: '8px 16px',
-              background: 'white',
+              background: 'var(--surface-container-lowest)',
               borderRadius: '16px',
               border: '1px solid var(--border-light)',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
+              boxShadow: '0 10px 24px rgba(45,49,66,0.08)',
               zIndex: 10 - i,
             }}
           >

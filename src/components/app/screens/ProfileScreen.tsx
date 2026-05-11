@@ -106,7 +106,7 @@ const ProfileScreen = () => {
         </div>
 
         {/* Wallet Card */}
-        <div className="profile-wallet-card scale-pressable"
+        <div className="profile-wallet-card scale-pressable app-clickable-card app-reveal-card"
           onClick={() => setCurrentStack('Wallet')}
           style={{
             display: 'flex', alignItems: 'center', background: 'var(--accent-solid)', padding: 20, borderRadius: 24, marginBottom: 26,
@@ -136,7 +136,7 @@ const ProfileScreen = () => {
             { icon: <ShoppingBag size={20} color="var(--accent-solid-text)" />, label: 'Rented', count: rentedCount, type: 'rented' as const },
             { icon: <Package size={20} color="var(--accent-solid-text)" />, label: 'For Rent', count: listedCount, type: 'for_rent' as const },
           ].map((card) => (
-            <div key={card.label} className="profile-stat-card scale-pressable"
+            <div key={card.label} className="profile-stat-card scale-pressable app-clickable-card app-reveal-card"
               onClick={() => { setHistoryType(card.type); setCurrentStack('HistoryDetail'); }}
               style={{
               flex: 1, background: 'var(--surface)', borderRadius: 20, padding: '18px 16px',
@@ -159,7 +159,7 @@ const ProfileScreen = () => {
         {/* Menu */}
         <div className="profile-menu-list" style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
           {menuItems.map((item, index) => (
-            <div key={index} className="profile-menu-row scale-pressable"
+            <div key={index} className="profile-menu-row scale-pressable app-clickable-row app-reveal-card"
               onClick={item.onPress}
               style={{ display: 'flex', alignItems: 'center', padding: '14px 4px', cursor: 'pointer' }}>
               <div className="profile-menu-icon" style={{

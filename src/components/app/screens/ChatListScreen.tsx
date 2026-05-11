@@ -151,7 +151,7 @@ const ChatListScreen = () => {
       <p className="chat-list-subtitle" style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 16, fontWeight: 550 }}>Apne padosiyon se baat-cheet.</p>
 
       {/* Search Bar */}
-      <div style={{
+      <div className="home-search-shell" style={{
         display: 'flex', alignItems: 'center', background: 'var(--surface)', margin: '0 20px', padding: '12px 16px',
         borderRadius: 999, marginBottom: 14, border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)', marginLeft: 0, marginRight: 0,
       }}>
@@ -190,7 +190,7 @@ const ChatListScreen = () => {
           <p style={{ textAlign: 'center', color: 'var(--text-light)', marginTop: 60, fontSize: 15, fontWeight: 500 }}>No messages yet.</p>
         ) : (
           filtered.map((item) => (
-            <div key={item.id} className="chat-row scale-pressable"
+            <div key={item.id} className="chat-row scale-pressable app-clickable-card app-reveal-card"
               onClick={() => openChat({ id: item.id, full_name: item.name, avatar_url: item.avatar })}
               style={{
                 display: 'flex', alignItems: 'center', background: 'var(--surface-container-lowest)', padding: 16, borderRadius: 24,

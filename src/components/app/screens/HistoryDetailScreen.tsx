@@ -74,7 +74,7 @@ const HistoryDetailScreen = () => {
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--background)', zIndex: 200, overflowY: 'auto' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px' }}>
-        <button className="scale-pressable" onClick={closeStack}
+        <button className="scale-pressable app-icon-button" onClick={closeStack}
           style={{ padding: 8, borderRadius: 20, background: 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
           <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
@@ -98,7 +98,7 @@ const HistoryDetailScreen = () => {
             if (!displayItem) return null;
             const imgUrl = displayItem.images?.[0];
             return (
-              <div key={item.id} className="scale-pressable"
+              <div key={item.id} className="history-card scale-pressable app-clickable-card app-reveal-card"
                 onClick={() => handleCardClick(item)}
                 style={{
                   display: 'flex', alignItems: 'center', background: 'var(--surface)', borderRadius: 20,

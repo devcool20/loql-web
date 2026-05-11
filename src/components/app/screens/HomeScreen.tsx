@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Search, MapPin, Bell } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import TypewriterText from '@/components/app/TypewriterText';
@@ -9,6 +10,7 @@ import AppItemCard from '@/components/app/AppItemCard';
 import { HomeSkeletonGrid } from '@/components/app/Skeleton';
 import AppTopBar from '@/components/app/AppTopBar';
 import { LiveActivityPulse } from '@/components/app/LiveActivity';
+import { iosEase, iosSpring } from '@/components/motion/motionPrimitives';
 import { processCompletedRentals } from '@/lib/rentalCompletion';
 import { cacheGet, cacheSet, cacheGetStale, cacheInvalidate, dedupeRequest, CACHE_KEYS, TTL } from '@/lib/cache';
 import { getSafeImageUrl } from '@/lib/imageUtils';
@@ -35,6 +37,7 @@ let lastRentalCompletionCheck = 0;
 const RENTAL_COMPLETION_CHECK_INTERVAL = 5 * 60 * 1000;
 
 const HomeScreen = () => {
+  const shouldReduceMotion = useReducedMotion();
   const [items, setItems] = useState<HomeItem[]>(() => useStore.getState().homeItems || []);
   const [loading, setLoading] = useState(() => !useStore.getState().homeIsHydrated);
   const [locationName, setLocationName] = useState('');
@@ -357,6 +360,14 @@ const HomeScreen = () => {
     return matchSearch && matchCategory && isNotOwn;
   });
 
+  const fadeUp = (delay = 0, distance = 14) => shouldReduceMotion ? {
+    initial: false as const,
+  } : {
+    initial: { opacity: 0, y: distance },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.46, delay, ease: iosEase },
+  };
+
   return (
     <div className="home-screen">
       <AppTopBar
@@ -367,9 +378,13 @@ const HomeScreen = () => {
         rightSlot={(
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, position: 'relative' }}>
             {locationName ? (
-              <button
-                className="society-header-pill scale-pressable"
+              <motion.button
+                type="button"
+                className="society-header-pill home-action-button"
                 onClick={handleLocationClick}
+                whileHover={shouldReduceMotion ? undefined : { y: -2, scale: 1.01 }}
+                whileTap={shouldReduceMotion ? undefined : { scale: 0.97 }}
+                transition={iosSpring}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -389,16 +404,20 @@ const HomeScreen = () => {
               >
                 <MapPin size={12} color="var(--text-secondary)" />
                 <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{locationName}</span>
-              </button>
+              </motion.button>
             ) : null}
-            <button
-              className="header-button scale-pressable"
+            <motion.button
+              type="button"
+              className="header-button home-action-button"
               onClick={() => setCurrentStack('Notification')}
               id="notification-bell"
               aria-label="Notifications"
+              whileHover={shouldReduceMotion ? undefined : { y: -2, scale: 1.02 }}
+              whileTap={shouldReduceMotion ? undefined : { scale: 0.96 }}
+              transition={iosSpring}
             >
               <Bell size={20} color="var(--text-primary)" />
-            </button>
+            </motion.button>
             {showSocietyTooltip && societyItemCount !== null && (
               <div style={{
                 position: 'absolute', top: '100%', right: 0, marginTop: 12, background: 'var(--accent-solid)',
@@ -419,7 +438,7 @@ const HomeScreen = () => {
       />
       <div className="home-page-content">
       {/* Header */}
-      <div className="home-header">
+      <motion.div className="home-header" {...fadeUp(0.04, 10)}>
         <div className="home-header-left">
           <div className="home-greeting">
             <TypewriterText texts={getGreetings()} typingSpeed={100} pauseDuration={2500} />
@@ -429,12 +448,14 @@ const HomeScreen = () => {
             {userName}
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <LiveActivityPulse />
+      <motion.div {...fadeUp(0.08, 12)}>
+        <LiveActivityPulse />
+      </motion.div>
 
       {/* Search Bar */}
-      <div className="search-bar">
+      <motion.div className="search-bar home-search-shell" {...fadeUp(0.12, 12)}>
         <Search size={18} color="var(--text-light)" />
         <input
           className="search-input"
@@ -442,10 +463,14 @@ const HomeScreen = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-      </div>
+      </motion.div>
 
-      <div
-        className="home-hero-card scale-pressable-up"
+      <motion.div
+        className="home-hero-card home-hero-premium"
+        {...fadeUp(0.16, 16)}
+        whileHover={shouldReduceMotion ? undefined : { y: -4, scale: 1.01 }}
+        whileTap={shouldReduceMotion ? undefined : { scale: 0.992 }}
+        transition={iosSpring}
         style={{
           borderRadius: 24,
           padding: 18,
@@ -463,20 +488,24 @@ const HomeScreen = () => {
         <p className="home-hero-copy" style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 6 }}>
           Curated picks from your society, updated all day.
         </p>
-      </div>
+      </motion.div>
 
       {/* Categories */}
-      <div className="categories-container">
+      <motion.div className="categories-container" {...fadeUp(0.2, 10)}>
         {categories.map((cat) => (
-          <button
+          <motion.button
             key={cat}
-            className={`category-chip ${selectedCategory === cat ? 'active' : ''}`}
+            type="button"
+            className={`category-chip home-chip-button ${selectedCategory === cat ? 'active' : ''}`}
             onClick={() => setSelectedCategory(cat)}
+            whileHover={shouldReduceMotion ? undefined : { y: -2, scale: 1.02 }}
+            whileTap={shouldReduceMotion ? undefined : { scale: 0.95 }}
+            transition={iosSpring}
           >
             {cat}
-          </button>
+          </motion.button>
         ))}
-      </div>
+      </motion.div>
 
       {/* Feed */}
       {geofenceBlockReason ? (
@@ -536,9 +565,13 @@ const HomeScreen = () => {
               Society: <strong style={{ color: 'var(--text-secondary)' }}>{geofenceContext.societyName}</strong>
             </p>
           )}
-          <button
-            className="scale-pressable"
+          <motion.button
+            type="button"
+            className="home-secondary-action"
             onClick={() => refreshGeofenceAndLoad(true)}
+            whileHover={shouldReduceMotion ? undefined : { y: -2 }}
+            whileTap={shouldReduceMotion ? undefined : { scale: 0.97 }}
+            transition={iosSpring}
             style={{
               marginTop: 12,
               borderRadius: 999,
@@ -551,11 +584,15 @@ const HomeScreen = () => {
             }}
           >
             Re-check location
-          </button>
+          </motion.button>
           {geofenceContext?.distanceMeters != null && geofenceContext.distanceMeters <= 900 && (
-            <button
-              className="scale-pressable"
+            <motion.button
+              type="button"
+              className="home-primary-action"
               onClick={handleCalibrateSociety}
+              whileHover={shouldReduceMotion ? undefined : { y: -2 }}
+              whileTap={shouldReduceMotion ? undefined : { scale: 0.97 }}
+              transition={iosSpring}
               style={{
                 marginTop: 10,
                 marginLeft: 8,
@@ -569,20 +606,23 @@ const HomeScreen = () => {
               }}
             >
               Set phone location as center
-            </button>
+            </motion.button>
           )}
         </div>
       ) : loading && items.length === 0 ? (
         <HomeSkeletonGrid count={6} />
       ) : (
         <div className="item-feed">
-          {filteredItems.map((item) => (
-            <AppItemCard
-              key={item.id}
-              item={item}
-              onPress={navigateToDetail}
-            />
-          ))}
+          <AnimatePresence initial={false} mode="popLayout">
+            {filteredItems.map((item, index) => (
+              <AppItemCard
+                key={item.id}
+                item={item}
+                index={index}
+                onPress={navigateToDetail}
+              />
+            ))}
+          </AnimatePresence>
 
           {filteredItems.length === 0 && (
             <div className="empty-state">
