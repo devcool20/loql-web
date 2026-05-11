@@ -151,7 +151,7 @@ const AddItemScreen = () => {
           <ChevronLeft size={22} />
         </motion.button>
         <div className="add-item-heading">
-          <h1 className="font-serif">Naya Samaan</h1>
+          <h1>Naya Samaan</h1>
           <p>List something useful for neighbors to borrow.</p>
         </div>
       </div>

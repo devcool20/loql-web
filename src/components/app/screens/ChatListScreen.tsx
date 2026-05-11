@@ -145,7 +145,7 @@ const ChatListScreen = () => {
   return (
     <div className="chat-list-screen" style={{ background: 'var(--background)', minHeight: '100%', padding: '24px 0 100px' }}>
       <div className="chat-list-content" style={{ padding: '0 20px' }}>
-      <h1 className="chat-list-title font-serif" style={{ fontSize: 28, lineHeight: '32px', fontWeight: 650, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: '-0.03em' }}>
+      <h1 className="chat-list-title" style={{ fontSize: 28, lineHeight: '32px', fontWeight: 650, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: '-0.03em' }}>
         Samvaad
       </h1>
       <p className="chat-list-subtitle" style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 16, fontWeight: 550 }}>Apne padosiyon se baat-cheet.</p>

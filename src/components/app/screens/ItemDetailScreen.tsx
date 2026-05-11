@@ -289,7 +289,7 @@ const ItemDetailScreen = () => {
         boxShadow: '0 -3px 8px rgba(0,0,0,0.1)', paddingBottom: 100,
       }}>
         <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 20px' }} />
-        <h1 className="item-detail-title font-serif" style={{ fontSize: 30, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4, lineHeight: 1.2 }}>{item.title}</h1>
+        <h1 className="item-detail-title" style={{ fontSize: 30, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4, lineHeight: 1.2 }}>{item.title}</h1>
         <p className="item-detail-rate" style={{ fontSize: 18, fontWeight: 600, color: 'var(--secondary)', marginBottom: 24 }}>₹{item.daily_rate}/day</p>
 
         <div style={{ height: 1, background: 'var(--border-light)', margin: '0 0 24px' }} />
@@ -328,7 +328,7 @@ const ItemDetailScreen = () => {
         </div>
 
         <div className="item-detail-quote" style={{ background: '#FFF9E6', borderRadius: 16, padding: '14px 16px', marginBottom: 20, border: '1px solid rgba(141,153,174,0.2)' }}>
-          <span className="font-serif" style={{ fontStyle: 'italic', fontSize: 20, lineHeight: 1.5, color: 'var(--text-primary)', opacity: 0.9 }}>
+          <span style={{ fontStyle: 'normal', fontSize: 20, lineHeight: 1.5, color: 'var(--text-primary)', opacity: 0.9 }}>
             "{item.description?.trim() || `This ${item.category?.toLowerCase() || 'item'} has helped many neighbors and is ready for its next story.`}"
           </span>
         </div>
@@ -447,7 +447,7 @@ const ItemDetailScreen = () => {
       {showOfferModal && (
         <div className="alert-overlay" onClick={() => setShowOfferModal(false)}>
           <div className="alert-card" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'left', maxWidth: 400 }}>
-            <h3 className="font-serif" style={{ fontSize: 22, fontWeight: 650, marginBottom: 6, color: 'var(--text-primary)' }}>Samvaad for {item.title}</h3>
+            <h3 style={{ fontSize: 22, fontWeight: 650, marginBottom: 6, color: 'var(--text-primary)' }}>Samvaad for {item.title}</h3>
             <p style={{ margin: '0 0 18px', color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.45 }}>Send a clear offer. The owner will accept or decline from Mera Samaan.</p>
             <div className="input-group" style={{ marginBottom: 16 }}>
               <label className="input-label">Price per day (₹)</label>

@@ -442,7 +442,7 @@ const RentalsScreen = () => {
       <div className="rentals-header" style={styles.header}>
         <div>
           <span className="rentals-eyebrow" style={styles.eyebrow}>Loql Kiraya</span>
-          <h1 className="rentals-title font-serif" style={styles.title}>Kiraya</h1>
+          <h1 className="rentals-title" style={styles.title}>Kiraya</h1>
         </div>
         {rentalsMode === 'owned' && (
           <button className="rentals-add-button scale-pressable" onClick={() => setCurrentStack('AddItem')} style={styles.addButton} aria-label="Add item">
@@ -646,8 +646,8 @@ const styles: Record<string, React.CSSProperties> = {
     textTransform: 'uppercase',
   },
   title: {
-    fontSize: 28,
-    lineHeight: '32px',
+    fontSize: 24,
+    lineHeight: '28px',
     fontWeight: 650,
     color: 'var(--text-primary)',
     letterSpacing: '-0.03em',
@@ -768,9 +768,9 @@ const styles: Record<string, React.CSSProperties> = {
   cardTitle: {
     margin: 0,
     color: 'var(--text-primary)',
-    fontSize: 15,
+    fontSize: 13,
     lineHeight: 1.25,
-    fontWeight: 650,
+    fontWeight: 600,
     letterSpacing: '-0.015em',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -783,7 +783,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: 'var(--text-secondary)',
     fontSize: 12,
     lineHeight: 1.35,
-    fontWeight: 550,
+    fontWeight: 500,
   },
   cardFooter: {
     display: 'flex',
@@ -805,7 +805,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: 'var(--text-primary)',
     fontSize: 13,
     lineHeight: 1.2,
-    fontWeight: 750,
+    fontWeight: 700,
     letterSpacing: '-0.01em',
     whiteSpace: 'nowrap',
   },
@@ -1023,7 +1023,7 @@ const styles: Record<string, React.CSSProperties> = {
     borderStyle: 'solid',
     borderColor: 'var(--border)',
     color: 'var(--text-primary)',
-    fontFamily: 'monospace',
+    fontVariantNumeric: 'tabular-nums',
     outline: 'none',
     background: 'var(--surface)',
   },
