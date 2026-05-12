@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Search, MapPin, Bell } from 'lucide-react';
+import { Search, MapPin, Bell, LocateFixed, ShieldCheck, X } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
@@ -47,6 +47,7 @@ const HomeScreen = () => {
   const [showSocietyTooltip, setShowSocietyTooltip] = useState(false);
   const [societyItemCount, setSocietyItemCount] = useState<number | null>(null);
   const [geofenceBlockReason, setGeofenceBlockReason] = useState<string | null>(null);
+  const [showGeofenceModal, setShowGeofenceModal] = useState(false);
   const [geofenceContext, setGeofenceContext] = useState<{
     distanceMeters: number | null;
     radiusMeters: number;
@@ -113,6 +114,10 @@ const HomeScreen = () => {
       refreshGeofenceAndLoad(true);
     }
   }, [homeRefreshRequest]);
+
+  useEffect(() => {
+    if (geofenceBlockReason) setShowGeofenceModal(true);
+  }, [geofenceBlockReason]);
 
   const fetchUserSociety = async () => {
     if (!user?.id) return;
@@ -222,6 +227,7 @@ const HomeScreen = () => {
       }
 
       setGeofenceBlockReason(null);
+      setShowGeofenceModal(false);
       await loadItems(forceRefresh, coords);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : null;
@@ -282,6 +288,9 @@ const HomeScreen = () => {
 
   const handleLocationClick = async () => {
     if (!userSocietyId || locationName === 'No Society') return;
+    setShowGeofenceModal(true);
+    if (!geofenceContext) refreshGeofenceAndLoad(true);
+    return;
 
     if (showSocietyTooltip) {
       setShowSocietyTooltip(false);
@@ -335,6 +344,7 @@ const HomeScreen = () => {
       });
       cacheInvalidate(CACHE_KEYS.homeItems(userSocietyId));
       setGeofenceBlockReason(null);
+      setShowGeofenceModal(false);
       await loadItems(true, coords);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unable to calibrate location.';
@@ -366,6 +376,12 @@ const HomeScreen = () => {
     initial: { opacity: 0, y: distance },
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.46, delay, ease: iosEase },
+  };
+
+  const formatMeters = (value?: number | null) => {
+    if (value == null) return 'Unknown';
+    if (value >= 1000) return `${(value / 1000).toFixed(1)}km`;
+    return `${Math.round(value)}m`;
   };
 
   return (
@@ -509,6 +525,13 @@ const HomeScreen = () => {
 
       {/* Feed */}
       {geofenceBlockReason ? (
+        <div className="empty-state geofence-feed-placeholder">
+          <span className="empty-text">Location access is needed before society items can be shown.</span>
+          <button type="button" className="scale-pressable app-small-action geofence-inline-trigger" onClick={() => setShowGeofenceModal(true)}>
+            Open location check
+          </button>
+        </div>
+      ) : geofenceBlockReason ? (
         <div style={{
           border: '1px solid var(--border-light)',
           background: 'linear-gradient(180deg, var(--surface), var(--surface-alt))',
@@ -634,6 +657,61 @@ const HomeScreen = () => {
         </div>
       )}
       </div>
+
+      <AnimatePresence>
+        {showGeofenceModal && (geofenceContext || geofenceBlockReason) && (
+          <motion.div
+            className="geofence-modal-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowGeofenceModal(false)}
+          >
+            <motion.div
+              className="geofence-modal-card"
+              initial={shouldReduceMotion ? false : { y: 28, opacity: 0, scale: 0.96 }}
+              animate={shouldReduceMotion ? undefined : { y: 0, opacity: 1, scale: 1 }}
+              exit={shouldReduceMotion ? undefined : { y: 18, opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.32, ease: iosEase }}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <button type="button" className="scale-pressable app-icon-button geofence-modal-close" onClick={() => setShowGeofenceModal(false)} aria-label="Close location check">
+                <X size={18} />
+              </button>
+              <div className="geofence-modal-icon">
+                <ShieldCheck size={22} />
+              </div>
+              <span className="geofence-modal-kicker">Location check</span>
+              <h3>{geofenceContext?.permission === 'denied' ? 'Allow location access' : 'Verify society location'}</h3>
+              <p>Loql works only inside your registered society. Turn on location to continue.</p>
+              <div className="geofence-modal-metrics">
+                <div>
+                  <span>Society</span>
+                  <strong>{geofenceContext?.societyName || locationName || 'Your society'}</strong>
+                </div>
+                <div>
+                  <span>Radius</span>
+                  <strong>{formatMeters(geofenceContext?.radiusMeters ?? 500)}</strong>
+                </div>
+              </div>
+              <div className="geofence-modal-caution">
+                <LocateFixed size={15} />
+                <span>Stay within your start society to discover, list, and borrow.</span>
+              </div>
+              <div className="geofence-modal-actions">
+                <button type="button" className="scale-pressable app-primary-action geofence-primary-button" onClick={() => refreshGeofenceAndLoad(true)}>
+                  Allow location
+                </button>
+                {geofenceContext?.distanceMeters != null && geofenceContext.distanceMeters <= 900 && (
+                  <button type="button" className="scale-pressable app-small-action geofence-secondary-button" onClick={handleCalibrateSociety}>
+                    Set as center
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -6,8 +6,8 @@ import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { formatRelativeTime } from '@/lib/dateUtils';
 import { getSafeImageUrl } from '@/lib/imageUtils';
-import { dedupeRequest } from '@/lib/cache';
 import SmartImage from '@/components/app/SmartImage';
+import { getChatMessagePreview } from '@/lib/chatOfferMessage';
 
 const ChatListScreen = () => {
   const { user, openChat } = useStore();
@@ -32,7 +32,12 @@ const ChatListScreen = () => {
         const oldItem = payload.old;
         const involved = (newItem && (newItem.sender_id === user?.id || newItem.receiver_id === user?.id)) ||
           (oldItem && (oldItem.sender_id === user?.id || oldItem.receiver_id === user?.id));
-        if (involved && newItem) mergeMessageIntoList(newItem);
+        if (!involved) return;
+        if (payload.eventType === 'DELETE') {
+          fetchConversations();
+          return;
+        }
+        if (newItem) mergeMessageIntoList(newItem);
       })
       .subscribe();
 
@@ -42,11 +47,12 @@ const ChatListScreen = () => {
   const fetchConversations = async () => {
     if (!user) return;
     try {
-      const { data: messages, error } = await dedupeRequest<any>(`chat-list:${user.id}`, async () => supabase
+      const { data: messages, error } = await supabase
         .from('messages')
         .select('*')
         .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
-        .order('created_at', { ascending: false }));
+        .order('created_at', { ascending: false })
+        .limit(160);
 
       if (error) throw error;
       if (!messages) { setLoading(false); return; }
@@ -56,7 +62,7 @@ const ChatListScreen = () => {
         const partnerId = msg.sender_id === user.id ? msg.receiver_id : msg.sender_id;
         if (!partnersMap.has(partnerId)) {
           partnersMap.set(partnerId, {
-            partnerId, lastMessage: msg.content, time: msg.created_at, unreadCount: 0,
+            partnerId, lastMessage: getChatMessagePreview(msg.content), time: msg.created_at, unreadCount: 0,
           });
         }
         if (msg.receiver_id === user.id && !msg.is_read) {
@@ -100,7 +106,7 @@ const ChatListScreen = () => {
       if (!existing) return current;
       const next = {
         ...existing,
-        lastMessage: message.content,
+        lastMessage: getChatMessagePreview(message.content),
         time: message.created_at,
         unreadCount: message.receiver_id === user.id && !message.is_read
           ? existing.unreadCount + 1
@@ -125,7 +131,7 @@ const ChatListScreen = () => {
         name: profile?.full_name || 'Unknown User',
         avatar: profile?.avatar_url,
         partnerId,
-        lastMessage: message.content,
+        lastMessage: getChatMessagePreview(message.content),
         time: message.created_at,
         unreadCount: message.receiver_id === user.id && !message.is_read ? 1 : 0,
       }, ...current];

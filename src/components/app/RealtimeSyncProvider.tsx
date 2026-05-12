@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { cacheInvalidate, CACHE_KEYS } from '@/lib/cache';
+import { parseChatOfferContent } from '@/lib/chatOfferMessage';
 
 export default function RealtimeSyncProvider() {
   const user = useStore((state) => state.user);
@@ -13,6 +14,14 @@ export default function RealtimeSyncProvider() {
   const refreshScreen = useStore((state) => state.refreshScreen);
   const markScreenStale = useStore((state) => state.markScreenStale);
   const societyIdRef = useRef<string | null>(null);
+  const toastTimerRef = useRef<number | null>(null);
+  const [syncToast, setSyncToast] = useState<string | null>(null);
+
+  const showSyncToast = (message: string) => {
+    setSyncToast(message);
+    if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = window.setTimeout(() => setSyncToast(null), 2600);
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -76,6 +85,12 @@ export default function RealtimeSyncProvider() {
         const row = payload.new || payload.old;
         if (row?.sender_id === user.id || row?.receiver_id === user.id || row?.owner_id === user.id) {
           invalidateRentals();
+          if (payload.eventType === 'INSERT' && row.receiver_id === user.id) {
+            showSyncToast('New offer received');
+          }
+          if (payload.eventType === 'UPDATE' && row.sender_id === user.id) {
+            showSyncToast(row.status === 'accepted' ? 'Offer accepted. Pay from Kiraye Par' : 'Offer updated');
+          }
         }
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'rentals' }, (payload: any) => {
@@ -90,6 +105,17 @@ export default function RealtimeSyncProvider() {
           markScreenStale('notifications');
           refreshScreen('notifications');
           cacheInvalidate(CACHE_KEYS.notifications(user.id));
+          if (payload.eventType === 'INSERT') showSyncToast(row.title || 'New notification');
+        }
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, (payload: any) => {
+        const row = payload.new || payload.old;
+        if (row?.sender_id === user.id || row?.receiver_id === user.id) {
+          refreshScreen('chat');
+          if (payload.eventType === 'INSERT' && row.receiver_id === user.id) {
+            const offer = parseChatOfferContent(row.content);
+            showSyncToast(offer ? `New offer: ${offer.itemTitle}` : 'New Samvaad message');
+          }
         }
       })
       .subscribe();
@@ -99,5 +125,10 @@ export default function RealtimeSyncProvider() {
     };
   }, [user?.id, geofenceStatus, upsertHomeItem, removeHomeItem, refreshScreen, markScreenStale]);
 
-  return null;
+  return syncToast ? (
+    <div className="sync-toast" role="status" aria-live="polite">
+      <span className="pull-refresh-dot" />
+      <span>{syncToast}</span>
+    </div>
+  ) : null;
 }

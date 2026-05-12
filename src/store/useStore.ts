@@ -86,6 +86,8 @@ interface AppState {
     rentalsLastFetchedAt: number;
     rentalsIsHydrated: boolean;
     setRentalsData: (data: Partial<AppState['rentalsData']>, fetchedAt?: number) => void;
+    upsertRentalOffer: (offer: any) => void;
+    removeRentalOffer: (offerId: string) => void;
     markScreenStale: (target: RefreshTarget) => void;
 
     // Geofence State
@@ -202,6 +204,25 @@ export const useStore = create<AppState>((set) => ({
         },
         rentalsLastFetchedAt: fetchedAt,
         rentalsIsHydrated: true,
+    })),
+    upsertRentalOffer: (offer) => set((state) => {
+        if (!offer?.id) return state;
+        const exists = state.rentalsData.offers.some((current) => current.id === offer.id);
+        return {
+            rentalsData: {
+                ...state.rentalsData,
+                offers: exists
+                    ? state.rentalsData.offers.map((current) => current.id === offer.id ? { ...current, ...offer } : current)
+                    : [offer, ...state.rentalsData.offers],
+            },
+            rentalsIsHydrated: true,
+        };
+    }),
+    removeRentalOffer: (offerId) => set((state) => ({
+        rentalsData: {
+            ...state.rentalsData,
+            offers: state.rentalsData.offers.filter((offer) => offer.id !== offerId),
+        },
     })),
     markScreenStale: (target) => set((state) => {
         if (target === 'home') return { homeLastFetchedAt: 0 };

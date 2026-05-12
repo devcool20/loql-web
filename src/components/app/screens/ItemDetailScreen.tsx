@@ -11,6 +11,7 @@ import { getSafeImageUrl } from '@/lib/imageUtils';
 import SmartImage from '@/components/app/SmartImage';
 import { assertGeofenceAllowed, createOfferGeofenced } from '@/lib/geofence';
 import { cacheInvalidate, CACHE_KEYS } from '@/lib/cache';
+import { createChatOfferContent } from '@/lib/chatOfferMessage';
 
 const ItemDetailScreen = () => {
   const shouldReduceMotion = useReducedMotion();
@@ -26,6 +27,7 @@ const ItemDetailScreen = () => {
     setCurrentTab,
     setRentalsMode,
     refreshApp,
+    refreshScreen,
   } = useStore();
   const [owner, setOwner] = useState<any>(null);
   const [loadingOwner, setLoadingOwner] = useState(true);
@@ -140,6 +142,21 @@ const ItemDetailScreen = () => {
         const userName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.raw_user_meta_data?.full_name || 'Someone';
         const finalName = userName === 'undefined' ? 'Someone' : userName;
 
+        const { error: chatError } = await supabase.from('messages').insert({
+          sender_id: user.id,
+          receiver_id: item.owner_id,
+          content: createChatOfferContent({
+            offerId: data.id,
+            itemId: item.id,
+            itemTitle: item.title,
+            itemImage: item.images?.[0] || null,
+            offeredPrice: finalPrice,
+            durationHours: finalHours,
+            senderName: finalName,
+          }),
+        });
+        if (chatError) throw chatError;
+
         await createNotification({
           user_id: item.owner_id,
           title: 'New Offer Received',
@@ -149,6 +166,8 @@ const ItemDetailScreen = () => {
         });
       }
       await invalidateItemFlowCaches();
+      refreshScreen('chat');
+      refreshScreen('rentals');
       setShowOfferModal(false);
       setRentalsMode('borrowing');
       setCurrentTab('Rentals');

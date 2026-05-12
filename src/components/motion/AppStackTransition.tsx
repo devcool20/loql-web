@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { iosSpring, stackVariants } from './motionPrimitives';
+import { iosEase, stackVariants } from './motionPrimitives';
 
 const AppStackTransition = ({ children }: { children: React.ReactNode }) => {
   const shouldReduceMotion = useReducedMotion();
@@ -14,7 +14,7 @@ const AppStackTransition = ({ children }: { children: React.ReactNode }) => {
       initial={shouldReduceMotion ? false : 'initial'}
       animate={shouldReduceMotion ? undefined : 'animate'}
       exit={shouldReduceMotion ? undefined : 'exit'}
-      transition={iosSpring}
+      transition={{ duration: 0.24, ease: iosEase }}
     >
       {children}
     </motion.div>

@@ -19,6 +19,7 @@ import SmartImage from '@/components/app/SmartImage';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { assertGeofenceAllowed } from '@/lib/geofence';
+import { createNotification } from '@/lib/notificationManager';
 
 const RentalsScreen = () => {
   const {
@@ -128,7 +129,7 @@ const RentalsScreen = () => {
         supabase.from('offers')
           .select('*, items(id, title, images, daily_rate, market_price, owner_id, status)')
           .eq('sender_id', user.id)
-          .neq('status', 'completed')
+          .in('status', ['pending', 'countered', 'accepted'])
           .order('created_at', { ascending: false }),
       ]));
 
@@ -269,7 +270,8 @@ const RentalsScreen = () => {
     }
 
     const durationDays = offer.duration_hours / 24;
-    let totalCost = Math.ceil(offer.offered_price * durationDays);
+    const rentalAmount = Math.ceil(offer.offered_price * durationDays);
+    let totalCost = rentalAmount;
     const insurance = item.market_price > 3000 ? 9 : 0;
     totalCost += insurance;
 
@@ -288,6 +290,19 @@ const RentalsScreen = () => {
       const { error: deductError } = await supabase.from('wallets').update({ balance: walletData.balance - totalCost }).eq('user_id', user.id);
       if (deductError) throw new Error(`Payment failed: ${deductError.message}`);
 
+      const ownerId = item.owner_id;
+      if (ownerId) {
+        const { data: ownerWallet, error: ownerWalletError } = await supabase.from('wallets').select('balance').eq('user_id', ownerId).maybeSingle();
+        if (ownerWalletError) throw new Error(`Owner wallet error: ${ownerWalletError.message}`);
+        if (ownerWallet) {
+          const { error: creditError } = await supabase.from('wallets').update({ balance: ownerWallet.balance + rentalAmount }).eq('user_id', ownerId);
+          if (creditError) throw new Error(`Owner credit failed: ${creditError.message}`);
+        } else {
+          const { error: createOwnerWalletError } = await supabase.from('wallets').insert({ user_id: ownerId, balance: rentalAmount });
+          if (createOwnerWalletError) throw new Error(`Owner wallet setup failed: ${createOwnerWalletError.message}`);
+        }
+      }
+
       const { error: rentalError } = await supabase.from('rentals').insert({
         item_id: item.id,
         renter_id: user.id,
@@ -303,6 +318,16 @@ const RentalsScreen = () => {
 
       await supabase.from('items').update({ status: 'rented' }).eq('id', item.id);
       await supabase.from('offers').update({ status: 'completed' }).eq('id', offer.id);
+      if (item.owner_id) {
+        await createNotification({
+          user_id: item.owner_id,
+          title: 'Payment Received',
+          message: `${user.user_metadata?.full_name || 'A neighbor'} paid ${formatCurrency(rentalAmount)} for ${item.title}.`,
+          type: 'payment_received',
+          related_user_id: user.id,
+          related_rental_id: offer.id,
+        });
+      }
 
       setPaymentSuccess(true);
       setRentalsMode('borrowing');

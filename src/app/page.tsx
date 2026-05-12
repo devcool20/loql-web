@@ -203,35 +203,43 @@ export default function LandingPage() {
 
   useEffect(() => {
     let mounted = true;
-    let resolved = false;
-    const fallbackTimer = window.setTimeout(() => {
-      if (mounted && !resolved) setAuthChecked(true);
-    }, 650);
+    const hasPersistedAuth = () => {
+      try {
+        return Object.keys(window.localStorage).some((key) => key.startsWith('sb-') && key.endsWith('-auth-token'));
+      } catch {
+        return false;
+      }
+    };
 
     const routeSignedInUsers = async () => {
       if (window.location.pathname !== '/') {
-        resolved = true;
         setAuthChecked(true);
         return;
       }
 
-      const { data } = await supabase.auth.getSession();
-      if (!mounted) return;
-      resolved = true;
+      const fallbackTimer = window.setTimeout(() => {
+        if (mounted && !hasPersistedAuth()) setAuthChecked(true);
+      }, 900);
 
-      if (data.session) {
-        router.replace('/app');
-        return;
+      try {
+        const { data } = await supabase.auth.getSession();
+        if (!mounted) return;
+
+        if (data.session) {
+          window.location.replace('/app');
+          return;
+        }
+
+        setAuthChecked(true);
+      } finally {
+        window.clearTimeout(fallbackTimer);
       }
-
-      setAuthChecked(true);
     };
 
     routeSignedInUsers();
 
     return () => {
       mounted = false;
-      window.clearTimeout(fallbackTimer);
     };
   }, [router]);
 
