@@ -4855,6 +4855,204 @@ textarea:-webkit-autofill:focus {
   background: rgba(255, 255, 255, 0.1);
 }
 
+.hero-float-card {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  animation: heroFloatIn 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+#hero-float-bottom {
+  animation-delay: 80ms;
+}
+
+@keyframes heroFloatIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.bazaar-marquee-viewport {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 8px 0 18px;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+}
+
+.bazaar-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: clamp(16px, 2.2vw, 28px);
+  animation: bazaarMarquee 46s linear infinite;
+  will-change: transform;
+}
+
+.bazaar-marquee-viewport:hover .bazaar-marquee-track,
+.bazaar-marquee-viewport:focus-within .bazaar-marquee-track,
+.bazaar-marquee-viewport:active .bazaar-marquee-track {
+  animation-play-state: paused;
+}
+
+.bazaar-flow-card {
+  width: clamp(230px, 24vw, 310px);
+  min-height: clamp(360px, 45vw, 430px);
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(65, 179, 163, 0.12), transparent 36%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(253, 251, 247, 0.92));
+  border: 1px solid rgba(45, 49, 66, 0.08);
+  box-shadow: 0 18px 46px rgba(45, 49, 66, 0.09);
+  outline: none;
+  cursor: pointer;
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 260ms ease, border-color 260ms ease;
+}
+
+.bazaar-flow-card:hover,
+.bazaar-flow-card:focus-visible,
+.bazaar-flow-card:active {
+  transform: translateY(-8px);
+  border-color: rgba(241, 115, 80, 0.22);
+  box-shadow: 0 28px 70px rgba(45, 49, 66, 0.14);
+}
+
+.bazaar-flow-media {
+  position: relative;
+  height: clamp(170px, 20vw, 230px);
+  overflow: hidden;
+  border-radius: 24px;
+  background: #f4efe8;
+}
+
+.bazaar-flow-media img {
+  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bazaar-flow-card:hover .bazaar-flow-media img,
+.bazaar-flow-card:focus-visible .bazaar-flow-media img {
+  transform: scale(1.06);
+}
+
+.bazaar-flow-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  max-width: calc(100% - 24px);
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  color: #f17350;
+  box-shadow: 0 8px 22px rgba(45, 49, 66, 0.08);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bazaar-flow-body {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 18px 12px 12px;
+}
+
+.bazaar-flow-icon {
+  width: 38px;
+  height: 38px;
+  margin-bottom: 14px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: rgba(65, 179, 163, 0.12);
+  color: #2fae9e;
+}
+
+.bazaar-flow-icon span {
+  font-size: 21px;
+}
+
+.bazaar-flow-body h3 {
+  margin: 0;
+  color: #2d3142;
+  font-family: var(--font-lora), 'Lora', serif;
+  font-size: clamp(22px, 1.85vw, 30px);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+  font-weight: 800;
+}
+
+.bazaar-flow-body p {
+  margin: 9px 0 0;
+  color: rgba(45, 49, 66, 0.58);
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 600;
+}
+
+.bazaar-flow-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+.bazaar-flow-footer strong {
+  color: #f17350;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.bazaar-flow-footer span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #2fae9e;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.bazaar-flow-footer .material-symbols-outlined {
+  font-size: 16px;
+}
+
+@keyframes bazaarMarquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(calc(-50% - clamp(8px, 1.1vw, 14px)), 0, 0);
+  }
+}
+
+@media (max-width: 767px) {
+  .bazaar-marquee-viewport {
+    margin-inline: -32px;
+    width: calc(100% + 64px);
+    padding-left: 20px;
+  }
+
+  .bazaar-flow-card {
+    width: min(76vw, 280px);
+    min-height: 360px;
+  }
+
+  .bazaar-marquee-track {
+    gap: 16px;
+    animation-duration: 52s;
+  }
+}
+
 /* ─── Landing Page: Responsive ─── */
 @media (max-width: 767px) {
   .hero-nav-container { padding: 12px 16px; }

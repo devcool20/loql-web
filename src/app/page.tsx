@@ -96,17 +96,26 @@ const kathaKitchenImg =
 /** Indian society / community — Unsplash (street life, neighbourhood gathering) */
 const impactImgLeft = '/left-image-1.png';
 const impactImgRight = '/right-image-1.png';
+const heroNeighborhoodImg = '/brand/loql-neighborhood-hero.png';
+const heroNeighborhoodVideo = '/Vibrant_Indian_Neighborhood_Looping_Video.mp4';
+
+const bazaarCards = [
+  { title: 'Sony Alpha mirrorless kit', owner: 'Arjun, Dwarka Sector 6', price: '₹0/day', tag: 'Weekend ready', image: bazaarCamImg, icon: 'photo_camera' },
+  { title: 'Bajaj Rex 750W mixer grinder', owner: 'Mrs. Kapoor, Vasant Kunj', price: '₹0/day', tag: 'Community fav', image: bazaarApplianceImg, icon: 'blender' },
+  { title: 'UPSC Mains notes bundle', owner: 'Karthik, near JNU', price: '₹0/day', tag: 'Study stack', image: bazaarBooksImg, icon: 'menu_book' },
+  { title: 'Camping tent for three', owner: 'Naina, Indiranagar', price: '₹180/day', tag: 'Trip gear', image: '/brand/tent-listing.jpg', icon: 'camping' },
+  { title: 'Cordless drill set', owner: 'Rohit, Tower B', price: '₹90/day', tag: 'DIY tools', image: bazaarCamImg, icon: 'construction' },
+  { title: 'Projector for match night', owner: 'Meera, Sector 42', price: '₹250/day', tag: 'Party pick', image: bazaarBooksImg, icon: 'theaters' },
+  { title: 'Pressure cooker 5L', owner: 'Priya, Palm Greens', price: '₹40/day', tag: 'Kitchen', image: bazaarApplianceImg, icon: 'skillet' },
+  { title: 'Board games bundle', owner: 'Kabir, Block C', price: '₹60/day', tag: 'Family night', image: '/right-image-1.png', icon: 'toys' },
+  { title: 'DSLR tripod stand', owner: 'Ananya, Lake View', price: '₹70/day', tag: 'Creator kit', image: bazaarCamImg, icon: 'filter_center_focus' },
+  { title: 'Festive light set', owner: 'Dev, West Pratap Nagar', price: '₹55/day', tag: 'Celebration', image: '/left-image-1.png', icon: 'lightbulb' },
+];
 
 function FloatingCardTop() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const timer = setTimeout(() => ref.current?.classList.add('float-card-visible'), 700);
-    return () => clearTimeout(timer);
-  }, []);
   return (
     <div
-      ref={ref}
-      className="absolute -top-10 -right-4 md:right-10 bg-white/90 backdrop-blur-xl p-4 rounded-2xl shadow-xl z-20 border border-white/50 w-64 animate-bounce-slow hidden md:block opacity-0 transition-opacity duration-600"
+      className="hero-float-card absolute -top-10 -right-4 md:right-10 bg-white/90 backdrop-blur-xl p-4 rounded-2xl shadow-xl z-20 border border-white/50 w-64 animate-bounce-slow hidden md:block"
       id="hero-float-top"
     >
       <div className="flex items-center gap-3">
@@ -117,6 +126,7 @@ function FloatingCardTop() {
           width={40}
           height={40}
           sizes="40px"
+          priority
         />
         <div>
           <p className="text-sm font-bold text-on-surface">Priya is lending</p>
@@ -128,15 +138,9 @@ function FloatingCardTop() {
 }
 
 function FloatingCardBottom() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const timer = setTimeout(() => ref.current?.classList.add('float-card-visible'), 900);
-    return () => clearTimeout(timer);
-  }, []);
   return (
     <div
-      ref={ref}
-      className="absolute bottom-10 -left-4 md:-left-10 bg-white/90 backdrop-blur-xl p-4 rounded-2xl shadow-xl z-20 border border-white/50 w-72 opacity-0 transition-opacity duration-600"
+      className="hero-float-card absolute bottom-10 -left-4 md:-left-10 bg-white/90 backdrop-blur-xl p-4 rounded-2xl shadow-xl z-20 border border-white/50 w-72"
       id="hero-float-bottom"
     >
       <div className="flex items-center gap-4">
@@ -147,6 +151,7 @@ function FloatingCardBottom() {
           width={48}
           height={48}
           sizes="48px"
+          priority
           unoptimized
         />
         <div>
@@ -200,6 +205,20 @@ export default function LandingPage() {
   const isMobile = useIsMobile();
   const activeNav = useActiveNavSection();
   const [desktopAppOpen, setDesktopAppOpen] = useState(false);
+
+  useEffect(() => {
+    const existing = document.querySelector(`link[href="${heroNeighborhoodVideo}"]`);
+    if (existing) return;
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'video';
+    link.href = heroNeighborhoodVideo;
+    link.type = 'video/mp4';
+    document.head.appendChild(link);
+    return () => {
+      link.remove();
+    };
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -412,11 +431,14 @@ export default function LandingPage() {
               <div className="relative aspect-video w-full max-h-[min(88vh,820px)] overflow-hidden">
                 <video
                   className="absolute inset-0 h-full w-full origin-center object-cover object-center outline-none scale-[1.14]"
-                  src="/Vibrant_Indian_Neighborhood_Looping_Video.mp4"
+                  src={heroNeighborhoodVideo}
+                  poster={heroNeighborhoodImg}
+                  preload="auto"
                   autoPlay
                   muted
                   loop
                   playsInline
+                  disablePictureInPicture
                   aria-label="Neighbours sharing across balconies in an Indian neighbourhood"
                 />
               </div>
@@ -457,7 +479,42 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="bazaar-marquee-viewport" aria-label="Popular neighborhood items">
+              <div className="bazaar-marquee-track">
+                {[...bazaarCards, ...bazaarCards].map((card, index) => (
+                  <article
+                    className="bazaar-flow-card"
+                    key={`${card.title}-${index}`}
+                    tabIndex={0}
+                    aria-label={`${card.title}, ${card.price}, lent by ${card.owner}`}
+                  >
+                    <div className="bazaar-flow-media">
+                      <Image
+                        src={card.image}
+                        alt={card.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 72vw, (max-width: 1200px) 34vw, 280px"
+                      />
+                      <span className="bazaar-flow-tag">{card.tag}</span>
+                    </div>
+                    <div className="bazaar-flow-body">
+                      <div className="bazaar-flow-icon">
+                        <span className="material-symbols-outlined">{card.icon}</span>
+                      </div>
+                      <h3>{card.title}</h3>
+                      <p>{card.owner}</p>
+                      <div className="bazaar-flow-footer">
+                        <strong>{card.price}</strong>
+                        <span>View <span className="material-symbols-outlined">arrow_outward</span></span>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            <div className="hidden">
               <div className="bazaar-card bg-white p-2 rounded-lg shadow-sm">
                 <div className="landing-media-scale relative mb-4 h-64 overflow-hidden rounded-lg">
                   <Image
