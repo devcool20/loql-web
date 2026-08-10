@@ -97,21 +97,21 @@ const NotificationScreen = () => {
   };
 
   return (
-    <div style={{
+    <div className="utility-screen notification-screen" style={{
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
       background: 'var(--background)', zIndex: 200, overflowY: 'auto',
     }}>
       {/* Header */}
-      <div style={{
+      <div className="utility-topbar" style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '14px 20px', background: 'var(--background)',
       }}>
-        <button className="scale-pressable app-icon-button" onClick={closeStack}
+        <button className="utility-icon-button scale-pressable app-icon-button" onClick={closeStack}
           style={{ padding: 8, borderRadius: 20, background: 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
           <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
-        <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>Notifications</span>
-        <button className="scale-pressable app-icon-button" onClick={() => {
+        <span className="utility-title" style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>Notifications</span>
+        <button className="utility-icon-button scale-pressable app-icon-button" onClick={() => {
           if (selectionMode && selectedIds.size > 0) handleDeleteSelected();
           else setSelectionMode(!selectionMode);
         }} style={{ padding: 8, borderRadius: 20, background: selectionMode ? 'var(--border)' : 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
@@ -119,7 +119,7 @@ const NotificationScreen = () => {
         </button>
       </div>
 
-      <div style={{ padding: '0 20px', paddingBottom: 100 }}>
+      <div className="utility-content notification-list" style={{ padding: '0 20px', paddingBottom: 100 }}>
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: 50 }}>
             <div className="spinner" style={{ borderTopColor: 'var(--text-primary)', borderColor: 'var(--border)' }} />

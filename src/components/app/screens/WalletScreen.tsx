@@ -37,19 +37,19 @@ const WalletScreen = () => {
   };
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--background)', zIndex: 200, overflowY: 'auto' }}>
+    <div className="utility-screen wallet-screen" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--background)', zIndex: 200, overflowY: 'auto' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px' }}>
-        <button className="scale-pressable app-icon-button" onClick={closeStack} style={{ padding: 8 }}>
+      <div className="utility-topbar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px' }}>
+        <button className="utility-icon-button scale-pressable app-icon-button" onClick={closeStack} style={{ padding: 8 }}>
           <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
-        <span style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)' }}>Wallet</span>
+        <span className="utility-title" style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)' }}>Wallet</span>
         <div style={{ width: 40 }} />
       </div>
 
-      <div style={{ padding: 24, paddingBottom: 100 }}>
+      <div className="utility-content wallet-content" style={{ padding: 24, paddingBottom: 100 }}>
         {/* Balance Card */}
-        <div style={{ textAlign: 'center', marginBottom: 40, marginTop: 20 }}>
+        <div className="wallet-balance-card" style={{ textAlign: 'center', marginBottom: 40, marginTop: 20 }}>
           <div style={{
             width: 80, height: 80, borderRadius: 40, background: 'var(--surface)', border: '1px solid var(--border)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px',

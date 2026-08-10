@@ -71,21 +71,21 @@ const HistoryDetailScreen = () => {
   };
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--background)', zIndex: 200, overflowY: 'auto' }}>
+    <div className="utility-screen history-screen" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--background)', zIndex: 200, overflowY: 'auto' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px' }}>
-        <button className="scale-pressable app-icon-button" onClick={closeStack}
+      <div className="utility-topbar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px' }}>
+        <button className="utility-icon-button scale-pressable app-icon-button" onClick={closeStack}
           style={{ padding: 8, borderRadius: 20, background: 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
           <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div className="utility-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <Icon size={18} color="var(--text-primary)" />
           <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>{title}</span>
         </div>
         <div style={{ width: 40 }} />
       </div>
 
-      <div style={{ padding: '8px 20px 40px' }}>
+      <div className="utility-content history-content" style={{ padding: '8px 20px 40px' }}>
         {loading ? (
           <ListSkeleton count={6} />
         ) : items.length === 0 ? (

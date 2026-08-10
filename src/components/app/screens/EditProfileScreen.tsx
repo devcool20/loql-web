@@ -133,19 +133,19 @@ const EditProfileScreen = () => {
   };
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--background)', zIndex: 200, overflowY: 'auto' }}>
+    <div className="utility-screen edit-profile-screen" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--background)', zIndex: 200, overflowY: 'auto' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px' }}>
-        <button className="scale-pressable" onClick={closeStack} style={{ padding: 8 }}>
+      <div className="utility-topbar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px' }}>
+        <button className="utility-icon-button scale-pressable" onClick={closeStack} style={{ padding: 8 }}>
           <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
-        <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>Edit Profile</span>
+        <span className="utility-title" style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>Edit Profile</span>
         <div style={{ width: 40 }} />
       </div>
 
-      <div style={{ padding: 24, paddingBottom: 120 }}>
+      <div className="utility-content edit-profile-content" style={{ padding: 24, paddingBottom: 120 }}>
         {/* Avatar */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 32 }}>
+        <div className="edit-profile-avatar-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 32 }}>
           <div onClick={handleSelectImage} className="scale-pressable"
             style={{ position: 'relative', cursor: 'pointer', marginBottom: 12 }}>
             {avatarUri ? (

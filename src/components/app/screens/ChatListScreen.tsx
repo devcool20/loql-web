@@ -232,7 +232,7 @@ const ChatListScreen = () => {
               </div>
               {/* Badge */}
               {item.unreadCount > 0 && (
-                <div style={{
+                <div className="chat-unread-badge" style={{
                   background: 'var(--accent-solid)', minWidth: 22, height: 22, borderRadius: 11,
                   display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: 12, padding: '0 6px',
                 }}>
