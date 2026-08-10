@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { AlertTriangle, CheckCircle2, Info, XCircle } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { iosSpring, modalBackdropVariants, modalCardVariants } from '@/components/motion/motionPrimitives';
 import { useStore } from '@/store/useStore';
@@ -9,6 +10,8 @@ const CustomAlert = () => {
   const { alert, hideAlert } = useStore();
   const { visible, title, message, onConfirm, showCancel, actions, type } = alert;
   const shouldReduceMotion = useReducedMotion();
+
+  const Symbol = type === 'error' ? XCircle : type === 'success' ? CheckCircle2 : type === 'info' ? Info : AlertTriangle;
 
   const handleConfirm = () => {
     hideAlert();
@@ -37,11 +40,13 @@ const CustomAlert = () => {
             variants={shouldReduceMotion ? undefined : modalCardVariants}
             transition={iosSpring}
           >
+            <div className={`alert-symbol ${type || 'info'}`}><Symbol size={24} aria-hidden="true" /></div>
             <div className={`alert-badge ${type || 'info'}`}>
               {type === 'error' ? 'Action required' : type === 'success' ? 'Completed' : 'Notice'}
             </div>
             <div className="alert-title">{title}</div>
             <div className="alert-message">{message}</div>
+            <div className="alert-summary"><Symbol size={14} /><span>{type === 'error' ? 'Review before continuing' : type === 'success' ? 'Your changes are saved' : 'Loql neighbourhood notice'}</span></div>
 
             {actions ? (
               <div className="alert-action-container">

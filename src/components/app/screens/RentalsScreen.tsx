@@ -13,6 +13,9 @@ import {
   X,
 } from 'lucide-react';
 import { ListSkeleton } from '@/components/app/Skeleton';
+import AppPageIntro from '@/components/app/AppPageIntro';
+import AppSheet from '@/components/app/AppSheet';
+import StatusTag from '@/components/app/StatusTag';
 import { cacheGetStale, cacheInvalidate, cacheSet, dedupeRequest, CACHE_KEYS, TTL } from '@/lib/cache';
 import { getSafeImageUrl } from '@/lib/imageUtils';
 import SmartImage from '@/components/app/SmartImage';
@@ -347,133 +350,59 @@ const RentalsScreen = () => {
 
   const StatusPill = ({ status }: { status?: string }) => {
     const tone = toneForStatus(status);
-    return (
-      <span className="rentals-badge" style={{ ...styles.badge, background: tone.bg, color: tone.text, borderColor: tone.border }}>
-        {tone.label}
-      </span>
-    );
+    const normalized = String(status || '').toLowerCase();
+    return <StatusTag label={tone.label} tone={normalized.includes('declin') || normalized.includes('cancel') ? 'danger' : normalized.includes('complete') || normalized.includes('return') || normalized === 'available' ? 'complete' : normalized.includes('pend') || normalized.includes('offer') ? 'pending' : 'active'} />;
   };
 
-  const Media = ({ src, title }: { src?: string; title?: string }) => (
-    <div className="rentals-image-container" style={styles.imageContainer}>
-      <SmartImage
-        src={src ? getSafeImageUrl(src) : null}
-        alt={title || 'Item'}
-        fallbackLabel={title || 'Item'}
-        rounded={styles.imageContainer.borderRadius}
-        style={styles.image}
-      />
-    </div>
+  const RentalMedia = ({ src, title }: { src?: string; title?: string }) => (
+    <SmartImage src={src ? getSafeImageUrl(src) : null} alt={title || 'Item'} fallbackLabel={title || 'Item'} rounded={15} className="rental-thumb" />
   );
 
-  const renderCoreCard = ({
-    keyValue,
-    image,
-    title,
-    price,
-    status,
-    meta,
-    onClick,
-    children,
-  }: {
-    keyValue: string;
-    image?: string;
-    title: string;
-    price?: number | string | null;
-    status?: string;
-    meta?: string;
-    onClick?: () => void;
-    children?: React.ReactNode;
-  }) => (
-    <article key={keyValue} className="rentals-card scale-pressable-up app-clickable-card app-reveal-card" style={styles.card} onClick={onClick}>
-      <Media src={image} title={title} />
-      <div className="rentals-card-content" style={styles.cardContent}>
-        <div className="rentals-card-topline" style={styles.cardTopLine}>
-          <h3 className="rentals-card-title" style={styles.cardTitle}>{title}</h3>
-          {price !== undefined && price !== null && (
-            <span className="rentals-card-price" style={styles.price}>{formatCurrency(price)}<span style={styles.priceUnit}>/day</span></span>
-          )}
-        </div>
-        {meta && <p className="rentals-card-meta" style={styles.cardMeta}>{meta}</p>}
-        <div className="rentals-card-footer" style={styles.cardFooter}>
-          <StatusPill status={status} />
-          {children}
-        </div>
-      </div>
+  const renderListingCard = (item: any) => (
+    <article key={item.id} className="rental-row card app-clickable-card" onClick={() => navigateToDetail(item)}>
+      <RentalMedia src={item.images?.[0]} title={item.title} />
+      <div className="rental-row-copy"><div className="rental-row-head"><h3>{item.title}</h3><strong>{formatCurrency(item.daily_rate)}/day</strong></div><p>{item.category || 'Neighbourhood item'} · <StatusPill status={item.status} /></p><div className="mini-actions"><button type="button" onClick={event => { event.stopPropagation(); navigateToDetail(item); }}>View item</button></div></div>
     </article>
   );
 
-  const renderListingCard = (item: any) => renderCoreCard({
-    keyValue: item.id,
-    image: item.images?.[0],
-    title: item.title,
-    price: item.daily_rate,
-    status: item.status,
-    meta: item.category || 'Ready for neighborhood use',
-    onClick: () => navigateToDetail(item),
-  });
-
   const renderBookingCard = (rental: any) => {
     const item = rental.items;
-    return renderCoreCard({
-      keyValue: rental.id,
-      image: item?.images?.[0],
-      title: item?.title || 'Rental',
-      price: item?.daily_rate || rental.final_price,
-      status: rental.status,
-      meta: rental.start_time ? `Started ${new Date(rental.start_time).toLocaleDateString()}` : 'Rental timeline',
-      onClick: () => item && navigateToDetail(item),
-    });
+    const end = rental.end_time ? new Date(rental.end_time) : null;
+    const start = rental.start_time ? new Date(rental.start_time) : null;
+    const totalWindow = start && end ? Math.max(1, end.getTime() - start.getTime()) : 1;
+    const remaining = end ? Math.max(0, end.getTime() - Date.now()) : 0;
+    const progress = end && start ? Math.max(0, Math.min(100, ((totalWindow - remaining) / totalWindow) * 100)) : 0;
+    const countdown = end ? `${Math.floor(remaining / 86400000)}d ${Math.floor((remaining % 86400000) / 3600000)}h` : null;
+    return <article key={rental.id} className="active-rental card app-clickable-card" onClick={() => item && navigateToDetail(item)}>
+      <div className="active-rental-media"><RentalMedia src={item?.images?.[0]} title={item?.title} /><StatusPill status={rental.status} /></div>
+      <div className="active-rental-head"><div><span className="v2-eyebrow">In your care</span><h3>{item?.title || 'Rental'}</h3></div>{countdown && <strong>{countdown}</strong>}</div>
+      {end && <><div className="rental-progress" aria-label={`${Math.round(progress)} percent elapsed`}><i style={{ width: `${progress}%` }} /></div><div className="rental-return-row"><span>Return by {end.toLocaleString([], { weekday:'short', hour:'2-digit', minute:'2-digit' })}</span><button type="button">View handover</button></div></>}
+    </article>;
   };
 
   const renderOfferCard = (offer: any) => {
-    const item = offer.items;
-    const totalCost = Math.ceil((offer.offered_price * offer.duration_hours) / 24);
-    return renderCoreCard({
-      keyValue: offer.id,
-      image: item?.images?.[0],
-      title: item?.title || 'Item',
-      price: offer.offered_price,
-      status: offer.status,
-      meta: `${formatDays(offer.duration_hours)} request`,
-      onClick: () => item && navigateToDetail(item),
-      children: (
-        <>
-          {offer.status === 'accepted' && (
-            <button className="scale-pressable app-small-action" onClick={(event) => { event.stopPropagation(); openPaymentModal(offer); }} style={styles.payButton}>
-              <CreditCard size={14} color="var(--accent-solid-text)" />
-              <span>Pay {formatCurrency(totalCost)}</span>
-            </button>
-          )}
-          {offer.status === 'countered' && (
-            <div style={styles.actionRow}>
-              <button className="scale-pressable app-small-action" style={styles.primarySmallButton} onClick={(event) => { event.stopPropagation(); handleAcceptCounter(offer); }}>
-                Accept
-              </button>
-              <button className="scale-pressable app-small-action" style={styles.secondarySmallButton} onClick={(event) => { event.stopPropagation(); handleDeclineCounter(offer); }}>
-                Decline
-              </button>
-            </div>
-          )}
-        </>
-      ),
-    });
+    const item = offer.items; const totalCost = Math.ceil((offer.offered_price * offer.duration_hours) / 24);
+    return <article key={offer.id} className="offer-row card app-clickable-card" onClick={() => item && navigateToDetail(item)}>
+      <RentalMedia src={item?.images?.[0]} title={item?.title} />
+      <div className="offer-row-copy"><div className="offer-row-head"><div><StatusPill status={offer.status} /><h3>{item?.title || 'Item'}</h3></div><strong>{formatCurrency(offer.offered_price)}/day</strong></div><p>{formatDays(offer.duration_hours)} request · total {formatCurrency(totalCost)}</p>
+      <div className="offer-actions">{offer.status === 'accepted' && <button type="button" className="primary" onClick={event => { event.stopPropagation(); openPaymentModal(offer); }}><CreditCard size={14}/>Pay {formatCurrency(totalCost)}</button>}{offer.status === 'countered' && <><button type="button" className="primary" onClick={event => { event.stopPropagation(); handleAcceptCounter(offer); }}>Accept</button><button type="button" onClick={event => { event.stopPropagation(); handleDeclineCounter(offer); }}>Decline</button></>}</div></div>
+    </article>;
   };
 
   const isBorrowingEmpty = offers.length === 0 && bookings.length === 0;
 
   return (
     <div className="rentals-screen" style={styles.screen}>
-      <div className="rentals-header" style={styles.header}>
-        <div>
-          <span className="rentals-eyebrow" style={styles.eyebrow}>Loql Kiraya</span>
-        </div>
-        {rentalsMode === 'owned' && (
+      <AppPageIntro
+        eyebrow="Kiraya · Your rental desk"
+        title={rentalsMode === 'owned' ? 'Mera Samaan' : 'Kiraye Par'}
+        description={rentalsMode === 'owned' ? 'Manage what your neighbours can borrow.' : 'Track offers, payments, and active handovers.'}
+        action={rentalsMode === 'owned' ? (
           <button className="rentals-add-button scale-pressable app-icon-button" onClick={() => setCurrentStack('AddItem')} style={styles.addButton} aria-label="Add item">
             <Plus size={22} color="var(--accent-solid-text)" />
           </button>
-        )}
-      </div>
+        ) : undefined}
+      />
 
       <div className="rentals-mode-switch" style={styles.modeSwitch} role="tablist" aria-label="Kiraya view">
         {[
@@ -504,12 +433,19 @@ const RentalsScreen = () => {
         listings.length === 0 ? (
           <EmptyState title="No items listed yet" copy="Add something useful from your room and let your society borrow it safely." />
         ) : (
-          <div className="rentals-list" style={styles.list}>{listings.map(renderListingCard)}</div>
+          <section className="rentals-workspace-section">
+            <div className="v2-section-heading"><div><span className="v2-eyebrow">Your shelf</span><h2 className="font-serif">Ready to share</h2></div><span>{listings.length} listed</span></div>
+            <div className="rentals-list" style={styles.list}>{listings.map(renderListingCard)}</div>
+          </section>
         )
       ) : isBorrowingEmpty ? (
         <EmptyState title="Nothing on kiraya yet" copy="Send an offer on any item and it will show up here." />
       ) : (
-        <div className="rentals-list" style={styles.list}>
+        <div className="rentals-list rentals-lifecycle-workspace" style={styles.list}>
+          <div className="rental-summary-grid">
+            <div><small>Active rentals</small><strong>{bookings.filter(rental => rental.status === 'active' || rental.status === 'approved').length}</strong></div>
+            <div><small>Offers open</small><strong>{offers.filter(offer => offer.status === 'pending' || offer.status === 'countered').length}</strong></div>
+          </div>
           {offers.length > 0 && (
             <section style={styles.section}>
               <SectionTitle title="Offers" count={offers.length} />
@@ -580,8 +516,7 @@ const PaymentSheet = ({
   const total = baseCost + insurance;
 
   return (
-    <div className="alert-overlay" onClick={onClose}>
-      <div onClick={(event) => event.stopPropagation()} style={styles.sheet}>
+    <AppSheet open onClose={onClose} labelledBy="payment-sheet-title" className="payment-handover-sheet">
         {paymentSuccess ? (
           <div style={styles.successState}>
             <div style={styles.successIcon}><CheckCircle2 size={42} color="#10B981" /></div>
@@ -592,8 +527,8 @@ const PaymentSheet = ({
           <>
             <div style={styles.sheetHeader}>
               <div>
-                <span style={styles.sheetEyebrow}>Handover payment</span>
-                <h3 style={styles.sheetTitle}>Start rental</h3>
+                <span style={styles.sheetEyebrow}>Secure handover</span>
+                <h3 id="payment-sheet-title" style={styles.sheetTitle}>Pay and start rental</h3>
               </div>
               <button className="scale-pressable app-icon-button" onClick={onClose} style={styles.closeButton} aria-label="Close payment">
                 <X size={20} color="var(--text-primary)" />
@@ -645,8 +580,7 @@ const PaymentSheet = ({
             </button>
           </>
         )}
-      </div>
-    </div>
+    </AppSheet>
   );
 };
 
@@ -655,27 +589,6 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'var(--background)',
     minHeight: '100%',
     padding: '24px 0 108px',
-  },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '0 24px 16px',
-  },
-  eyebrow: {
-    color: 'var(--primary)',
-    fontSize: 20,
-    fontWeight: 800,
-    letterSpacing: '0.12em',
-    textTransform: 'uppercase',
-  },
-  title: {
-    fontSize: 24,
-    lineHeight: '28px',
-    fontWeight: 650,
-    color: 'var(--text-primary)',
-    letterSpacing: '-0.03em',
-    marginTop: 4,
   },
   addButton: {
     width: 42,
@@ -815,16 +728,6 @@ const styles: Record<string, React.CSSProperties> = {
     flexWrap: 'wrap',
     gap: 8,
   },
-  badge: {
-    padding: '5px 9px',
-    borderRadius: 999,
-    fontSize: 10,
-    lineHeight: 1,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    letterSpacing: '0.02em',
-    fontWeight: 750,
-  },
   price: {
     color: 'var(--text-primary)',
     fontSize: 13,
@@ -900,19 +803,6 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 13,
     lineHeight: 1.5,
     margin: 0,
-  },
-  sheet: {
-    background: 'var(--surface)',
-    borderRadius: '30px 30px 0 0',
-    width: '100%',
-    maxWidth: 430,
-    position: 'fixed',
-    bottom: 0,
-    left: '50%',
-    transform: 'translateX(-50%)',
-    padding: '22px 24px 110px',
-    animation: 'slideUp 0.3s ease-out',
-    boxShadow: '0 -8px 32px rgba(0,0,0,0.12)',
   },
   successState: {
     display: 'flex',

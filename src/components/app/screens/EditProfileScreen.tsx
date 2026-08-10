@@ -1,13 +1,15 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, Camera, User, Trash2 } from 'lucide-react';
+import { Camera, User, Trash2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { cacheInvalidate, CACHE_KEYS } from '@/lib/cache';
 import { getSafeImageUrl } from '@/lib/imageUtils';
 import { resizeImageFile } from '@/lib/clientImage';
 import SmartImage from '@/components/app/SmartImage';
+import AppTopBar from '@/components/app/AppTopBar';
+import AppPageIntro from '@/components/app/AppPageIntro';
 
 const EditProfileScreen = () => {
   const { user, setUser, showAlert, closeStack } = useStore();
@@ -134,16 +136,9 @@ const EditProfileScreen = () => {
 
   return (
     <div className="utility-screen edit-profile-screen" style={{ width: '100%', minHeight: '100%', background: 'var(--background)' }}>
-      {/* Header */}
-      <div className="utility-topbar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <button className="utility-icon-button scale-pressable" onClick={closeStack}>
-          <ChevronLeft size={24} color="var(--text-primary)" />
-        </button>
-        <span className="utility-title" style={{ color: 'var(--text-primary)' }}>Edit Profile</span>
-        <div style={{ width: 40 }} />
-      </div>
-
+      <AppTopBar onBack={closeStack} title="Edit profile" textAction={{ label: loading ? 'Saving…' : 'Save', onClick: handleSave, disabled: loading }} />
       <div className="utility-content edit-profile-content" style={{ padding: 24, paddingBottom: 120 }}>
+        <AppPageIntro eyebrow="Personal details" title="Keep your identity current." description="A recognisable profile makes every handover easier." compact />
         {/* Avatar */}
         <div className="edit-profile-avatar-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 32 }}>
           <div onClick={handleSelectImage} className="scale-pressable"
@@ -220,10 +215,7 @@ const EditProfileScreen = () => {
           )}
         </div>
 
-        {/* Save Button */}
-        <button className="login-btn scale-pressable" onClick={handleSave} disabled={loading} style={{ borderRadius: 16, marginBottom: 20 }}>
-          {loading ? <div className="spinner" /> : 'Save Changes'}
-        </button>
+        <div className="society-note"><strong>Neighbourhood</strong><span>Changing society resets your feed. Location verification will run again.</span></div>
 
         {/* Delete Account */}
         <button className="scale-pressable" onClick={handleDeleteAccount} disabled={loading}

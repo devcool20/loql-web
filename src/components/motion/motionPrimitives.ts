@@ -8,6 +8,9 @@ export const iosSpring: Transition = {
   mass: 0.9,
 };
 
+export const stackPush: Transition = { duration: 0.32, ease: iosEase };
+export const sheetSpring: Transition = { type: 'spring', stiffness: 390, damping: 34, mass: 0.92 };
+
 export const pageTransition: Transition = {
   duration: 0.42,
   ease: iosEase,
@@ -20,9 +23,9 @@ export const routeVariants: Variants = {
 };
 
 export const stackVariants: Variants = {
-  initial: { opacity: 0, y: 18, scale: 0.992 },
-  animate: { opacity: 1, y: 0, scale: 1 },
-  exit: { opacity: 0, y: 12, scale: 0.996 },
+  initial: { opacity: 0, x: 26, scale: 0.98 },
+  animate: { opacity: 1, x: 0, scale: 1 },
+  exit: { opacity: 0, x: -18, scale: 0.98 },
 };
 
 export const modalBackdropVariants: Variants = {

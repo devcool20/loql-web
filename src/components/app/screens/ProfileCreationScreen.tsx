@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, Camera, ChevronDown, Loader2, MapPin, Phone, User } from 'lucide-react';
+import { ArrowRight, Camera, ChevronDown, Loader2, MapPin, Phone, ShieldCheck, User } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { resizeImageFile } from '@/lib/clientImage';
@@ -145,6 +145,7 @@ const ProfileCreationScreen = ({ onComplete }: ProfileCreationScreenProps) => {
 
   return (
     <div className="profile-creation-screen auth-screen profile-setup-screen">
+      <div className="setup-topline"><span className="font-serif">Your Pehchan</span><strong>1 / 2</strong></div>
       <motion.div
         className="profile-setup-hero"
         initial={{ opacity: 0, y: 18, scale: 0.98 }}
@@ -152,10 +153,9 @@ const ProfileCreationScreen = ({ onComplete }: ProfileCreationScreenProps) => {
         transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="profile-setup-copy">
-          <h1 className="profile-creation-title font-serif">Set up your profile.</h1>
-          <p className="profile-creation-subtitle">
-            Add your name, photo, and society so neighbors know who they are renting with.
-          </p>
+          <span className="v2-eyebrow">A trusted profile starts here</span>
+          <h1 className="profile-creation-title font-serif">Help neighbours recognise you.</h1>
+          <p className="profile-creation-subtitle">Add your name, photo, and society so neighbours know who they are renting with.</p>
         </div>
 
         <div className="avatar-picker">
@@ -191,11 +191,7 @@ const ProfileCreationScreen = ({ onComplete }: ProfileCreationScreenProps) => {
         </div>
       </motion.div>
 
-      <div className="profile-setup-steps" aria-label="Profile setup progress">
-        <span className={avatarUri ? 'done' : ''}>Photo</span>
-        <span className={fullName.trim() ? 'done' : ''}>Name</span>
-        <span className={selectedSociety ? 'done' : ''}>Society</span>
-      </div>
+      <div className="setup-meter" aria-label="Profile setup progress"><i className="done" /><i className={selectedSociety ? 'done' : ''} /><span>Identity details · Society verification next</span></div>
 
       <div className="profile-creation-form auth-form profile-setup-form">
         <div className="input-group">
@@ -273,6 +269,7 @@ const ProfileCreationScreen = ({ onComplete }: ProfileCreationScreenProps) => {
           </AnimatePresence>
         </div>
 
+        <div className="trust-note"><ShieldCheck size={17} /><span>Your society is used only to show verified nearby listings.</span></div>
         <motion.button
           type="button"
           className="login-btn auth-primary-btn profile-submit-btn"

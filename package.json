@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "check:css": "node scripts/check-css-coverage.mjs",
     "remotion:studio": "npx remotion studio --config=remotion/remotion.config.ts",
     "remotion:render": "npx remotion render --config=remotion/remotion.config.ts LoqlPromo public/product-working.mp4"
   },

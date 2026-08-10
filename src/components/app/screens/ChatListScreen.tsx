@@ -7,6 +7,8 @@ import { useStore } from '@/store/useStore';
 import { formatRelativeTime } from '@/lib/dateUtils';
 import { getSafeImageUrl } from '@/lib/imageUtils';
 import SmartImage from '@/components/app/SmartImage';
+import AppPageIntro from '@/components/app/AppPageIntro';
+import ChipRow from '@/components/app/ChipRow';
 import { getChatMessagePreview } from '@/lib/chatOfferMessage';
 
 const ChatListScreen = () => {
@@ -15,6 +17,7 @@ const ChatListScreen = () => {
   const conversationsRef = useRef<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filter, setFilter] = useState('All');
 
   useEffect(() => {
     conversationsRef.current = conversations;
@@ -138,7 +141,7 @@ const ChatListScreen = () => {
     });
   };
 
-  const filtered = conversations.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filtered = conversations.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()) && (filter === 'All' || (filter === 'Unread' && c.unreadCount > 0) || (filter === 'Offers' && /offer|accepted|₹/i.test(c.lastMessage)) || filter === 'Archived'));
 
   if (loading) {
     return (
@@ -151,10 +154,12 @@ const ChatListScreen = () => {
   return (
     <div className="chat-list-screen" style={{ background: 'var(--background)', minHeight: '100%', padding: '24px 0 100px' }}>
       <div className="chat-list-content" style={{ padding: '0 20px' }}>
-      <h1 className="chat-list-title" style={{color: 'var(--primary)', fontSize: 20, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase'}}>
-        Samvaad
-      </h1>
-      <p className="chat-list-subtitle" style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 16, fontWeight: 550 }}>Apne padosiyon se baat-cheet.</p>
+      <AppPageIntro
+        eyebrow="Samvaad · Neighbourhood conversations"
+        title="Stay in the loop."
+        description="Offers, handovers, and friendly check-ins in one place."
+        compact
+      />
 
       {/* Search Bar */}
       <div className="home-search-shell" style={{
@@ -170,28 +175,11 @@ const ChatListScreen = () => {
         />
       </div>
 
-      <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 14 }}>
-        {['All', 'Unread', 'Requests'].map((chip, idx) => (
-          <span
-            key={chip}
-            style={{
-              borderRadius: 999,
-              padding: '7px 14px',
-              whiteSpace: 'nowrap',
-              fontSize: 12,
-              fontWeight: 700,
-              color: idx === 0 ? 'white' : 'var(--text-secondary)',
-              background: idx === 0 ? 'var(--primary)' : 'var(--surface)',
-              border: idx === 0 ? 'none' : '1px solid var(--border-light)',
-            }}
-          >
-            {chip}
-          </span>
-        ))}
-      </div>
+      <ChipRow options={['All','Unread','Offers','Archived']} value={filter} onChange={setFilter} />
 
       {/* Chat List */}
-      <div style={{ padding: 0 }}>
+      <div className="chat-conversation-list">
+        <div className="v2-section-heading"><div><span className="v2-eyebrow">Recent</span><h2 className="font-serif">Conversations</h2></div><span>{filtered.length}</span></div>
         {filtered.length === 0 ? (
           <p style={{ textAlign: 'center', color: 'var(--text-light)', marginTop: 60, fontSize: 15, fontWeight: 500 }}>No messages yet.</p>
         ) : (

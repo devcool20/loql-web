@@ -1,5 +1,6 @@
 /* Fonts are loaded via <link> tags in layout.tsx */
 @import "./tailwind.css";
+@import "./mobile-v2.css";
 
 :root {
   /* Mitti Modern token baseline */

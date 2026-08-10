@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { Clock3, MapPin } from 'lucide-react';
+import StatusTag from './StatusTag';
 import { getSafeImageUrl } from '@/lib/imageUtils';
 import SmartImage from '@/components/app/SmartImage';
 import { iosEase, iosSpring } from '@/components/motion/motionPrimitives';
@@ -34,7 +36,7 @@ const AppItemCard = ({ item, index = 0, onPress }: ItemCardProps) => {
         rotate: { duration: 0.28, ease: iosEase },
         scale: iosSpring,
         y: iosSpring,
-        opacity: { duration: 0.24, delay: Math.min(index, 7) * 0.035, ease: iosEase },
+        opacity: { duration: 0.24, delay: Math.min(index, 7) * 0.06, ease: iosEase },
       }}
       style={{ cursor: 'pointer' }}
     >
@@ -51,11 +53,17 @@ const AppItemCard = ({ item, index = 0, onPress }: ItemCardProps) => {
         ) : (
           <div className="item-card-no-image">No Image</div>
         )}
-        <div className="item-card-price-tag">₹{item.daily_rate}/day</div>
+        <div className="item-card-status"><StatusTag label={item.status === 'rented' ? 'In use' : 'Available'} tone={item.status === 'rented' ? 'active' : 'available'} /></div>
       </div>
       <div className="item-card-content">
         <div className="item-card-title">{item.title}</div>
-        <div className="item-card-distance">{item.distance || '2 mins away'}</div>
+        <div className="item-card-meta-row">
+          <strong>₹{item.daily_rate}<small>/day</small></strong>
+          <span className="item-card-distance">
+            {String(item.distance || '').toLowerCase().includes('min') ? <Clock3 size={11} /> : <MapPin size={11} />}
+            {item.distance || '2 min walk'}
+          </span>
+        </div>
       </div>
     </motion.button>
   );

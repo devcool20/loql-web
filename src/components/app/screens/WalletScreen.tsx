@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Wallet as WalletIcon, CreditCard, Plus, ChevronRight } from 'lucide-react';
+import { ArrowDownLeft, ArrowUpRight, ChevronLeft, Wallet as WalletIcon, CreditCard, Plus, ChevronRight, ShieldCheck } from 'lucide-react';
+import AppPageIntro from '@/components/app/AppPageIntro';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 
@@ -48,8 +49,9 @@ const WalletScreen = () => {
       </div>
 
       <div className="utility-content wallet-content" style={{ padding: 24, paddingBottom: 100 }}>
+        <AppPageIntro eyebrow="Loql Wallet" title="Money made neighbourly." description="Track protected rental payments and listing earnings." compact />
         {/* Balance Card */}
-        <div className="wallet-balance-card" style={{ textAlign: 'center', marginBottom: 40 }}>
+        <div className="wallet-balance-card balance">
           <div style={{
             width: 80, height: 80, borderRadius: 40, background: 'var(--surface)', border: '1px solid var(--border)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px',
@@ -57,9 +59,9 @@ const WalletScreen = () => {
           }}>
             <WalletIcon size={32} color="var(--text-primary)" />
           </div>
-          <span style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500, display: 'block', marginBottom: 8 }}>Total Money Available</span>
+          <span>Available balance</span>
           <span style={{ fontSize: 40, fontWeight: 700, color: 'var(--text-primary)', display: 'block' }}>₹{balance.toFixed(2)}</span>
-          <span style={{ fontSize: 12, color: 'var(--text-light)', marginTop: 4, display: 'block' }}>(Money earned - Money spent)</span>
+          <p><ShieldCheck size={14}/> Protected neighbourhood payments</p>
         </div>
 
         {/* Payment Methods */}
@@ -119,7 +121,7 @@ const WalletScreen = () => {
                   width: 36, height: 36, borderRadius: 18, background: isEarning ? '#D1FAE5' : '#FEE2E2',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 12, fontSize: 14,
                 }}>
-                  {isEarning ? '↓' : '↑'}
+                  {isEarning ? <ArrowDownLeft size={17}/> : <ArrowUpRight size={17}/> }
                 </div>
                 <div style={{ flex: 1 }}>
                   <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', display: 'block' }}>{tx.items?.title || 'Rental'}</span>
