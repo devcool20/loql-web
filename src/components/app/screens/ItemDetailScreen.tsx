@@ -254,8 +254,8 @@ const ItemDetailScreen = () => {
       animate={shouldReduceMotion ? undefined : { opacity: 1 }}
       transition={{ duration: 0.22 }}
       style={{
-      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      background: 'var(--surface)', zIndex: 200, overflowY: 'auto',
+      width: '100%', minHeight: '100%',
+      background: 'var(--surface)',
     }}>
       {/* Floating Header */}
       <div className="item-detail-floating-header" style={{

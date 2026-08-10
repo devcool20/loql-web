@@ -98,23 +98,22 @@ const NotificationScreen = () => {
 
   return (
     <div className="utility-screen notification-screen" style={{
-      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      background: 'var(--background)', zIndex: 200, overflowY: 'auto',
+      width: '100%', minHeight: '100%',
+      background: 'var(--background)',
     }}>
       {/* Header */}
       <div className="utility-topbar" style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '14px 20px', background: 'var(--background)',
       }}>
         <button className="utility-icon-button scale-pressable app-icon-button" onClick={closeStack}
-          style={{ padding: 8, borderRadius: 20, background: 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+          style={{ background: 'var(--surface)' }}>
           <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
-        <span className="utility-title" style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>Notifications</span>
+        <span className="utility-title" style={{ color: 'var(--text-primary)' }}>Notifications</span>
         <button className="utility-icon-button scale-pressable app-icon-button" onClick={() => {
           if (selectionMode && selectedIds.size > 0) handleDeleteSelected();
           else setSelectionMode(!selectionMode);
-        }} style={{ padding: 8, borderRadius: 20, background: selectionMode ? 'var(--border)' : 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+        }} style={{ background: selectionMode ? 'var(--border)' : 'var(--surface)' }}>
           <Trash2 size={18} color="var(--text-primary)" />
         </button>
       </div>

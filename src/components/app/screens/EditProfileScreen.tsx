@@ -133,13 +133,13 @@ const EditProfileScreen = () => {
   };
 
   return (
-    <div className="utility-screen edit-profile-screen" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--background)', zIndex: 200, overflowY: 'auto' }}>
+    <div className="utility-screen edit-profile-screen" style={{ width: '100%', minHeight: '100%', background: 'var(--background)' }}>
       {/* Header */}
-      <div className="utility-topbar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px' }}>
-        <button className="utility-icon-button scale-pressable" onClick={closeStack} style={{ padding: 8 }}>
+      <div className="utility-topbar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <button className="utility-icon-button scale-pressable" onClick={closeStack}>
           <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
-        <span className="utility-title" style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>Edit Profile</span>
+        <span className="utility-title" style={{ color: 'var(--text-primary)' }}>Edit Profile</span>
         <div style={{ width: 40 }} />
       </div>
 
