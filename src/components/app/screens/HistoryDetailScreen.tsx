@@ -5,11 +5,16 @@ import { ChevronLeft, ShoppingBag, Package } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { ListSkeleton } from '@/components/app/Skeleton';
+import AppPageIntro from '@/components/app/AppPageIntro';
+import ChipRow from '@/components/app/ChipRow';
+import StatCells from '@/components/app/StatCells';
+import StatusTag from '@/components/app/StatusTag';
 
 const HistoryDetailScreen = () => {
   const { user, historyType, closeStack, navigateToDetail } = useStore();
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('All');
 
   const isRented = historyType === 'rented';
   const title = isRented ? 'Rented' : 'For Rent';
@@ -30,18 +35,6 @@ const HistoryDetailScreen = () => {
       }
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed': return '#10B981';
-      case 'active': return '#111827';
-      case 'pending': return '#6B7280';
-      case 'approved': return '#10B981';
-      case 'rented': return '#111827';
-      case 'available': return '#10B981';
-      default: return '#6B7280';
-    }
   };
 
   const getStatusText = (item: any) => {
@@ -71,21 +64,24 @@ const HistoryDetailScreen = () => {
   };
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--background)', zIndex: 200, overflowY: 'auto' }}>
+    <div className="utility-screen history-screen" style={{ width: '100%', minHeight: '100%', background: 'var(--background)' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px' }}>
-        <button className="scale-pressable app-icon-button" onClick={closeStack}
-          style={{ padding: 8, borderRadius: 20, background: 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+      <div className="utility-topbar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <button className="utility-icon-button scale-pressable app-icon-button" onClick={closeStack}
+          style={{ background: 'var(--surface)' }}>
           <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div className="utility-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <Icon size={18} color="var(--text-primary)" />
           <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>{title}</span>
         </div>
         <div style={{ width: 40 }} />
       </div>
 
-      <div style={{ padding: '8px 20px 40px' }}>
+      <div className="utility-content history-content" style={{ padding: '8px 20px 40px' }}>
+        <AppPageIntro eyebrow="Your record" title={isRented ? 'Borrowed with care.' : 'Shared with neighbours.'} description="Every rental, return, and payment in one place." compact />
+        <StatCells cells={[{value:String(items.length),label:'Total'},{value:`₹${items.reduce((sum,item) => sum + Number(isRented ? item.total_price || item.final_price || 0 : item.daily_rate || 0),0).toLocaleString('en-IN')}`,label:isRented?'Spent':'Daily value'}]} />
+        <ChipRow options={['All','Active','Completed']} value={filter} onChange={setFilter} />
         {loading ? (
           <ListSkeleton count={6} />
         ) : items.length === 0 ? (
@@ -93,7 +89,7 @@ const HistoryDetailScreen = () => {
             {isRented ? 'No rental history yet.' : "You haven't listed any items yet."}
           </p>
         ) : (
-          items.map((item) => {
+          items.filter(item => filter === 'All' || (filter === 'Completed' ? item.status === 'completed' : item.status !== 'completed')).map((item) => {
             const displayItem = isRented ? item.items : item;
             if (!displayItem) return null;
             const imgUrl = displayItem.images?.[0];
@@ -115,11 +111,7 @@ const HistoryDetailScreen = () => {
                 <div style={{ flex: 1 }}>
                   <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', display: 'block', marginBottom: 6 }}>{displayItem.title}</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{
-                      padding: '3px 10px', borderRadius: 8, fontSize: 10, color: '#FFFFFF',
-                      letterSpacing: 0.5, fontWeight: 700, textTransform: 'uppercase',
-                      background: getStatusColor(isRented ? item.status : displayItem.status),
-                    }}>{getStatusText(item)}</span>
+                    <StatusTag label={getStatusText(item)} tone={getStatusText(item) === 'Returned' ? 'complete' : getStatusText(item) === 'Available' ? 'available' : getStatusText(item) === 'Pending' ? 'pending' : 'active'} />
                     <span style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500 }}>{getPrice(item)}</span>
                   </div>
                 </div>

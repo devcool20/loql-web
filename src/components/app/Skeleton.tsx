@@ -33,6 +33,10 @@ export const ItemCardSkeleton = () => (
   </div>
 );
 
+export const SearchSkeleton = () => <div className="search-sk skeleton" />;
+export const HeroSkeleton = () => <div className="hero-sk skeleton" />;
+export const ChipsSkeleton = () => <div className="chips-sk">{Array.from({ length: 4 }).map((_, i) => <i className="skeleton" key={i} />)}</div>;
+
 export const HomeSkeletonGrid = ({ count = 6 }: { count?: number }) => (
   <div className="skeleton-grid">
     {Array.from({ length: count }).map((_, i) => (

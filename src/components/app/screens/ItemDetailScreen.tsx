@@ -2,7 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { Ban, Check, ChevronLeft, MessageCircle, Share2, Trash2, X } from 'lucide-react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
+import AppSheet from '@/components/app/AppSheet';
+import StatusTag from '@/components/app/StatusTag';
+import TrustRow from '@/components/app/TrustRow';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { createNotification } from '@/lib/notificationManager';
@@ -254,8 +257,8 @@ const ItemDetailScreen = () => {
       animate={shouldReduceMotion ? undefined : { opacity: 1 }}
       transition={{ duration: 0.22 }}
       style={{
-      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      background: 'var(--surface)', zIndex: 200, overflowY: 'auto',
+      width: '100%', minHeight: '100%',
+      background: 'var(--surface)',
     }}>
       {/* Floating Header */}
       <div className="item-detail-floating-header" style={{
@@ -307,13 +310,7 @@ const ItemDetailScreen = () => {
         ) : (
           <div style={{ width: '100%', height: '100%', background: 'var(--img-placeholder)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)' }}>No Image</div>
         )}
-        {images.length > 1 && (
-          <div style={{ position: 'absolute', bottom: 60, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8 }}>
-            {images.map((_: any, i: number) => (
-              <div key={i} style={{ width: 8, height: 8, borderRadius: 4, background: i === activeIndex ? 'white' : 'rgba(255,255,255,0.5)' }} />
-            ))}
-          </div>
-        )}
+        {images.length > 1 && <div className="gallery-dots">{images.map((_: any, i: number) => <i key={i} className={i === activeIndex ? 'active' : ''} />)}</div>}
       </motion.div>
 
       {/* Content Card */}
@@ -328,12 +325,10 @@ const ItemDetailScreen = () => {
         boxShadow: '0 -3px 8px rgba(0,0,0,0.1)', paddingBottom: 100,
       }}>
         <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 20px' }} />
+        <div className="detail-status-line"><StatusTag label={isRented ? 'In use' : 'Available today'} tone={isRented ? 'active' : 'available'} /><span>{item.distance || 'In your society'}</span></div>
         <div className="item-detail-title-row">
-          <div>
-            <span className="item-detail-category-pill">{item.category || 'Community item'}</span>
-            <h1 className="item-detail-title" style={{ fontSize: 30, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4, lineHeight: 1.2 }}>{item.title}</h1>
-          </div>
-          <p className="item-detail-rate" style={{ fontSize: 18, fontWeight: 600, color: 'var(--secondary)', marginBottom: 24 }}>₹{item.daily_rate}<span>/day</span></p>
+          <div><span className="v2-eyebrow">{item.category || 'Community item'}</span><h1 className="item-detail-title font-serif">{item.title}</h1></div>
+          <p className="item-detail-rate">₹{item.daily_rate}<span>/day</span></p>
         </div>
 
         <div style={{ height: 1, background: 'var(--border-light)', margin: '0 0 24px' }} />
@@ -462,7 +457,7 @@ const ItemDetailScreen = () => {
                   <span style={{ fontWeight: 600, color: 'var(--text-primary)', display: 'block' }}>
                     {loadingOwner ? 'Loading...' : `Owned by ${owner?.full_name || 'Neighbor'}`}
                   </span>
-                  <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>★ 4.8</span>
+                  <TrustRow label="Verified neighbour" />
                 </div>
               </div>
               <button className="scale-pressable app-small-action" onClick={(e) => { e.stopPropagation(); if (owner) openChat(owner); }}
@@ -475,12 +470,12 @@ const ItemDetailScreen = () => {
               marginTop: 24, paddingTop: 24, borderTop: '1px solid var(--border-light)',
             }}>
               <div>
-                <span style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'block' }}>Total for 1 day</span>
+                <span style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'block' }}>Starting at</span>
                 <span className="item-detail-total" style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)' }}>₹{item.daily_rate}</span>
               </div>
               <button className="item-detail-borrow-button scale-pressable app-primary-action" onClick={openOfferSheet} disabled={requesting}
                 style={{ background: 'var(--primary)', padding: '16px 32px', borderRadius: 999, color: 'var(--accent-solid-text)', fontWeight: 700, fontSize: 16, boxShadow: 'var(--warm-glow)' }}>
-                Borrow with Love
+                Send borrow offer
               </button>
             </div>
           </>
@@ -488,56 +483,29 @@ const ItemDetailScreen = () => {
       </motion.div>
 
       {/* Offer Modal */}
-      <AnimatePresence>
-      {showOfferModal && (
-        <motion.div
-          className="alert-overlay item-offer-overlay"
-          onClick={() => setShowOfferModal(false)}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <motion.div
-            className="alert-card item-offer-sheet"
-            onClick={(e) => e.stopPropagation()}
-            initial={shouldReduceMotion ? false : { y: 36, opacity: 0, scale: 0.97 }}
-            animate={shouldReduceMotion ? undefined : { y: 0, opacity: 1, scale: 1 }}
-            exit={shouldReduceMotion ? undefined : { y: 24, opacity: 0, scale: 0.98 }}
-            transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-            style={{ textAlign: 'left', maxWidth: 400 }}
-          >
+      <AppSheet open={showOfferModal} onClose={() => setShowOfferModal(false)} labelledBy="borrow-offer-title" className="item-offer-sheet">
             <div className="item-offer-head">
               <span>Borrow request</span>
               <button className="scale-pressable app-icon-button" onClick={() => setShowOfferModal(false)} aria-label="Close offer">
                 <X size={18} />
               </button>
             </div>
-            <h3 style={{ fontSize: 22, fontWeight: 650, marginBottom: 6, color: 'var(--text-primary)' }}>Send offer for {item.title}</h3>
+            <h3 id="borrow-offer-title" className="font-serif">Send offer for {item.title}</h3>
             <p style={{ margin: '0 0 18px', color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.45 }}>Confirm the price and duration before the owner accepts it in Mera Samaan.</p>
             <div className="item-offer-summary">
               <span>{item.category || 'Item'}</span>
               <strong>₹{item.daily_rate}/day</strong>
             </div>
-            <div className="input-group" style={{ marginBottom: 16 }}>
-              <label className="input-label">Price per day (₹)</label>
-              <input className="text-input" type="number" placeholder={`${item.daily_rate}`} value={offerPrice}
-                onChange={(e) => setOfferPrice(e.target.value)} style={{ border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', width: '100%' }} />
-            </div>
-            <div className="input-group" style={{ marginBottom: 24 }}>
-              <label className="input-label">Duration (hours)</label>
-              <input className="text-input" type="number" placeholder="24" value={offerHours}
-                onChange={(e) => setOfferHours(e.target.value)} style={{ border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', width: '100%' }} />
-            </div>
+            <div className="input-group offer-range"><label className="input-label">Your daily offer</label><input type="range" min="1" max={Math.max(1, Number(item.daily_rate))} value={offerPrice || item.daily_rate} onChange={e => setOfferPrice(e.target.value)} /><div><strong>₹{offerPrice || item.daily_rate}/day</strong><span>Owner asks ₹{item.daily_rate}</span></div></div>
+            <div className="input-group"><label className="input-label">Duration</label><div className="duration-picks">{[{v:'4',l:'4h'},{v:'24',l:'1 day'},{v:'48',l:'2 days'}].map(p => <button type="button" key={p.v} className={offerHours === p.v ? 'active' : ''} onClick={() => setOfferHours(p.v)}>{p.l}</button>)}<input aria-label="Custom hours" type="number" min="1" value={offerHours} onChange={e => setOfferHours(e.target.value)} /></div></div>
+            <div className="offer-estimate"><span>Estimated total</span><strong>₹{Math.ceil((Number(offerPrice || item.daily_rate) * Number(offerHours || 24)) / 24)}</strong></div>
             <div style={{ display: 'flex', gap: 12 }}>
               <button className="alert-btn alert-btn-cancel" onClick={() => setShowOfferModal(false)}>Cancel</button>
               <button className="alert-btn alert-btn-primary app-primary-action" onClick={handleSendOffer} disabled={requesting}>
                 {requesting ? <div className="spinner" /> : 'Send Offer'}
               </button>
             </div>
-          </motion.div>
-        </motion.div>
-      )}
-      </AnimatePresence>
+      </AppSheet>
 
       {/* Full Screen Image */}
       {fullScreenImage && (

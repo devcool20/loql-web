@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Search, MapPin, Bell, LocateFixed, ShieldCheck, X } from 'lucide-react';
+import { Search, MapPin, Bell, LocateFixed, ShieldCheck, SlidersHorizontal, X } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import AppSheet from '@/components/app/AppSheet';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import TypewriterText from '@/components/app/TypewriterText';
 import AppItemCard from '@/components/app/AppItemCard';
-import { HomeSkeletonGrid } from '@/components/app/Skeleton';
+import { ChipsSkeleton, HeroSkeleton, HomeSkeletonGrid, SearchSkeleton } from '@/components/app/Skeleton';
 import AppTopBar from '@/components/app/AppTopBar';
 import { LiveActivityPulse } from '@/components/app/LiveActivity';
 import { iosEase, iosSpring } from '@/components/motion/motionPrimitives';
@@ -44,8 +45,6 @@ const HomeScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [userSocietyId, setUserSocietyId] = useState<string | null>(null);
-  const [showSocietyTooltip, setShowSocietyTooltip] = useState(false);
-  const [societyItemCount, setSocietyItemCount] = useState<number | null>(null);
   const [geofenceBlockReason, setGeofenceBlockReason] = useState<string | null>(null);
   const [showGeofenceModal, setShowGeofenceModal] = useState(false);
   const [geofenceContext, setGeofenceContext] = useState<{
@@ -65,6 +64,7 @@ const HomeScreen = () => {
     setCoords,
     refreshGeofence,
     setHomeItems,
+    showAlert,
   } = useStore();
   const homeItems = useStore(state => state.homeItems);
   const homeIsHydrated = useStore(state => state.homeIsHydrated);
@@ -286,38 +286,10 @@ const HomeScreen = () => {
     }
   };
 
-  const handleLocationClick = async () => {
+  const handleLocationClick = () => {
     if (!userSocietyId || locationName === 'No Society') return;
     setShowGeofenceModal(true);
     if (!geofenceContext) refreshGeofenceAndLoad(true);
-    return;
-
-    if (showSocietyTooltip) {
-      setShowSocietyTooltip(false);
-      return;
-    }
-
-    if (societyItemCount !== null) {
-      setShowSocietyTooltip(true);
-      setTimeout(() => setShowSocietyTooltip(false), 3000);
-      return;
-    }
-
-    try {
-      const { count, error } = await supabase
-        .from('items')
-        .select('*', { count: 'exact', head: true })
-        .eq('society_id', userSocietyId)
-        .eq('status', 'available');
-
-      if (!error) {
-        setSocietyItemCount(count || 0);
-        setShowSocietyTooltip(true);
-        setTimeout(() => setShowSocietyTooltip(false), 3000);
-      }
-    } catch (e) {
-      console.error('Error fetching society stats:', e);
-    }
   };
 
   const handleCalibrateSociety = async () => {
@@ -434,37 +406,21 @@ const HomeScreen = () => {
             >
               <Bell size={20} color="var(--text-primary)" />
             </motion.button>
-            {showSocietyTooltip && societyItemCount !== null && (
-              <div style={{
-                position: 'absolute', top: '100%', right: 0, marginTop: 12, background: 'var(--accent-solid)',
-                padding: '12px 16px', borderRadius: 16, boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
-                zIndex: 50, width: 220, animation: 'fadeIn 0.2s ease', cursor: 'default'
-              }}>
-                <div style={{
-                  position: 'absolute', top: -6, right: 44, width: 0, height: 0,
-                  borderLeft: '7px solid transparent', borderRight: '7px solid transparent', borderBottom: '7px solid var(--accent-solid)',
-                }} />
-                <span style={{ color: 'var(--accent-solid-text)', fontSize: 13, fontWeight: 500, lineHeight: 1.4, display: 'block' }}>
-                  <span style={{ fontWeight: 700, color: '#10B981', fontSize: 14 }}>{societyItemCount} items</span> available to rent in your society right now!
-                </span>
-              </div>
-            )}
+
           </div>
         )}
       />
       <div className="home-page-content">
-      {/* Header */}
-      <motion.div className="home-header" {...fadeUp(0.04, 10)}>
+      {/* Task-led discovery header */}
+      <motion.header className="home-header home-discovery-intro" {...fadeUp(0.04, 10)}>
         <div className="home-header-left">
           <div className="home-greeting">
-            <TypewriterText texts={getGreetings()} typingSpeed={100} pauseDuration={2500} />
-            ,
+            <TypewriterText texts={getGreetings()} typingSpeed={100} pauseDuration={2500} />, {userName}
           </div>
-          <div className="home-name">
-            {userName}
-          </div>
+          <h1 className="home-name font-serif">What do you need nearby?</h1>
+          <p className="home-intro-copy">Borrow useful things from neighbours you can trust.</p>
         </div>
-      </motion.div>
+      </motion.header>
 
       <motion.div {...fadeUp(0.08, 12)}>
         <LiveActivityPulse />
@@ -475,10 +431,11 @@ const HomeScreen = () => {
         <Search size={18} color="var(--text-light)" />
         <input
           className="search-input"
-          placeholder="Search for tools, gear..."
+          placeholder="Search tools, tech, party gear…"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
+        <button type="button" className="home-filter-button" aria-label="Filter listings"><SlidersHorizontal size={16}/></button>
       </motion.div>
 
       <motion.div
@@ -496,14 +453,10 @@ const HomeScreen = () => {
           boxShadow: 'var(--shadow-sm)',
         }}
       >
-        <span className="home-hero-kicker" style={{ fontSize: 12, color: 'var(--secondary)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-        </span>
-        <h3 className="home-hero-title font-serif" style={{ fontSize: 26, lineHeight: 1.2, color: 'var(--text-primary)', marginTop: 4 }}>
-          Borrow what you need from trusted neighbors.
-        </h3>
-        <p className="home-hero-copy" style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 6 }}>
-          Curated picks from your society, updated all day.
-        </p>
+        <span className="home-hero-kicker">Weekend ready</span>
+        <h3 className="home-hero-title font-serif">Borrow the plan,<br />not the clutter.</h3>
+        <p className="home-hero-copy">Popular picks for society get-togethers.</p>
+        <button type="button" className="home-hero-link" onClick={() => setSelectedCategory('All')}>Explore the edit <span aria-hidden="true">→</span></button>
       </motion.div>
 
       {/* Categories */}
@@ -531,110 +484,14 @@ const HomeScreen = () => {
             Open location check
           </button>
         </div>
-      ) : geofenceBlockReason ? (
-        <div style={{
-          border: '1px solid var(--border-light)',
-          background: 'linear-gradient(180deg, var(--surface), var(--surface-alt))',
-          borderRadius: 18,
-          padding: 16,
-          marginBottom: 18,
-          boxShadow: '0 6px 20px rgba(45,49,66,0.08)',
-        }}>
-          <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: 8, fontSize: 15 }}>
-            Secure neighborhood mode is active
-          </strong>
-          <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.55 }}>
-            {geofenceBlockReason}
-          </p>
-          <div style={{ display: 'grid', gridTemplateColumns: geofenceContext?.accuracyMeters != null ? '1fr 1fr 1fr' : '1fr 1fr', gap: 8, marginTop: 10 }}>
-            <div style={{
-              border: '1px solid var(--border-light)',
-              borderRadius: 12,
-              padding: '8px 10px',
-              background: 'var(--surface)',
-            }}>
-              <div style={{ color: 'var(--text-light)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>Distance</div>
-              <div style={{ color: 'var(--text-primary)', fontSize: 13, fontWeight: 700 }}>
-                {geofenceContext?.distanceMeters != null ? `${Math.round(geofenceContext.distanceMeters)}m` : 'Unknown'}
-              </div>
-            </div>
-            <div style={{
-              border: '1px solid var(--border-light)',
-              borderRadius: 12,
-              padding: '8px 10px',
-              background: 'var(--surface)',
-            }}>
-              <div style={{ color: 'var(--text-light)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>Allowed Radius</div>
-              <div style={{ color: 'var(--text-primary)', fontSize: 13, fontWeight: 700 }}>
-                {Math.round(geofenceContext?.radiusMeters ?? 500)}m
-              </div>
-            </div>
-            {geofenceContext?.accuracyMeters != null && (
-              <div style={{
-                border: '1px solid var(--border-light)',
-                borderRadius: 12,
-                padding: '8px 10px',
-                background: 'var(--surface)',
-              }}>
-                <div style={{ color: 'var(--text-light)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>GPS Accuracy</div>
-                <div style={{ color: 'var(--text-primary)', fontSize: 13, fontWeight: 700 }}>
-                  ±{Math.round(geofenceContext.accuracyMeters)}m
-                </div>
-              </div>
-            )}
-          </div>
-          {geofenceContext?.societyName && (
-            <p style={{ margin: '8px 0 0', color: 'var(--text-light)', fontSize: 12, lineHeight: 1.4 }}>
-              Society: <strong style={{ color: 'var(--text-secondary)' }}>{geofenceContext.societyName}</strong>
-            </p>
-          )}
-          <motion.button
-            type="button"
-            className="home-secondary-action"
-            onClick={() => refreshGeofenceAndLoad(true)}
-            whileHover={shouldReduceMotion ? undefined : { y: -2 }}
-            whileTap={shouldReduceMotion ? undefined : { scale: 0.97 }}
-            transition={iosSpring}
-            style={{
-              marginTop: 12,
-              borderRadius: 999,
-              border: '1px solid var(--border)',
-              background: 'var(--surface)',
-              padding: '9px 14px',
-              fontSize: 13,
-              fontWeight: 700,
-              color: 'var(--text-primary)',
-            }}
-          >
-            Re-check location
-          </motion.button>
-          {geofenceContext?.distanceMeters != null && geofenceContext.distanceMeters <= 900 && (
-            <motion.button
-              type="button"
-              className="home-primary-action"
-              onClick={handleCalibrateSociety}
-              whileHover={shouldReduceMotion ? undefined : { y: -2 }}
-              whileTap={shouldReduceMotion ? undefined : { scale: 0.97 }}
-              transition={iosSpring}
-              style={{
-                marginTop: 10,
-                marginLeft: 8,
-                borderRadius: 999,
-                border: '1px solid rgba(244,111,82,0.28)',
-                background: 'var(--accent-solid)',
-                padding: '9px 14px',
-                fontSize: 13,
-                fontWeight: 800,
-                color: 'var(--accent-solid-text)',
-              }}
-            >
-              Set phone location as center
-            </motion.button>
-          )}
-        </div>
       ) : loading && items.length === 0 ? (
-        <HomeSkeletonGrid count={6} />
+        <div className="home-loading-state"><SearchSkeleton /><HeroSkeleton /><ChipsSkeleton /><HomeSkeletonGrid count={4} /></div>
       ) : (
+        <section className="home-feed-section">
+          <div className="v2-section-heading">
+            <div><span className="v2-eyebrow">Discover</span><h2 className="font-serif">Near you</h2></div>
+            <span>{filteredItems.length} available</span>
+          </div>
         <div className="item-feed">
           <AnimatePresence initial={false} mode="popLayout">
             {filteredItems.map((item, index) => (
@@ -648,70 +505,22 @@ const HomeScreen = () => {
           </AnimatePresence>
 
           {filteredItems.length === 0 && (
-            <div className="empty-state">
-              <span className="empty-text">
-                {searchQuery ? 'No items found matching your search.' : 'No items available yet.'}
-              </span>
-            </div>
+            <div className="empty-state home-empty-state"><div className="empty-art"><div className="empty-shelf"><i/><i/><i/></div></div><span className="v2-eyebrow">Quiet for now</span><h2 className="font-serif">Be the first to fill the shelf.</h2><p>{searchQuery ? 'No nearby items match those filters.' : 'Share something useful and help your neighbourhood borrow better.'}</p><div className="empty-actions"><button className="app-primary-action" onClick={() => setCurrentStack('AddItem')}>List an item</button><button className="app-small-action" onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}>Clear filters</button></div></div>
           )}
         </div>
+        </section>
       )}
       </div>
 
-      <AnimatePresence>
-        {showGeofenceModal && (geofenceContext || geofenceBlockReason) && (
-          <motion.div
-            className="geofence-modal-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setShowGeofenceModal(false)}
-          >
-            <motion.div
-              className="geofence-modal-card"
-              initial={shouldReduceMotion ? false : { y: 28, opacity: 0, scale: 0.96 }}
-              animate={shouldReduceMotion ? undefined : { y: 0, opacity: 1, scale: 1 }}
-              exit={shouldReduceMotion ? undefined : { y: 18, opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.32, ease: iosEase }}
-              onClick={(event) => event.stopPropagation()}
-            >
-              <button type="button" className="scale-pressable app-icon-button geofence-modal-close" onClick={() => setShowGeofenceModal(false)} aria-label="Close location check">
-                <X size={18} />
-              </button>
-              <div className="geofence-modal-icon">
-                <ShieldCheck size={22} />
-              </div>
-              <span className="geofence-modal-kicker">Location check</span>
-              <h3>{geofenceContext?.permission === 'denied' ? 'Allow location access' : 'Verify society location'}</h3>
-              <p>Loql works only inside your registered society. Turn on location to continue.</p>
-              <div className="geofence-modal-metrics">
-                <div>
-                  <span>Society</span>
-                  <strong>{geofenceContext?.societyName || locationName || 'Your society'}</strong>
-                </div>
-                <div>
-                  <span>Radius</span>
-                  <strong>{formatMeters(geofenceContext?.radiusMeters ?? 500)}</strong>
-                </div>
-              </div>
-              <div className="geofence-modal-caution">
-                <LocateFixed size={15} />
-                <span>Stay within your start society to discover, list, and borrow.</span>
-              </div>
-              <div className="geofence-modal-actions">
-                <button type="button" className="scale-pressable app-primary-action geofence-primary-button" onClick={() => refreshGeofenceAndLoad(true)}>
-                  Allow location
-                </button>
-                {geofenceContext?.distanceMeters != null && geofenceContext.distanceMeters <= 900 && (
-                  <button type="button" className="scale-pressable app-small-action geofence-secondary-button" onClick={handleCalibrateSociety}>
-                    Set as center
-                  </button>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <AppSheet open={showGeofenceModal && Boolean(geofenceContext || geofenceBlockReason)} onClose={() => setShowGeofenceModal(false)} labelledBy="geo-sheet-title" className="geo-sheet">
+        <div className="sheet-head"><span className="v2-eyebrow">Neighbourhood verification</span><button type="button" className="app-icon-button" onClick={() => setShowGeofenceModal(false)} aria-label="Close location check"><X size={18} /></button></div>
+        <div className="geo-rings"><i /><i /><span><LocateFixed size={22} /></span></div>
+        <h2 id="geo-sheet-title" className="font-serif">{geofenceContext?.permission === 'denied' ? 'Unlock your neighbourhood.' : 'Verify society location.'}</h2>
+        <p>Loql works only inside your registered society. Check your location to discover, list, and borrow safely.</p>
+        <div className="geo-facts"><div><span>Distance</span><strong>{formatMeters(geofenceContext?.distanceMeters)}</strong></div><div><span>Allowed radius</span><strong>{formatMeters(geofenceContext?.radiusMeters ?? 500)}</strong></div></div>
+        <div className="geo-safe-note"><ShieldCheck size={16}/><span>{geofenceContext?.societyName || locationName || 'Your registered society'}</span></div>
+        <div className="geo-actions"><button type="button" className="app-primary-action" onClick={() => refreshGeofenceAndLoad(true)}>Check location again</button>{geofenceContext?.distanceMeters != null && geofenceContext.distanceMeters <= 900 && <button type="button" className="app-small-action" onClick={handleCalibrateSociety}>Set as centre</button>}<button type="button" className="geo-why" onClick={() => showAlert('Why location is required', GEOFENCE_MESSAGES.outsideFence, 'info')}>Why location is required</button></div>
+      </AppSheet>
     </div>
   );
 };

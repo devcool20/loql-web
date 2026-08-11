@@ -9,12 +9,17 @@ import { useStore } from '@/store/useStore';
 import { supabase } from '@/lib/supabase';
 import { getSafeImageUrl } from '@/lib/imageUtils';
 import SmartImage from '@/components/app/SmartImage';
+import AppPageIntro from '@/components/app/AppPageIntro';
+import StatCells from '@/components/app/StatCells';
+import TrustRow from '@/components/app/TrustRow';
+import { calculateTrustScore } from '@/lib/trustScore';
 
 const ProfileScreen = () => {
   const { user, setUser, showAlert, setCurrentStack, setHistoryType, refreshTrigger, currentStack, theme, toggleTheme } = useStore();
   const [walletBalance, setWalletBalance] = useState(0);
   const [rentedCount, setRentedCount] = useState(0);
   const [listedCount, setListedCount] = useState(0);
+  const [trustScore, setTrustScore] = useState<number | null>(null);
 
   const displayName = user?.user_metadata?.full_name || 'Neighbor';
   const avatarUrl = user?.user_metadata?.avatar_url;
@@ -49,6 +54,7 @@ const ProfileScreen = () => {
     if (user) {
       fetchCounts();
       fetchWalletBalance();
+      calculateTrustScore(user.id).then(setTrustScore).catch(() => setTrustScore(null));
     }
   }, [user, currentStack, refreshTrigger]);
 
@@ -77,6 +83,8 @@ const ProfileScreen = () => {
   return (
     <div className="profile-screen" style={{ background: 'var(--background)', minHeight: '100%', padding: '24px 0 120px' }}>
       <div className="profile-content" style={{ padding: '0 24px' }}>
+        <AppPageIntro eyebrow="Pehchan" title="Your neighbourhood identity." description="Trust, sharing, and account essentials." compact />
+        <section className="profile-identity-panel">
         {/* User Info */}
         <div className="profile-user-row" style={{ display: 'flex', alignItems: 'center', marginTop: 14, marginBottom: 24 }}>
           <div className="profile-avatar-wrap" style={{ marginRight: 18, borderRadius: 20, boxShadow: 'var(--shadow-md)', transform: 'rotate(-3deg)', border: '4px solid var(--surface-container-lowest)' }}>
@@ -102,8 +110,15 @@ const ProfileScreen = () => {
           <div>
             <h2 className="profile-name" style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4, letterSpacing: -0.4 }}>{displayName}</h2>
             <span className="profile-phone" style={{ fontSize: 14, color: 'var(--text-light)' }}>{phoneNumber}</span>
+            <TrustRow label="Verified neighbour" />
           </div>
         </div>
+        <StatCells className="profile-trust-strip" cells={[
+          ...(trustScore !== null ? [{ value: `${trustScore}/100`, label: 'Trust score' }] : []),
+          { value: String(listedCount), label: 'Items shared' },
+          { value: String(rentedCount), label: 'Rentals' },
+        ]} />
+        </section>
 
         {/* Wallet Card */}
         <div className="profile-wallet-card scale-pressable app-clickable-card app-reveal-card"

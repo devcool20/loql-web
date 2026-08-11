@@ -6,6 +6,9 @@ import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { getSafeImageUrl } from '@/lib/imageUtils';
 import SmartImage from '@/components/app/SmartImage';
+import TrustRow from '@/components/app/TrustRow';
+import StatusTag from '@/components/app/StatusTag';
+import AppSheet from '@/components/app/AppSheet';
 import { CACHE_KEYS, cacheInvalidate } from '@/lib/cache';
 import { createNotification } from '@/lib/notificationManager';
 import { assertGeofenceAllowed } from '@/lib/geofence';
@@ -417,15 +420,9 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
   };
 
   return (
-    <div style={{
-      position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-      background: 'var(--background)', zIndex: 200, display: 'flex', flexDirection: 'column',
-    }} className="chat-detail-screen">
+    <div className="chat-detail-screen chat-transaction-screen">
       {/* Header */}
-      <div style={{
-        display: 'flex', alignItems: 'center', padding: '14px 16px',
-        background: 'var(--surface)', borderBottom: '1px solid var(--border-light)', gap: 12,
-      }}>
+      <div className="chat-detail-header">
         <button className="scale-pressable app-icon-button" onClick={closeStack}
           style={{ padding: 8, borderRadius: 20, background: 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
           <ChevronLeft size={24} color="var(--text-primary)" />
@@ -439,7 +436,7 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
             color: 'var(--accent-solid-text)', fontSize: 16, fontWeight: 700,
           }}>{targetUser.full_name.charAt(0)}</div>
         )}
-        <span style={{ flex: 1, fontSize: 17, fontWeight: 600, color: 'var(--text-primary)' }}>{targetUser.full_name}</span>
+        <div className="chat-partner"><strong>{targetUser.full_name}</strong><TrustRow label="Verified neighbour" /></div>
         <button className="scale-pressable app-icon-button" onClick={handleDeleteChat}
           style={{ padding: 8, borderRadius: 20, background: 'var(--muted)' }}>
           <Trash2 size={18} color="var(--text-primary)" />
@@ -447,7 +444,7 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
       </div>
 
       {/* Messages */}
-      <div ref={messagesScrollRef} style={{ flex: 1, overflowY: 'auto', padding: '16px 16px 8px', display: 'flex', flexDirection: 'column' }}>
+      <div ref={messagesScrollRef} className="chat-message-list" style={{ flex: 1, overflowY: 'auto', padding: '16px 16px 8px', display: 'flex', flexDirection: 'column' }}>
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: 50 }}>
             <div className="spinner" style={{ borderTopColor: 'var(--text-primary)', borderColor: 'var(--border)' }} />
@@ -463,7 +460,7 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
                 display: 'flex', justifyContent: isMine ? 'flex-end' : 'flex-start', marginBottom: 8,
               }}>
                 {offerPayload ? renderOfferCard(msg, offerPayload, isMine) : (
-                <div className={`chat-message-bubble ${isMine ? 'mine' : 'theirs'}`} style={{
+                <div className={`chat-message-bubble bubble ${isMine ? 'mine' : 'theirs'}`} style={{
                   maxWidth: '75%', padding: '10px 16px', borderRadius: 20,
                   background: isMine ? 'var(--accent-solid)' : 'var(--surface)',
                   color: isMine ? 'var(--accent-solid-text)' : 'var(--text-primary)',
@@ -489,11 +486,7 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
       </div>
 
       {/* Input */}
-      <div style={{
-        display: 'flex', alignItems: 'center', padding: '12px 16px', gap: 12,
-        background: 'var(--surface)', borderTop: '1px solid var(--border-light)',
-        paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))',
-      }}>
+      <div className="composer">
         <input
           style={{
             flex: 1, padding: '12px 16px', borderRadius: 24, border: '1px solid var(--border)',
@@ -504,7 +497,7 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={handleKeyDown}
         />
-        <button className="scale-pressable app-icon-button"
+        <button className="scale-pressable app-icon-button send"
           onClick={sendMessage}
           disabled={!newMessage.trim() || sending}
           style={{
@@ -523,13 +516,12 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
         const isAccepted = status === 'accepted';
 
         return (
-          <div className="chat-offer-sheet-backdrop" onClick={() => setSelectedOfferMessage(null)}>
-            <div className="chat-offer-sheet" onClick={(event) => event.stopPropagation()}>
+          <AppSheet open onClose={() => setSelectedOfferMessage(null)} labelledBy="chat-offer-sheet-title" className="chat-offer-sheet">
               <button type="button" className="scale-pressable app-icon-button chat-offer-sheet-close" onClick={() => setSelectedOfferMessage(null)} aria-label="Close offer details">
                 <X size={18} />
               </button>
               <span className="chat-offer-sheet-kicker">{isMine ? 'Your offer' : 'Borrow request'}</span>
-              <h3>{title}</h3>
+              <h3 id="chat-offer-sheet-title">{title}</h3>
               <p>{statusCopy(status, isMine)}</p>
 
               <div className="chat-offer-sheet-item">
@@ -541,7 +533,7 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
                   style={{ width: 64, height: 64, borderRadius: 18, objectFit: 'contain' }}
                 />
                 <div>
-                  <span className={`chat-offer-status status-${status}`}>{status.toUpperCase()}</span>
+                  <StatusTag label={status} tone={status === 'accepted' ? 'complete' : status === 'declined' ? 'danger' : 'pending'} />
                   <strong>₹{price.toLocaleString('en-IN')}/day</strong>
                   <small>{days} day request, total ₹{total.toLocaleString('en-IN')}</small>
                 </div>
@@ -571,8 +563,7 @@ const ChatDetailScreen = ({ targetUser }: ChatDetailScreenProps) => {
                   ) : null
                 )}
               </div>
-            </div>
-          </div>
+          </AppSheet>
         );
       })()}
     </div>

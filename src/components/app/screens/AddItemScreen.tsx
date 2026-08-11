@@ -2,13 +2,15 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Camera, Check, ChevronLeft, FileText, ImagePlus, Loader2, Package, Tag, X } from 'lucide-react';
+import { ArrowRight, Camera, Check, FileText, ImagePlus, Loader2, Package, Tag, X } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { cacheInvalidate, CACHE_KEYS } from '@/lib/cache';
 import { assertGeofenceAllowed, createItemGeofenced } from '@/lib/geofence';
 import { resizeImageFile } from '@/lib/clientImage';
 import SmartImage from '@/components/app/SmartImage';
+import AppTopBar from '@/components/app/AppTopBar';
+import AppPageIntro from '@/components/app/AppPageIntro';
 
 const CATEGORIES = ['DIY Tools', 'Party', 'Gaming', 'Fitness', 'Electronics', 'Kitchen', 'Other'];
 
@@ -140,23 +142,9 @@ const AddItemScreen = () => {
       exit={{ y: 20, opacity: 0 }}
       transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="add-item-topbar">
-        <motion.button
-          type="button"
-          className="add-item-back"
-          onClick={closeStack}
-          whileTap={{ scale: 0.92 }}
-          aria-label="Go back"
-        >
-          <ChevronLeft size={22} />
-        </motion.button>
-        <div className="add-item-heading">
-          <h1>Naya Samaan</h1>
-          <p>List something useful for neighbors to borrow.</p>
-        </div>
-      </div>
-
+      <AppTopBar onBack={closeStack} title="Naya Samaan" />
       <div className="add-item-content">
+        <AppPageIntro eyebrow="List with confidence" title="Tell neighbours what you're sharing." description="Clear photos and useful details help good items find good homes." compact />
         <section className="add-item-card add-item-photo-card">
           <div className="add-item-section-title">
             <span><ImagePlus size={16} /> Photos</span>

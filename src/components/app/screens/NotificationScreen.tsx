@@ -1,7 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ChevronLeft, Trash2 } from 'lucide-react';
+import { Bell, Check, ChevronLeft, Clock3, CreditCard, MessageCircle, Trash2 } from 'lucide-react';
+import AppPageIntro from '@/components/app/AppPageIntro';
+import ChipRow from '@/components/app/ChipRow';
+import StatusTag from '@/components/app/StatusTag';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import { markAsRead, createNotification } from '@/lib/notificationManager';
@@ -14,6 +17,7 @@ const NotificationScreen = () => {
   const [loading, setLoading] = useState(true);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [selectionMode, setSelectionMode] = useState(false);
+  const [filter, setFilter] = useState('All');
 
   useEffect(() => {
     loadNotifications();
@@ -88,38 +92,37 @@ const NotificationScreen = () => {
     ]);
   };
 
-  const getTypeColor = (type: string) => {
-    if (type.includes('accept')) return '#10B981';
-    if (type.includes('decline')) return '#EF4444';
-    if (type.includes('offer') || type.includes('counter')) return '#111827';
-    if (type.includes('expir')) return '#F59E0B';
-    return '#6B7280';
-  };
+  const visibleNotifications = notifications.filter(notif => filter === 'All' ||
+    (filter === 'Offers' && /offer|counter|accept|decline/.test(notif.type)) ||
+    (filter === 'Rentals' && /rental|return|expir/.test(notif.type)) ||
+    (filter === 'Wallet' && /payment|wallet/.test(notif.type)));
+  const getTypeIcon = (type: string) => type.includes('payment') || type.includes('wallet') ? CreditCard : type.includes('offer') || type.includes('counter') ? MessageCircle : type.includes('expir') || type.includes('return') ? Clock3 : Bell;
 
   return (
-    <div style={{
-      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      background: 'var(--background)', zIndex: 200, overflowY: 'auto',
+    <div className="utility-screen notification-screen" style={{
+      width: '100%', minHeight: '100%',
+      background: 'var(--background)',
     }}>
       {/* Header */}
-      <div style={{
+      <div className="utility-topbar" style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '14px 20px', background: 'var(--background)',
       }}>
-        <button className="scale-pressable app-icon-button" onClick={closeStack}
-          style={{ padding: 8, borderRadius: 20, background: 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+        <button className="utility-icon-button scale-pressable app-icon-button" onClick={closeStack}
+          style={{ background: 'var(--surface)' }}>
           <ChevronLeft size={24} color="var(--text-primary)" />
         </button>
-        <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>Notifications</span>
-        <button className="scale-pressable app-icon-button" onClick={() => {
+        <span className="utility-title" style={{ color: 'var(--text-primary)' }}>Notifications</span>
+        <button className="utility-icon-button scale-pressable app-icon-button" onClick={() => {
           if (selectionMode && selectedIds.size > 0) handleDeleteSelected();
           else setSelectionMode(!selectionMode);
-        }} style={{ padding: 8, borderRadius: 20, background: selectionMode ? 'var(--border)' : 'var(--surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+        }} style={{ background: selectionMode ? 'var(--border)' : 'var(--surface)' }}>
           <Trash2 size={18} color="var(--text-primary)" />
         </button>
       </div>
 
-      <div style={{ padding: '0 20px', paddingBottom: 100 }}>
+      <div className="utility-content notification-list" style={{ padding: '0 20px', paddingBottom: 100 }}>
+        <AppPageIntro eyebrow="What's happening" title="Your neighbourhood pulse." description="Offers, rentals, and payments that need your attention." action={<StatusTag label={`${notifications.filter(n => !n.is_read).length} new`} tone="active" />} compact />
+        <ChipRow options={['All','Offers','Rentals','Wallet']} value={filter} onChange={setFilter} />
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: 50 }}>
             <div className="spinner" style={{ borderTopColor: 'var(--text-primary)', borderColor: 'var(--border)' }} />
@@ -127,7 +130,9 @@ const NotificationScreen = () => {
         ) : notifications.length === 0 ? (
           <p style={{ textAlign: 'center', color: 'var(--text-light)', marginTop: 60, fontSize: 15, fontWeight: 500 }}>No notifications yet.</p>
         ) : (
-          notifications.map((notif) => (
+          visibleNotifications.map((notif) => {
+            const TypeIcon = getTypeIcon(notif.type);
+            return (
             <div key={notif.id} className="notification-card scale-pressable app-clickable-card app-reveal-card"
               onClick={() => {
                 if (selectionMode) {
@@ -142,8 +147,7 @@ const NotificationScreen = () => {
                 marginBottom: 12, border: `1.5px solid ${selectedIds.has(notif.id) ? 'var(--accent-solid)' : notif.is_read ? 'var(--border-light)' : 'var(--border)'}`,
                 boxShadow: '0 2px 8px rgba(0,0,0,0.04)', cursor: 'pointer', gap: 14,
               }}>
-              {/* Left dot */}
-              <div style={{ width: 8, height: 8, borderRadius: 4, background: getTypeColor(notif.type), marginTop: 6, flexShrink: 0 }} />
+              {selectionMode ? <span className={`select-dot ${selectedIds.has(notif.id) ? 'selected' : ''}`}>{selectedIds.has(notif.id) && <Check size={13}/>}</span> : <span className="notif-icon"><TypeIcon size={17}/></span>}
               {/* Content */}
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
@@ -171,7 +175,7 @@ const NotificationScreen = () => {
                 )}
               </div>
             </div>
-          ))
+          )})
         )}
       </div>
     </div>

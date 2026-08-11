@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Eye, EyeOff, Loader2, Lock, Mail, Phone } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
@@ -24,6 +24,7 @@ const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const otpInputRef = useRef<HTMLInputElement>(null);
   const { showAlert } = useStore();
   const isSignup = emailMode === 'signup';
 
@@ -162,6 +163,8 @@ const LoginScreen = () => {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
         >
+          <div className="auth-mark font-serif" aria-hidden="true">L</div>
+          <span className="v2-eyebrow auth-eyebrow">Welcome to Loql</span>
           <AnimatePresence mode="wait">
             <motion.div
               key={`${method}-${emailMode}-${phoneStep}`}
@@ -235,18 +238,15 @@ const LoginScreen = () => {
                 </div>
               ) : (
                 <div className="input-group">
-                  <label className="input-label">Verification Code</label>
-                  <input
-                    className={`otp-input ${focusedField === 'otp' ? 'is-focused' : ''}`}
-                    placeholder="000000"
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={6}
-                    value={otp}
-                    onFocus={() => setFocusedField('otp')}
-                    onBlur={() => setFocusedField(null)}
-                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                  />
+                  <label className="input-label" htmlFor="otp-code">Verification Code</label>
+                  <div className={`otp-row ${focusedField === 'otp' ? 'is-focused' : ''}`} role="button" tabIndex={0} aria-label="Enter six digit verification code" onClick={() => otpInputRef.current?.focus()} onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); otpInputRef.current?.focus(); } }}>
+                    {Array.from({ length: 6 }).map((_, index) => <span key={index} className={focusedField === 'otp' && index === Math.min(otp.length, 5) ? 'is-active' : ''} aria-hidden="true">{otp[index] || ''}</span>)}
+                  </div>
+                  <input ref={otpInputRef} id="otp-code" className="otp-hidden-input" type="text" inputMode="numeric" maxLength={6} value={otp}
+                    onFocus={() => setFocusedField('otp')} onBlur={() => setFocusedField(null)}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))} />
+                  <div className="code-meta"><span>Code expires shortly</span><button type="button" onClick={handleSendOtp}>Resend</button></div>
+                  <button type="button" className="auth-outline-btn" onClick={() => setPhoneStep('input')}>Change number</button>
                 </div>
               )}
 
@@ -347,7 +347,7 @@ const LoginScreen = () => {
 
         <div className="divider auth-divider">
           <div className="divider-line" />
-          <span className="divider-text">OR</span>
+          <span className="divider-text">or continue with</span>
           <div className="divider-line" />
         </div>
 
@@ -362,6 +362,7 @@ const LoginScreen = () => {
           <span className="google-btn-text">Continue with Google</span>
         </motion.button>
 
+        <p className="auth-terms">By continuing, you agree to Loql’s Terms and Privacy Policy.</p>
         <Image className="auth-diya-accent" src="/diya-removebg-preview.png" alt="" width={116} height={116} aria-hidden="true" />
       </div>
     </div>

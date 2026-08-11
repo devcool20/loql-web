@@ -2,13 +2,13 @@
 
 import React from 'react';
 import { Home, ShoppingBag, MessageCircle, User } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useStore } from '@/store/useStore';
 
 type TabType = 'Home' | 'Rentals' | 'Chat' | 'Profile';
 
 const tabs: { key: TabType; icon: typeof Home; label: string }[] = [
-  { key: 'Home', icon: Home, label: 'Home' },
+  { key: 'Home', icon: Home, label: 'Ghar' },
   { key: 'Rentals', icon: ShoppingBag, label: 'Kiraya' },
   { key: 'Chat', icon: MessageCircle, label: 'Samvaad' },
   { key: 'Profile', icon: User, label: 'Pehchan' },
@@ -18,6 +18,7 @@ const spring = { type: 'spring' as const, stiffness: 400, damping: 30 };
 
 const BottomTabBar = () => {
   const { currentTab, setCurrentTab, currentStack } = useStore();
+  const reduceMotion = useReducedMotion();
 
   // Hide tab bar when a stack screen is open
   if (currentStack) return null;
@@ -31,7 +32,7 @@ const BottomTabBar = () => {
           <motion.button
             key={tab.key}
             layout
-            whileTap={{ scale: 0.95 }}
+            whileTap={reduceMotion ? undefined : { scale: 0.96 }}
             transition={spring}
             className="tab-button"
             onClick={() => setCurrentTab(tab.key)}
@@ -55,10 +56,10 @@ const BottomTabBar = () => {
                 <motion.span
                   key={`${tab.key}-label`}
                   className="tab-label"
-                  initial={{ width: 0, opacity: 0 }}
+                  initial={reduceMotion ? false : { width: 0, opacity: 0 }}
                   animate={{ width: 'auto', opacity: 1 }}
-                  exit={{ width: 0, opacity: 0 }}
-                  transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                  exit={reduceMotion ? { opacity: 0 } : { width: 0, opacity: 0 }}
+                  transition={{ duration: reduceMotion ? 0.12 : 0.18, ease: [0.22, 1, 0.36, 1] }}
                 >
                   {tab.label}
                 </motion.span>
