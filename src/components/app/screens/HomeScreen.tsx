@@ -488,9 +488,9 @@ const HomeScreen = () => {
         <div className="home-loading-state"><SearchSkeleton /><HeroSkeleton /><ChipsSkeleton /><HomeSkeletonGrid count={4} /></div>
       ) : (
         <section className="home-feed-section">
-          <div className="v2-section-heading">
-            <div><span className="v2-eyebrow">Discover</span><h2 className="font-serif">Near you</h2></div>
-            <span>{filteredItems.length} available</span>
+          <div className="v2-section-heading" style={{ marginBottom: 12 }}>
+            <div><h2 className="font-serif" style={{ fontSize: 20 }}>Near you</h2></div>
+            <span style={{ fontSize: 11, color: 'var(--text-secondary)', fontWeight: 600 }}>{filteredItems.length} available</span>
           </div>
         <div className="item-feed">
           <AnimatePresence initial={false} mode="popLayout">

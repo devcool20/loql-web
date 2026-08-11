@@ -53,10 +53,12 @@ const AppItemCard = ({ item, index = 0, onPress }: ItemCardProps) => {
         ) : (
           <div className="item-card-no-image">No Image</div>
         )}
-        <div className="item-card-status"><StatusTag label={item.status === 'rented' ? 'In use' : 'Available'} tone={item.status === 'rented' ? 'active' : 'available'} /></div>
+        <div style={{ position: 'absolute', top: 8, left: 8, zIndex: 2 }}>
+          <StatusTag label={item.status === 'rented' ? 'In use' : 'Available'} tone={item.status === 'rented' ? 'active' : 'available'} />
+        </div>
       </div>
       <div className="item-card-content">
-        <div className="item-card-title">{item.title}</div>
+        <div className="item-card-title" title={item.title} style={{ fontWeight: 650, color: 'var(--text-primary)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{item.title}</div>
         <div className="item-card-meta-row">
           <strong>₹{item.daily_rate}<small>/day</small></strong>
           <span className="item-card-distance">

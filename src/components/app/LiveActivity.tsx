@@ -277,92 +277,84 @@ export const LiveActivityPulse = () => {
     return () => window.clearInterval(rotationInterval);
   }, [activities.length]);
 
-  const visibleActivities = activities.length === 0
-    ? []
-    : Array.from({ length: Math.min(3, activities.length) }, (_, index) => activities[(visibleStart + index) % activities.length]);
+  const currentActivity = activities.length === 0 ? null : activities[visibleStart % activities.length];
 
   return (
     <div className="live-pulse-container" style={{
-      padding: '12px 0',
-      overflow: 'hidden',
-      height: '100px',
+      margin: '6px 0 10px',
+      height: '42px',
       position: 'relative'
     }}>
-      <AnimatePresence initial={false}>
-        {activities.length === 0 ? (
+      <AnimatePresence mode="wait">
+        {!currentActivity ? (
           <motion.div
             key="empty-live-activity"
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 10,
-              padding: '10px 14px',
-              background: 'var(--surface)',
-              borderRadius: 16,
+              gap: 8,
+              padding: '8px 14px',
+              background: 'color-mix(in srgb, var(--secondary) 8%, var(--surface))',
+              borderRadius: 99,
               border: '1px solid var(--border-light)',
               color: 'var(--text-secondary)',
-              fontSize: 12,
-              fontWeight: 650,
+              fontSize: 11,
+              fontWeight: 600,
             }}
           >
-            <Sparkles size={15} color="var(--secondary)" />
-            Live society updates will appear here.
+            <Sparkles size={14} color="var(--secondary)" />
+            <span>Live society updates will appear here.</span>
           </motion.div>
-        ) : visibleActivities.map((activity, i) => (
+        ) : (
           <motion.div
-            key={activity.id}
-            layout
-            initial={{ opacity: 0, y: -12, scale: 0.98 }}
-            animate={{ opacity: 1 - i * 0.18, y: i * 32, scale: 1 - i * 0.045 }}
-            exit={{ opacity: 0, y: 18, scale: 0.96 }}
-            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            key={currentActivity.id}
+            initial={{ opacity: 0, y: 8, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.98 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="live-pulse-card"
             style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
               display: 'flex',
               alignItems: 'center',
-              gap: 12,
-              padding: '8px 16px',
-              background: 'var(--surface-container-lowest)',
-              borderRadius: '16px',
+              gap: 9,
+              padding: '6px 12px',
+              background: 'var(--surface)',
+              borderRadius: 99,
               border: '1px solid var(--border-light)',
-              boxShadow: '0 10px 24px rgba(45,49,66,0.08)',
-              zIndex: 10 - i,
+              boxShadow: 'var(--shadow-xs)',
             }}
           >
             <div style={{
-              width: 30,
-              height: 30,
+              width: 24,
+              height: 24,
               borderRadius: '50%',
-              background: `${activity.color}14`,
+              background: `${currentActivity.color}14`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               overflow: 'hidden',
-              border: `1px solid ${activity.color}35`,
+              border: `1px solid ${currentActivity.color}35`,
               flexShrink: 0,
             }}>
               <img
-                src={activity.avatar}
+                src={currentActivity.avatar}
                 alt=""
-                width={30}
-                height={30}
+                width={24}
+                height={24}
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
             </div>
-            <div style={{ fontSize: '13px', color: 'var(--text-primary)', fontWeight: 500 }}>
-              <span style={{ fontWeight: 750 }}>{activity.user}</span> {activity.action} {activity.item && <span style={{ color: 'var(--primary)', fontWeight: 750 }}>{activity.item}</span>}
+            <div style={{ fontSize: '11px', color: 'var(--text-primary)', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <span style={{ fontWeight: 700 }}>{currentActivity.user}</span> {currentActivity.action} {currentActivity.item && <span style={{ color: 'var(--primary)', fontWeight: 700 }}>{currentActivity.item}</span>}
             </div>
-            <div style={{ marginLeft: 'auto', fontSize: '10px', color: 'var(--text-light)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              {activity.time}
+            <div style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--text-light)', fontWeight: 600, flexShrink: 0 }}>
+              {currentActivity.time}
             </div>
           </motion.div>
-        ))}
+        )}
       </AnimatePresence>
     </div>
   );

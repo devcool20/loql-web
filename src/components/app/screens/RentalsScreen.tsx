@@ -355,7 +355,9 @@ const RentalsScreen = () => {
   };
 
   const RentalMedia = ({ src, title }: { src?: string; title?: string }) => (
-    <SmartImage src={src ? getSafeImageUrl(src) : null} alt={title || 'Item'} fallbackLabel={title || 'Item'} rounded={15} className="rental-thumb" />
+    <div className="rental-thumb-wrap">
+      <SmartImage src={src ? getSafeImageUrl(src) : null} alt={title || 'Item'} fallbackLabel={title || 'Item'} rounded={15} className="rental-thumb" />
+    </div>
   );
 
   const renderListingCard = (item: any) => (
@@ -372,10 +374,18 @@ const RentalsScreen = () => {
     const totalWindow = start && end ? Math.max(1, end.getTime() - start.getTime()) : 1;
     const remaining = end ? Math.max(0, end.getTime() - Date.now()) : 0;
     const progress = end && start ? Math.max(0, Math.min(100, ((totalWindow - remaining) / totalWindow) * 100)) : 0;
-    const countdown = end ? `${Math.floor(remaining / 86400000)}d ${Math.floor((remaining % 86400000) / 3600000)}h` : null;
+    const formatCountdown = () => {
+      if (!end) return null;
+      if (remaining <= 0) return 'Due for return';
+      const days = Math.floor(remaining / 86400000);
+      const hours = Math.floor((remaining % 86400000) / 3600000);
+      if (days === 0 && hours === 0) return 'Less than 1h left';
+      return days > 0 ? `${days}d ${hours}h left` : `${hours}h left`;
+    };
+    const countdown = formatCountdown();
     return <article key={rental.id} className="active-rental card app-clickable-card" onClick={() => item && navigateToDetail(item)}>
       <div className="active-rental-media"><RentalMedia src={item?.images?.[0]} title={item?.title} /><StatusPill status={rental.status} /></div>
-      <div className="active-rental-head"><div><span className="v2-eyebrow">In your care</span><h3>{item?.title || 'Rental'}</h3></div>{countdown && <strong>{countdown}</strong>}</div>
+      <div className="active-rental-head"><div><span className="v2-eyebrow">In your care</span><h3>{item?.title || 'Rental'}</h3></div>{countdown && <strong style={{ fontSize: 11, color: remaining <= 0 ? 'var(--accent)' : 'var(--primary)' }}>{countdown}</strong>}</div>
       {end && <><div className="rental-progress" aria-label={`${Math.round(progress)} percent elapsed`}><i style={{ width: `${progress}%` }} /></div><div className="rental-return-row"><span>Return by {end.toLocaleString([], { weekday:'short', hour:'2-digit', minute:'2-digit' })}</span><button type="button">View handover</button></div></>}
     </article>;
   };
@@ -393,16 +403,14 @@ const RentalsScreen = () => {
 
   return (
     <div className="rentals-screen" style={styles.screen}>
-      <AppPageIntro
-        eyebrow="Kiraya · Your rental desk"
-        title={rentalsMode === 'owned' ? 'Mera Samaan' : 'Kiraye Par'}
-        description={rentalsMode === 'owned' ? 'Manage what your neighbours can borrow.' : 'Track offers, payments, and active handovers.'}
-        action={rentalsMode === 'owned' ? (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0 10px' }}>
+        <span className="v2-eyebrow">Kiraya · Rental desk</span>
+        {rentalsMode === 'owned' && (
           <button className="rentals-add-button scale-pressable app-icon-button" onClick={() => setCurrentStack('AddItem')} style={styles.addButton} aria-label="Add item">
-            <Plus size={22} color="var(--accent-solid-text)" />
+            <Plus size={20} color="var(--accent-solid-text)" />
           </button>
-        ) : undefined}
-      />
+        )}
+      </div>
 
       <div className="rentals-mode-switch" style={styles.modeSwitch} role="tablist" aria-label="Kiraya view">
         {[

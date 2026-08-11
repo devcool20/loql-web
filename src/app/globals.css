@@ -1825,6 +1825,9 @@ textarea:-webkit-autofill:focus {
 /* Auth redesign */
 .auth-screen {
   position: relative;
+  overflow-y: auto;
+  min-height: 100vh;
+  min-height: 100dvh;
   background:
     radial-gradient(circle at 12% 0%, rgba(114, 209, 196, 0.11), transparent 32%),
     radial-gradient(circle at 88% 18%, rgba(247, 111, 78, 0.08), transparent 30%),
@@ -1838,7 +1841,7 @@ textarea:-webkit-autofill:focus {
   margin: 0 auto;
   min-height: 100vh;
   min-height: 100svh;
-  padding: clamp(72px, 9svh, 84px) var(--app-page-x) calc(30px + var(--safe-area-bottom));
+  padding: clamp(28px, 4svh, 42px) var(--app-page-x) calc(40px + var(--safe-area-bottom));
 }
 
 .auth-brand-row {
@@ -2119,17 +2122,7 @@ textarea:-webkit-autofill:focus {
 }
 
 .auth-diya-accent {
-  position: absolute;
-  left: 50%;
-  top: clamp(10px, 1.8svh, 14px);
-  z-index: 1;
-  width: clamp(46px, 15vw, 58px);
-  height: auto;
-  opacity: 0.92;
-  pointer-events: none;
-  user-select: none;
-  transform: translateX(-50%);
-  filter: saturate(0.96) contrast(0.98);
+  display: none;
 }
 
 .auth-scroll > :not(.auth-diya-accent) {
@@ -2143,7 +2136,8 @@ textarea:-webkit-autofill:focus {
   margin: 0 auto;
   min-height: 100vh;
   min-height: 100svh;
-  padding: clamp(72px, 9svh, 84px) var(--app-page-x) calc(30px + var(--safe-area-bottom));
+  overflow-y: auto;
+  padding: clamp(36px, 5svh, 54px) var(--app-page-x) calc(40px + var(--safe-area-bottom));
 }
 
 .profile-setup-hero {
@@ -5097,15 +5091,15 @@ textarea:-webkit-autofill:focus {
 .bottom-tab-bar {
   height: calc(var(--app-bottom-nav-h) + 2px);
   padding-inline: 8px;
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
-  border-color: color-mix(in srgb, var(--primary) 9%, var(--app-tabbar-border));
-  box-shadow: 0 18px 44px rgba(45, 49, 66, 0.15), inset 0 1px rgba(255,255,255,.55);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  border-color: var(--border-light);
+  box-shadow: 0 14px 36px rgba(45, 49, 66, 0.12);
 }
-.tab-button { flex: 1 1 0; min-width: 46px; }
+.tab-button { flex: 1 1 0; min-width: 46px; border-radius: 999px; }
 .tab-active-pill {
-  background: linear-gradient(135deg,
-    color-mix(in srgb, var(--primary) 18%, var(--surface)),
-    color-mix(in srgb, var(--secondary) 9%, var(--surface)));
+  background: color-mix(in srgb, var(--primary) 12%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--primary) 18%, transparent);
+  border-radius: 999px;
 }
 
 /* Shared screen rhythm and typography */

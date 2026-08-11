@@ -152,14 +152,11 @@ const ChatListScreen = () => {
   }
 
   return (
-    <div className="chat-list-screen" style={{ background: 'var(--background)', minHeight: '100%', padding: '24px 0 100px' }}>
+    <div className="chat-list-screen" style={{ background: 'var(--background)', minHeight: '100%', padding: '16px 0 100px' }}>
       <div className="chat-list-content" style={{ padding: '0 20px' }}>
-      <AppPageIntro
-        eyebrow="Samvaad · Neighbourhood conversations"
-        title="Stay in the loop."
-        description="Offers, handovers, and friendly check-ins in one place."
-        compact
-      />
+      <div style={{ padding: '8px 0 10px' }}>
+        <span className="v2-eyebrow">Samvaad · Direct Messages</span>
+      </div>
 
       {/* Search Bar */}
       <div className="home-search-shell" style={{
@@ -178,12 +175,14 @@ const ChatListScreen = () => {
       <ChipRow options={['All','Unread','Offers','Archived']} value={filter} onChange={setFilter} />
 
       {/* Chat List */}
-      <div className="chat-conversation-list">
-        <div className="v2-section-heading"><div><span className="v2-eyebrow">Recent</span><h2 className="font-serif">Conversations</h2></div><span>{filtered.length}</span></div>
+      <div className="chat-conversation-list" style={{ marginTop: 12 }}>
         {filtered.length === 0 ? (
           <p style={{ textAlign: 'center', color: 'var(--text-light)', marginTop: 60, fontSize: 15, fontWeight: 500 }}>No messages yet.</p>
         ) : (
-          filtered.map((item) => (
+          filtered.map((item) => {
+            const rawMsg = item.lastMessage || '';
+            const displayMsg = /sex|nude|porn|nsfw/i.test(rawMsg) ? 'Listing inquiry' : rawMsg;
+            return (
             <div key={item.id} className="chat-row scale-pressable app-clickable-card app-reveal-card"
               onClick={() => openChat({ id: item.id, full_name: item.name, avatar_url: item.avatar })}
               style={{
@@ -216,7 +215,7 @@ const ChatListScreen = () => {
                   fontSize: 14, color: item.unreadCount > 0 ? 'var(--text-primary)' : 'var(--text-secondary)',
                   fontWeight: item.unreadCount > 0 ? 500 : 400,
                   overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                }}>{item.lastMessage}</p>
+                }}>{displayMsg}</p>
               </div>
               {/* Badge */}
               {item.unreadCount > 0 && (
@@ -228,7 +227,8 @@ const ChatListScreen = () => {
                 </div>
               )}
             </div>
-          ))
+            );
+          })
         )}
       </div>
       </div>

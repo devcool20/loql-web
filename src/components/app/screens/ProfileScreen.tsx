@@ -81,13 +81,12 @@ const ProfileScreen = () => {
   ];
 
   return (
-    <div className="profile-screen" style={{ background: 'var(--background)', minHeight: '100%', padding: '24px 0 120px' }}>
+    <div className="profile-screen" style={{ background: 'var(--background)', minHeight: '100%', padding: '16px 0 120px' }}>
       <div className="profile-content" style={{ padding: '0 24px' }}>
-        <AppPageIntro eyebrow="Pehchan" title="Your neighbourhood identity." description="Trust, sharing, and account essentials." compact />
         <section className="profile-identity-panel">
         {/* User Info */}
         <div className="profile-user-row" style={{ display: 'flex', alignItems: 'center', marginTop: 14, marginBottom: 24 }}>
-          <div className="profile-avatar-wrap" style={{ marginRight: 18, borderRadius: 20, boxShadow: 'var(--shadow-md)', transform: 'rotate(-3deg)', border: '4px solid var(--surface-container-lowest)' }}>
+          <div className="profile-avatar-wrap" style={{ marginRight: 16, width: 80, height: 80, borderRadius: '50%', overflow: 'hidden', boxShadow: 'var(--shadow-md)', border: '3px solid var(--surface-container-lowest)', flexShrink: 0 }}>
             {avatarUrl ? (
               <SmartImage
                 src={getSafeImageUrl(avatarUrl)}
@@ -95,13 +94,13 @@ const ProfileScreen = () => {
                 fallbackLabel={displayName}
                 loading="eager"
                 fetchPriority="high"
-                rounded={18}
+                rounded="50%"
                 className="profile-avatar-media"
-                style={{ width: 92, height: 92, borderRadius: 18, objectFit: 'cover' }}
+                style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover' }}
               />
             ) : (
               <div className="profile-avatar-media" style={{
-                width: 92, height: 92, borderRadius: 18, background: 'var(--accent-solid)',
+                width: 80, height: 80, borderRadius: '50%', background: 'var(--accent-solid)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 color: 'var(--accent-solid-text)', fontSize: 26, fontWeight: 700,
               }}>{displayName[0]}</div>
@@ -128,24 +127,20 @@ const ProfileScreen = () => {
             boxShadow: 'var(--warm-glow)', cursor: 'pointer',
           }}>
           <div className="profile-wallet-icon" style={{
-            width: 48, height: 48, borderRadius: 24, background: 'var(--accent-solid-muted)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 16,
+            width: 48, height: 48, borderRadius: 16, background: 'rgba(255,255,255,0.15)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 16, flexShrink: 0,
           }}>
             <Wallet size={24} color="var(--accent-solid-text)" />
           </div>
           <div style={{ flex: 1 }}>
-            <span style={{ fontSize: 12, color: 'var(--accent-solid-text-muted)', display: 'block', marginBottom: 3 }}>Wallet Balance</span>
-            <span style={{ fontSize: 22, fontWeight: 700, color: 'var(--accent-solid-text)', letterSpacing: -0.3 }}>₹{walletBalance.toFixed(2)}</span>
+            <span style={{ color: 'var(--accent-solid-text)', fontSize: 12, opacity: 0.8, fontWeight: 500 }}>Wallet Balance</span>
+            <div style={{ color: 'var(--accent-solid-text)', fontSize: 22, fontWeight: 700, letterSpacing: -0.5 }}>₹{walletBalance.toFixed(2)}</div>
           </div>
-          <ChevronRight size={20} color="var(--accent-solid-text-muted)" />
+          <ChevronRight size={20} color="var(--accent-solid-text)" style={{ opacity: 0.6 }} />
         </div>
 
-        {/* History */}
-        <h3 className="profile-section-title" style={{ color: 'var(--primary)',
-    fontSize: 20,
-    fontWeight: 800,
-    letterSpacing: '0.12em',
-    textTransform: 'uppercase' }}>Pehchan</h3>
+        {/* Rented / For Rent Cards */}
+        <span className="v2-eyebrow" style={{ display: 'block', marginBottom: 12 }}>Activity Overview</span>
         <div className="profile-stat-grid" style={{ display: 'flex', gap: 12, marginBottom: 8 }}>
           {[
             { icon: <ShoppingBag size={20} color="var(--accent-solid-text)" />, label: 'Rented', count: rentedCount, type: 'rented' as const },
